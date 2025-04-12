@@ -2,13 +2,13 @@ package com.example.android_quiz_app.factory;
 
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
-import com.example.android_quiz_app.repository.FirebaseRepository;
+import com.example.android_quiz_app.repository.QuizRepository;
 import com.example.android_quiz_app.viewModel.MainViewModel;
 
 public class MainViewModelFactory implements ViewModelProvider.Factory {
-    private final FirebaseRepository repository;
+    private final QuizRepository repository;
 
-    public MainViewModelFactory(FirebaseRepository repository) {
+    public MainViewModelFactory(QuizRepository repository) {
         this.repository = repository;
     }
 

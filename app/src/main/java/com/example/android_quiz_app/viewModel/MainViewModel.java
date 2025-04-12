@@ -4,15 +4,15 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import com.example.android_quiz_app.model.Question;
-import com.example.android_quiz_app.repository.FirebaseRepository;
+import com.example.android_quiz_app.repository.QuizRepository;
 
 public class MainViewModel extends ViewModel {
 
-    private final FirebaseRepository repository;
+    private final QuizRepository repository;
     private final MutableLiveData<Question> question = new MutableLiveData<>();
     private final MutableLiveData<String> error = new MutableLiveData<>();
 
-    public MainViewModel(FirebaseRepository repository) {
+    public MainViewModel(QuizRepository repository) {
         this.repository = repository;
         loadFirstQuestion();
     }
@@ -26,7 +26,7 @@ public class MainViewModel extends ViewModel {
     }
 
     private void loadFirstQuestion() {
-        repository.getFirstQuestion(new FirebaseRepository.OnQuestionLoadedListener() {
+        repository.getFirstQuestion(new QuizRepository.OnQuestionLoadedListener() {
             @Override
             public void onQuestionLoaded(Question loadedQuestion) {
                 question.setValue(loadedQuestion);

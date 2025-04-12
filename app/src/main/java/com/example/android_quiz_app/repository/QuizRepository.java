@@ -6,11 +6,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class FirebaseRepository {
+public class QuizRepository {
 
     private final FirebaseDatabase database;
 
-    public FirebaseRepository() {
+    public QuizRepository() {
         database = FirebaseDatabase.getInstance("https://android-quiz-app-8e645-default-rtdb.europe-west1.firebasedatabase.app");
     }
 
