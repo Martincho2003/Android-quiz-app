@@ -5,14 +5,12 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import java.util.ArrayList;
-import java.util.List;
 
-public class QuizRepository {
+public class FirebaseRepository {
 
     private final FirebaseDatabase database;
 
-    public QuizRepository() {
+    public FirebaseRepository() {
         database = FirebaseDatabase.getInstance("https://android-quiz-app-8e645-default-rtdb.europe-west1.firebasedatabase.app");
     }
 
@@ -46,4 +44,6 @@ public class QuizRepository {
                     }
                 });
     }
+
+
 }
