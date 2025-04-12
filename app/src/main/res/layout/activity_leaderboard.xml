@@ -6,17 +6,16 @@
     android:padding="16dp">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Leaderboard"
         android:textSize="24sp"
-        android:paddingBottom="16dp" />
+        android:gravity="center"
+        android:padding="16dp" />
 
-    <TextView
-        android:id="@+id/leaderboardTextView"
+    <ListView
+        android:id="@+id/leaderboardListView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Loading..."
-        android:textSize="16sp" />
+        android:layout_height="match_parent" />
 
 </LinearLayout>

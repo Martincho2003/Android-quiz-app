@@ -54,21 +54,11 @@
 
     <Button
         android:id="@+id/logoutButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="389dp"
+        android:layout_height="51dp"
         android:layout_marginTop="16dp"
         android:text="Logout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/backButton"
         app:layout_constraintTop_toBottomOf="@+id/playedGamesTodayTextView" />
-
-    <Button
-        android:id="@+id/backButton"
-        android:layout_width="379dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Back"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logoutButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
