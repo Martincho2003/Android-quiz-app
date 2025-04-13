@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select Questions"
+            android:textSize="24sp"
+            android:gravity="center"
+            android:padding="16dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Subjects"
+            android:textSize="18sp"
+            android:padding="8dp" />
+
+        <CheckBox
+            android:id="@+id/allSubjectsCheckBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="All Subjects"
+            android:padding="8dp" />
+
+        <LinearLayout
+            android:id="@+id/subjectsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Difficulties"
+            android:textSize="18sp"
+            android:padding="8dp" />
+
+        <CheckBox
+            android:id="@+id/allDifficultiesCheckBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="All Difficulties"
+            android:padding="8dp" />
+
+        <LinearLayout
+            android:id="@+id/difficultiesContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+        <Button
+            android:id="@+id/startGameButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Start Game"
+            android:layout_marginTop="16dp" />
+
+    </LinearLayout>
+</ScrollView>

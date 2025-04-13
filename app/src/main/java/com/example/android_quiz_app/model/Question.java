@@ -5,13 +5,14 @@ import java.util.List;
 public class Question {
     private String question;
     private List<Answer> answers;
+    private Difficulty difficulty;
 
-    // Празен конструктор за Firebase
     public Question() {}
 
-    public Question(String question, List<Answer> answers) {
+    public Question(String question, List<Answer> answers, Difficulty difficulty) {
         this.question = question;
         this.answers = answers;
+        this.difficulty = difficulty != null ? difficulty : Difficulty.EASY;
     }
 
     public String getQuestion() {
@@ -28,5 +29,13 @@ public class Question {
 
     public void setAnswers(List<Answer> answers) {
         this.answers = answers;
+    }
+
+    public Difficulty getDifficulty() {
+        return difficulty;
+    }
+
+    public void setDifficulty(Difficulty difficulty) {
+        this.difficulty = difficulty;
     }
 }

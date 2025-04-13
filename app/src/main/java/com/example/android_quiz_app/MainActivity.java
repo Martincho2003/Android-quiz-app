@@ -6,6 +6,7 @@ import android.widget.Button;
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.android_quiz_app.activities.GameActivity;
+import com.example.android_quiz_app.activities.GameModeActivity;
 import com.example.android_quiz_app.activities.LeaderboardActivity;
 import com.example.android_quiz_app.activities.LoginActivity;
 import com.example.android_quiz_app.activities.ProfileActivity;
@@ -44,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         startGameButton.setOnClickListener(v -> {
-            startActivity(new Intent(MainActivity.this, GameActivity.class));
+            startActivity(new Intent(MainActivity.this, GameModeActivity.class));
         });
 
         leaderboardButton.setOnClickListener(v -> {
