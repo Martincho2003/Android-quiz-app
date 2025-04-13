@@ -35,7 +35,6 @@ public class GameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
-        // Инициализиране на UI елементите
         questionTextView = findViewById(R.id.questionTextView);
         timerTextView = findViewById(R.id.timerTextView);
         pointsTextView = findViewById(R.id.pointsTextView);
@@ -46,12 +45,10 @@ public class GameActivity extends AppCompatActivity {
         addTimeButton = findViewById(R.id.addTimeButton);
         excludeButton = findViewById(R.id.excludeButton);
 
-        // Вземане на subjects и difficulties от Intent
         Intent intent = getIntent();
         ArrayList<Subject> subjects = (ArrayList<Subject>) intent.getSerializableExtra("subjects");
         ArrayList<Difficulty> difficulties = (ArrayList<Difficulty>) intent.getSerializableExtra("difficulties");
 
-        // Проверка за null или празни списъци
         if (subjects == null || subjects.isEmpty()) {
             Log.w(TAG, "No subjects provided, using all subjects");
             subjects = new ArrayList<>(List.of(Subject.values()));
@@ -64,11 +61,9 @@ public class GameActivity extends AppCompatActivity {
         Log.d(TAG, "Subjects: " + subjects.toString());
         Log.d(TAG, "Difficulties: " + difficulties.toString());
 
-        // Инициализиране на ViewModel с избраните параметри
         GameViewModelFactory factory = new GameViewModelFactory(subjects, difficulties);
         viewModel = new ViewModelProvider(this, factory).get(GameViewModel.class);
 
-        // Показване на съобщение за зареждане
         questionTextView.setText("Loading questions...");
         answerButton1.setVisibility(Button.GONE);
         answerButton2.setVisibility(Button.GONE);
@@ -77,7 +72,6 @@ public class GameActivity extends AppCompatActivity {
         addTimeButton.setEnabled(false);
         excludeButton.setEnabled(false);
 
-        // Наблюдение на въпросите
         viewModel.getQuestions().observe(this, questions -> {
             if (questions == null || questions.isEmpty()) {
                 Log.e(TAG, "No questions loaded");
@@ -99,13 +93,18 @@ public class GameActivity extends AppCompatActivity {
             Log.d(TAG, "Questions loaded: " + questions.size());
         });
 
-        // Наблюдение на текущия въпрос
         viewModel.getCurrentQuestionIndex().observe(this, index -> {
-            if (currentQuestions == null) return;
+            if (currentQuestions == null || currentQuestions.isEmpty()) {
+                Log.w(TAG, "Cannot update UI: No questions loaded");
+                return;
+            }
+            if (index >= currentQuestions.size()) {
+                Log.w(TAG, "Current index out of bounds: " + index);
+                return;
+            }
             updateQuestionUI();
         });
 
-        // Наблюдение на края на играта
         viewModel.getGameEnded().observe(this, finalPoints -> {
             if (finalPoints != null) {
                 Log.d(TAG, "Game ended, showing dialog with points: " + finalPoints);
@@ -113,24 +112,43 @@ public class GameActivity extends AppCompatActivity {
             }
         });
 
-        // Наблюдение на времето
         viewModel.getCurrentQuestionTime().observe(this, time -> {
             timerTextView.setText("Time: " + time + "s");
         });
 
-        // Наблюдение на точките
         viewModel.getPoints().observe(this, points -> {
             pointsTextView.setText("Points: " + points);
+            if (currentQuestions != null && !currentQuestions.isEmpty()) {
+                updateButtonsState();
+            }
+        });
+
+        viewModel.getUserDetails().observe(this, user -> {
+            if (user == null) {
+                Log.w(TAG, "User details not loaded yet");
+                return;
+            }
+            Log.d(TAG, "User details loaded: " + user.getUsername() + ", points: " + user.getPoints());
             updateButtonsState();
         });
 
-        // Обработка на отговорите
+        viewModel.getIsAddTime().observe(this, addTimeList -> {
+            if (currentQuestions != null && !currentQuestions.isEmpty()) {
+                updateButtonsState();
+            }
+        });
+
+        viewModel.getIsExclude().observe(this, excludeList -> {
+            if (currentQuestions != null && !currentQuestions.isEmpty()) {
+                updateButtonsState();
+            }
+        });
+
         answerButton1.setOnClickListener(v -> selectAnswer(0));
         answerButton2.setOnClickListener(v -> selectAnswer(1));
         answerButton3.setOnClickListener(v -> selectAnswer(2));
         answerButton4.setOnClickListener(v -> selectAnswer(3));
 
-        // Помощни опции
         addTimeButton.setOnClickListener(v -> viewModel.addTime());
         excludeButton.setOnClickListener(v -> viewModel.excludeAnswers());
     }
@@ -145,7 +163,7 @@ public class GameActivity extends AppCompatActivity {
                     startActivity(mainIntent);
                     finish();
                 })
-                .setCancelable(false) // Потребителят трябва да натисне OK, за да продължи
+                .setCancelable(false)
                 .show();
     }
 
@@ -171,6 +189,12 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void updateButtonsState() {
+        if (currentQuestions == null || currentQuestions.isEmpty()) {
+            Log.w(TAG, "Cannot update buttons: No questions loaded");
+            addTimeButton.setEnabled(false);
+            excludeButton.setEnabled(false);
+            return;
+        }
         addTimeButton.setEnabled(!viewModel.isAddTimeDeactivated());
         excludeButton.setEnabled(!viewModel.isExcludeDeactivated());
     }

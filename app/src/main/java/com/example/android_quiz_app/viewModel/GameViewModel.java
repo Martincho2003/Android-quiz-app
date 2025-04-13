@@ -26,12 +26,13 @@ public class GameViewModel extends ViewModel {
     private final MutableLiveData<List<Boolean>> isExclude = new MutableLiveData<>();
     private final MutableLiveData<User> userDetails = new MutableLiveData<>();
     private final MutableLiveData<Long> currentQuestionTime = new MutableLiveData<>();
-    private final MutableLiveData<Integer> gameEnded = new MutableLiveData<>(); // Нов LiveData за край на играта
+    private final MutableLiveData<Integer> gameEnded = new MutableLiveData<>();
     private CountDownTimer timer;
     private List<Question> currentQuestionsList = new ArrayList<>();
     private List<Integer> currentSecondsList = new ArrayList<>();
     private List<Boolean> currentIsAddTimeList = new ArrayList<>();
     private List<Boolean> currentIsExcludeList = new ArrayList<>();
+    private boolean isListsInitialized = false;
 
     public GameViewModel(List<Subject> subjects, List<Difficulty> difficulties) {
         gameService = new GameService();
@@ -43,23 +44,32 @@ public class GameViewModel extends ViewModel {
         gameService.getQuestionsFromPub(difficulties, subjects).observeForever(loadedQuestions -> {
             if (loadedQuestions != null) {
                 currentQuestionsList = loadedQuestions;
-                questions.setValue(loadedQuestions);
-
                 currentSecondsList.clear();
                 currentIsAddTimeList.clear();
                 currentIsExcludeList.clear();
+
                 for (Question question : loadedQuestions) {
-                    currentSecondsList.add(question.getDifficulty() == Difficulty.HARD ? 40 : 20);
+                    currentSecondsList.add(question.getDifficulty() == Difficulty.HARD ? 30 : 20);
                     currentIsAddTimeList.add(false);
                     currentIsExcludeList.add(false);
                 }
+
+                isListsInitialized = true;
+
+                questions.setValue(loadedQuestions);
                 seconds.setValue(currentSecondsList);
                 isAddTime.setValue(currentIsAddTimeList);
                 isExclude.setValue(currentIsExcludeList);
 
+                Log.d(TAG, "Lists initialized: questions=" + currentQuestionsList.size() +
+                        ", seconds=" + currentSecondsList.size() +
+                        ", addTime=" + currentIsAddTimeList.size() +
+                        ", exclude=" + currentIsExcludeList.size());
+
                 startTimer();
             } else {
                 Log.e(TAG, "Failed to load questions");
+                questions.setValue(null);
             }
         });
     }
@@ -97,9 +107,9 @@ public class GameViewModel extends ViewModel {
 
     public void checkAnswer(Answer answer) {
         int currentIndex = currentQuestionIndex.getValue() != null ? currentQuestionIndex.getValue() : 0;
-        if ("true".equalsIgnoreCase(answer.getIs_correct())) {
+        if ("1".equalsIgnoreCase(answer.getIs_correct())) {
             int currentPoints = points.getValue() != null ? points.getValue() : 0;
-            int pointsToAdd = currentQuestionsList.get(currentIndex).getDifficulty() == Difficulty.HARD ? 8 : 4;
+            int pointsToAdd = currentQuestionsList.get(currentIndex).getDifficulty() == Difficulty.HARD ? 6 : 3;
             points.setValue(currentPoints + pointsToAdd);
         }
         nextQuestion();
@@ -124,12 +134,13 @@ public class GameViewModel extends ViewModel {
         int finalPoints = points.getValue() != null ? points.getValue() : 0;
         gameService.sendPoints(finalPoints);
         Log.d(TAG, "Game ended with points: " + finalPoints);
-        gameEnded.setValue(finalPoints); // Сигнализираме, че играта е приключила и предаваме точките
+        gameEnded.setValue(finalPoints);
     }
 
     public void addTime() {
         int currentIndex = currentQuestionIndex.getValue() != null ? currentQuestionIndex.getValue() : 0;
-        currentSecondsList.set(currentIndex, currentSecondsList.get(currentIndex) + 20);
+        long remainingTime = currentQuestionTime.getValue() != null ? currentQuestionTime.getValue() : 0;
+        currentSecondsList.set(currentIndex, (int) (remainingTime + 20));
         seconds.setValue(currentSecondsList);
 
         int currentPoints = points.getValue() != null ? points.getValue() : 0;
@@ -145,6 +156,12 @@ public class GameViewModel extends ViewModel {
     public void excludeAnswers() {
         int currentIndex = currentQuestionIndex.getValue() != null ? currentQuestionIndex.getValue() : 0;
         List<Answer> answers = currentQuestionsList.get(currentIndex).getAnswers();
+
+        if (currentIsExcludeList.get(currentIndex) || answers.size() <= 2) {
+            Log.d(TAG, "Exclude Answers already used or answers already reduced to 2 for question " + currentIndex);
+            return;
+        }
+
         while (answers.size() > 2) {
             List<Answer> incorrectAnswers = new ArrayList<>();
             for (Answer answer : answers) {
@@ -171,7 +188,18 @@ public class GameViewModel extends ViewModel {
         int currentIndex = currentQuestionIndex.getValue() != null ? currentQuestionIndex.getValue() : 0;
         User details = userDetails.getValue();
         int currentPoints = points.getValue() != null ? points.getValue() : 0;
-        if (details == null) return true;
+
+        if (!isListsInitialized || details == null || currentQuestionsList.isEmpty() ||
+                currentIndex >= currentQuestionsList.size() || currentIsAddTimeList.isEmpty() ||
+                currentIndex >= currentIsAddTimeList.size()) {
+            Log.w(TAG, "AddTime deactivated: Lists not initialized or invalid state. " +
+                    "isListsInitialized=" + isListsInitialized +
+                    ", userDetails=" + (details != null) +
+                    ", questionsSize=" + currentQuestionsList.size() +
+                    ", addTimeSize=" + currentIsAddTimeList.size() +
+                    ", currentIndex=" + currentIndex);
+            return true;
+        }
 
         int totalPoints = details.getPoints() + currentPoints;
         if (currentQuestionsList.get(currentIndex).getDifficulty() == Difficulty.HARD) {
@@ -185,7 +213,18 @@ public class GameViewModel extends ViewModel {
         int currentIndex = currentQuestionIndex.getValue() != null ? currentQuestionIndex.getValue() : 0;
         User details = userDetails.getValue();
         int currentPoints = points.getValue() != null ? points.getValue() : 0;
-        if (details == null) return true;
+
+        if (!isListsInitialized || details == null || currentQuestionsList.isEmpty() ||
+                currentIndex >= currentQuestionsList.size() || currentIsExcludeList.isEmpty() ||
+                currentIndex >= currentIsExcludeList.size()) {
+            Log.w(TAG, "Exclude deactivated: Lists not initialized or invalid state. " +
+                    "isListsInitialized=" + isListsInitialized +
+                    ", userDetails=" + (details != null) +
+                    ", questionsSize=" + currentQuestionsList.size() +
+                    ", excludeSize=" + currentIsExcludeList.size() +
+                    ", currentIndex=" + currentIndex);
+            return true;
+        }
 
         int totalPoints = details.getPoints() + currentPoints;
         if (currentQuestionsList.get(currentIndex).getDifficulty() == Difficulty.HARD) {
@@ -216,7 +255,19 @@ public class GameViewModel extends ViewModel {
     }
 
     public LiveData<Integer> getGameEnded() {
-        return gameEnded; // Нов метод за наблюдение на края на играта
+        return gameEnded;
+    }
+
+    public LiveData<User> getUserDetails() {
+        return userDetails;
+    }
+
+    public LiveData<List<Boolean>> getIsAddTime() {
+        return isAddTime;
+    }
+
+    public LiveData<List<Boolean>> getIsExclude() {
+        return isExclude;
     }
 
     @Override
