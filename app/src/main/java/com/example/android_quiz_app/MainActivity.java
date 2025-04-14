@@ -1,61 +1,63 @@
 package com.example.android_quiz_app;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.Button;
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
-
-import com.example.android_quiz_app.factory.MainViewModelFactory;
-import com.example.android_quiz_app.model.Answer;
-import com.example.android_quiz_app.repository.QuizRepository;
-import com.example.android_quiz_app.viewModel.MainViewModel;
+import com.example.android_quiz_app.activities.GameActivity;
+import com.example.android_quiz_app.activities.LeaderboardActivity;
+import com.example.android_quiz_app.activities.LoginActivity;
+import com.example.android_quiz_app.activities.ProfileActivity;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView questionTextView;
-    private TextView answersTextView;
-    private MainViewModel viewModel;
+    private Button profileButton, startGameButton, leaderboardButton;
+    private FirebaseAuth auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        questionTextView = findViewById(R.id.questionTextView);
-        answersTextView = findViewById(R.id.answersTextView);
+        // Инициализиране на Firebase Auth
+        auth = FirebaseAuth.getInstance();
 
-        viewModel = new ViewModelProvider(this, new MainViewModelFactory(new QuizRepository()))
-                .get(MainViewModel.class);
+        // Проверка дали потребителят е влязъл
+        if (auth.getCurrentUser() == null) {
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+            return;
+        }
 
-        viewModel.getQuestion().observe(this, question -> {
-            if (question != null) {
-                questionTextView.setText(question.getQuestion());
+        // Инициализиране на бутоните
+        profileButton = findViewById(R.id.profileButton);
+        startGameButton = findViewById(R.id.startGameButton);
+        leaderboardButton = findViewById(R.id.leaderboardButton);
 
-                StringBuilder answersText = new StringBuilder();
-                int correctAnswerIndex = -1;
-                for (int i = 0; i < question.getAnswers().size(); i++) {
-                    Answer answer = question.getAnswers().get(i);
-                    answersText.append(i).append(": ").append(answer.getAnswer());
-                    if ("1".equals(answer.getIs_correct())) {
-                        correctAnswerIndex = i;
-                        answersText.append(" (верен)");
-                    }
-                    answersText.append("\n");
-                }
-                if (correctAnswerIndex != -1) {
-                    answersText.append("Верен отговор: ").append(question.getAnswers().get(correctAnswerIndex).getAnswer());
-                } else {
-                    answersText.append("Верен отговор: Не е посочен");
-                }
-                answersTextView.setText(answersText.toString());
-            }
+        // Обработка на бутоните
+        profileButton.setOnClickListener(v -> {
+            startActivity(new Intent(MainActivity.this, ProfileActivity.class));
         });
 
-        viewModel.getError().observe(this, error -> {
-            if (error != null) {
-                Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
-            }
+        startGameButton.setOnClickListener(v -> {
+            startActivity(new Intent(MainActivity.this, GameActivity.class));
         });
+
+        leaderboardButton.setOnClickListener(v -> {
+            startActivity(new Intent(MainActivity.this, LeaderboardActivity.class));
+        });
+
+        // Обработка на бутона "назад" с OnBackPressedDispatcher
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                finishAffinity();
+            }
+        };
+        getOnBackPressedDispatcher().addCallback(this, callback);
     }
 }
