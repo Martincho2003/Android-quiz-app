@@ -41,6 +41,12 @@
         <activity
             android:name=".activities.LeaderboardActivity"
             android:exported="false" />
+        <activity
+            android:name=".activities.GameModeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.QuestionSelectionActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

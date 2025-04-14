@@ -46,7 +46,7 @@ public class RegisterViewModel extends ViewModel {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         String userId = auth.getCurrentUser().getUid();
-                        User user = new User(username, 0, null, 0);
+                        User user = new User(username, 0, "1.1.1970", 0);
 
                         databaseReference.child(userId).setValue(user)
                                 .addOnSuccessListener(aVoid -> {

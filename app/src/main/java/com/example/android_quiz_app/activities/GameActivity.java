@@ -4,184 +4,208 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import com.example.android_quiz_app.R;
-import com.example.android_quiz_app.model.User;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import androidx.lifecycle.ViewModelProvider;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import com.example.android_quiz_app.MainActivity;
+import com.example.android_quiz_app.R;
+import com.example.android_quiz_app.factory.GameViewModelFactory;
+import com.example.android_quiz_app.model.Answer;
+import com.example.android_quiz_app.model.Difficulty;
+import com.example.android_quiz_app.model.Question;
+import com.example.android_quiz_app.model.Subject;
+import com.example.android_quiz_app.viewModel.GameViewModel;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GameActivity extends AppCompatActivity {
 
-    private TextView questionTextView;
-    private Button option1Button, option2Button, option3Button, option4Button;
-    private Button backButton;
-    private FirebaseAuth auth;
-    private DatabaseReference databaseReference;
     private static final String TAG = "GameActivity";
-    private static final int MAX_GAMES_PER_DAY = 5;
+    private TextView questionTextView, timerTextView, pointsTextView;
+    private Button answerButton1, answerButton2, answerButton3, answerButton4, addTimeButton, excludeButton;
+    private GameViewModel viewModel;
+    private List<Question> currentQuestions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
-        // Инициализиране на Firebase
-        auth = FirebaseAuth.getInstance();
-        databaseReference = FirebaseDatabase.getInstance().getReference("users");
-
-        // Инициализиране на UI елементите
         questionTextView = findViewById(R.id.questionTextView);
-        option1Button = findViewById(R.id.option1Button);
-        option2Button = findViewById(R.id.option2Button);
-        option3Button = findViewById(R.id.option3Button);
-        option4Button = findViewById(R.id.option4Button);
-        backButton = findViewById(R.id.backButton);
+        timerTextView = findViewById(R.id.timerTextView);
+        pointsTextView = findViewById(R.id.pointsTextView);
+        answerButton1 = findViewById(R.id.answerButton1);
+        answerButton2 = findViewById(R.id.answerButton2);
+        answerButton3 = findViewById(R.id.answerButton3);
+        answerButton4 = findViewById(R.id.answerButton4);
+        addTimeButton = findViewById(R.id.addTimeButton);
+        excludeButton = findViewById(R.id.excludeButton);
 
-        // Проверка дали потребителят е влязъл
-        if (auth.getCurrentUser() == null) {
-            Toast.makeText(this, "Please log in to play", Toast.LENGTH_LONG).show();
-            finish();
-            return;
+        Intent intent = getIntent();
+        ArrayList<Subject> subjects = (ArrayList<Subject>) intent.getSerializableExtra("subjects");
+        ArrayList<Difficulty> difficulties = (ArrayList<Difficulty>) intent.getSerializableExtra("difficulties");
+
+        if (subjects == null || subjects.isEmpty()) {
+            Log.w(TAG, "No subjects provided, using all subjects");
+            subjects = new ArrayList<>(List.of(Subject.values()));
+        }
+        if (difficulties == null || difficulties.isEmpty()) {
+            Log.w(TAG, "No difficulties provided, using all difficulties");
+            difficulties = new ArrayList<>(List.of(Difficulty.values()));
         }
 
-        String userId = auth.getCurrentUser().getUid();
-        checkUserGameLimit(userId);
+        Log.d(TAG, "Subjects: " + subjects.toString());
+        Log.d(TAG, "Difficulties: " + difficulties.toString());
 
-        // Примерен въпрос (можеш да добавиш логика за зареждане на въпроси)
-        questionTextView.setText("What is the capital of France?");
-        option1Button.setText("Paris");
-        option2Button.setText("London");
-        option3Button.setText("Berlin");
-        option4Button.setText("Madrid");
+        GameViewModelFactory factory = new GameViewModelFactory(subjects, difficulties);
+        viewModel = new ViewModelProvider(this, factory).get(GameViewModel.class);
 
-        // Логика за избор на отговор (пример)
-        option1Button.setOnClickListener(v -> {
-            Toast.makeText(GameActivity.this, "Correct!", Toast.LENGTH_SHORT).show();
-            updateUserStats(userId, 10); // Добавяме 10 точки за правилен отговор
+        questionTextView.setText("Loading questions...");
+        answerButton1.setVisibility(Button.GONE);
+        answerButton2.setVisibility(Button.GONE);
+        answerButton3.setVisibility(Button.GONE);
+        answerButton4.setVisibility(Button.GONE);
+        addTimeButton.setEnabled(false);
+        excludeButton.setEnabled(false);
+
+        viewModel.getQuestions().observe(this, questions -> {
+            if (questions == null || questions.isEmpty()) {
+                Log.e(TAG, "No questions loaded");
+                Toast.makeText(this, "Failed to load questions. Please try again.", Toast.LENGTH_LONG).show();
+                questionTextView.setText("Failed to load questions. Go back and try again.");
+                Button retryButton = new Button(this);
+                retryButton.setText("Go Back");
+                retryButton.setOnClickListener(v -> {
+                    Intent mainIntent = new Intent(GameActivity.this, MainActivity.class);
+                    mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(mainIntent);
+                    finish();
+                });
+                ((LinearLayout) questionTextView.getParent()).addView(retryButton);
+                return;
+            }
+            currentQuestions = questions;
+            updateQuestionUI();
+            Log.d(TAG, "Questions loaded: " + questions.size());
         });
 
-        option2Button.setOnClickListener(v -> {
-            Toast.makeText(GameActivity.this, "Wrong!", Toast.LENGTH_SHORT).show();
-            updateUserStats(userId, 0); // Без точки за грешен отговор
+        viewModel.getCurrentQuestionIndex().observe(this, index -> {
+            if (currentQuestions == null || currentQuestions.isEmpty()) {
+                Log.w(TAG, "Cannot update UI: No questions loaded");
+                return;
+            }
+            if (index >= currentQuestions.size()) {
+                Log.w(TAG, "Current index out of bounds: " + index);
+                return;
+            }
+            updateQuestionUI();
         });
 
-        option3Button.setOnClickListener(v -> {
-            Toast.makeText(GameActivity.this, "Wrong!", Toast.LENGTH_SHORT).show();
-            updateUserStats(userId, 0);
+        viewModel.getGameEnded().observe(this, finalPoints -> {
+            if (finalPoints != null) {
+                Log.d(TAG, "Game ended, showing dialog with points: " + finalPoints);
+                showGameOverDialog(finalPoints);
+            }
         });
 
-        option4Button.setOnClickListener(v -> {
-            Toast.makeText(GameActivity.this, "Wrong!", Toast.LENGTH_SHORT).show();
-            updateUserStats(userId, 0);
+        viewModel.getCurrentQuestionTime().observe(this, time -> {
+            timerTextView.setText("Time: " + time + "s");
         });
 
-        // Бутон за връщане
-        backButton.setOnClickListener(v -> finish());
+        viewModel.getPoints().observe(this, points -> {
+            pointsTextView.setText("Points: " + points);
+            if (currentQuestions != null && !currentQuestions.isEmpty()) {
+                updateButtonsState();
+            }
+        });
+
+        viewModel.getUserDetails().observe(this, user -> {
+            if (user == null) {
+                Log.w(TAG, "User details not loaded yet");
+                return;
+            }
+            Log.d(TAG, "User details loaded: " + user.getUsername() + ", points: " + user.getPoints());
+            updateButtonsState();
+        });
+
+        viewModel.getIsAddTime().observe(this, addTimeList -> {
+            if (currentQuestions != null && !currentQuestions.isEmpty()) {
+                updateButtonsState();
+            }
+        });
+
+        viewModel.getIsExclude().observe(this, excludeList -> {
+            if (currentQuestions != null && !currentQuestions.isEmpty()) {
+                updateButtonsState();
+            }
+        });
+
+        answerButton1.setOnClickListener(v -> selectAnswer(0));
+        answerButton2.setOnClickListener(v -> selectAnswer(1));
+        answerButton3.setOnClickListener(v -> selectAnswer(2));
+        answerButton4.setOnClickListener(v -> selectAnswer(3));
+
+        addTimeButton.setOnClickListener(v -> viewModel.addTime());
+        excludeButton.setOnClickListener(v -> viewModel.excludeAnswers());
     }
 
-    private void checkUserGameLimit(String userId) {
-        databaseReference.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
-                if (user == null) {
-                    Log.e(TAG, "User data not found in database");
-                    Toast.makeText(GameActivity.this, "User data not found, please register again", Toast.LENGTH_LONG).show();
-                    auth.signOut();
+    private void showGameOverDialog(int finalPoints) {
+        new AlertDialog.Builder(this)
+                .setTitle("Game Over")
+                .setMessage("Ти спечели " + finalPoints + " точки!")
+                .setPositiveButton("OK", (dialog, which) -> {
+                    Intent mainIntent = new Intent(GameActivity.this, MainActivity.class);
+                    mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(mainIntent);
                     finish();
-                    return;
-                }
-
-                String currentDate = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(new Date());
-                String lastDayPlayed = user.getLastDayPlayed();
-                int playedGamesToday = user.getPlayedGamesToday();
-
-                // Проверка дали е нов ден
-                if (lastDayPlayed == null || !lastDayPlayed.equals(currentDate)) {
-                    Log.d(TAG, "New day detected, resetting playedGamesToday");
-                    user.setLastDayPlayed(currentDate);
-                    user.setPlayedGamesToday(0);
-                    playedGamesToday = 0;
-                }
-
-                // Проверка на лимита за игри
-                if (playedGamesToday >= MAX_GAMES_PER_DAY) {
-                    Toast.makeText(GameActivity.this, "You have reached the daily game limit (" + MAX_GAMES_PER_DAY + " games)", Toast.LENGTH_LONG).show();
-                    finish();
-                    return;
-                }
-
-                // Ако всичко е наред, позволяваме играта
-                Log.d(TAG, "User can play, games today: " + playedGamesToday);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e(TAG, "Failed to read user data: " + databaseError.getMessage());
-                Toast.makeText(GameActivity.this, "Error: " + databaseError.getMessage(), Toast.LENGTH_LONG).show();
-                finish();
-            }
-        });
+                })
+                .setCancelable(false)
+                .show();
     }
 
-    private void updateUserStats(String userId, int pointsToAdd) {
-        databaseReference.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
-                if (user == null) {
-                    Log.e(TAG, "User data not found in database");
-                    Toast.makeText(GameActivity.this, "User data not found, please register again", Toast.LENGTH_LONG).show();
-                    auth.signOut();
-                    finish();
-                    return;
-                }
+    private void updateQuestionUI() {
+        int currentIndex = viewModel.getCurrentQuestionIndex().getValue() != null ? viewModel.getCurrentQuestionIndex().getValue() : 0;
+        if (currentIndex < currentQuestions.size()) {
+            Question question = currentQuestions.get(currentIndex);
+            questionTextView.setText(question.getQuestion());
 
-                String currentDate = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(new Date());
-                String lastDayPlayed = user.getLastDayPlayed();
-                int playedGamesToday = user.getPlayedGamesToday();
+            List<Answer> answers = question.getAnswers();
+            answerButton1.setText(answers.size() > 0 ? answers.get(0).getAnswer() : "");
+            answerButton2.setText(answers.size() > 1 ? answers.get(1).getAnswer() : "");
+            answerButton3.setText(answers.size() > 2 ? answers.get(2).getAnswer() : "");
+            answerButton4.setText(answers.size() > 3 ? answers.get(3).getAnswer() : "");
 
-                // Проверка дали е нов ден
-                if (lastDayPlayed == null || !lastDayPlayed.equals(currentDate)) {
-                    Log.d(TAG, "New day detected, resetting playedGamesToday");
-                    user.setLastDayPlayed(currentDate);
-                    user.setPlayedGamesToday(0);
-                    playedGamesToday = 0;
-                }
+            answerButton1.setVisibility(answers.size() > 0 ? Button.VISIBLE : Button.GONE);
+            answerButton2.setVisibility(answers.size() > 1 ? Button.VISIBLE : Button.GONE);
+            answerButton3.setVisibility(answers.size() > 2 ? Button.VISIBLE : Button.GONE);
+            answerButton4.setVisibility(answers.size() > 3 ? Button.VISIBLE : Button.GONE);
 
-                // Обновяване на статистиката
-                user.setPoints(user.getPoints() + pointsToAdd);
-                user.setPlayedGamesToday(playedGamesToday + 1);
+            updateButtonsState();
+        }
+    }
 
-                // Запазване на обновените данни
-                databaseReference.child(userId).setValue(user)
-                        .addOnCompleteListener(task -> {
-                            if (task.isSuccessful()) {
-                                Log.d(TAG, "User stats updated successfully");
-                                Toast.makeText(GameActivity.this, "Game finished! Points: " + user.getPoints(), Toast.LENGTH_SHORT).show();
-                                finish();
-                            } else {
-                                Log.e(TAG, "Failed to update user stats: " + task.getException().getMessage());
-                                Toast.makeText(GameActivity.this, "Failed to update stats: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
-                            }
-                        });
+    private void updateButtonsState() {
+        if (currentQuestions == null || currentQuestions.isEmpty()) {
+            Log.w(TAG, "Cannot update buttons: No questions loaded");
+            addTimeButton.setEnabled(false);
+            excludeButton.setEnabled(false);
+            return;
+        }
+        addTimeButton.setEnabled(!viewModel.isAddTimeDeactivated());
+        excludeButton.setEnabled(!viewModel.isExcludeDeactivated());
+    }
+
+    private void selectAnswer(int answerIndex) {
+        int currentIndex = viewModel.getCurrentQuestionIndex().getValue() != null ? viewModel.getCurrentQuestionIndex().getValue() : 0;
+        if (currentIndex < currentQuestions.size()) {
+            List<Answer> answers = currentQuestions.get(currentIndex).getAnswers();
+            if (answerIndex < answers.size()) {
+                viewModel.checkAnswer(answers.get(answerIndex));
             }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e(TAG, "Failed to read user data: " + databaseError.getMessage());
-                Toast.makeText(GameActivity.this, "Error: " + databaseError.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
+        }
     }
 }

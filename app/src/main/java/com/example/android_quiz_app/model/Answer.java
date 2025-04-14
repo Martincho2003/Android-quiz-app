@@ -3,7 +3,6 @@ public class Answer {
     private String answer;
     private String is_correct;
 
-    // Празен конструктор за Firebase
     public Answer() {}
 
     public Answer(String answer, String is_correct) {
