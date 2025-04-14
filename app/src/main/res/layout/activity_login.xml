@@ -1,48 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/linearLayout5"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="24dp">
 
+    <!-- Лого на приложението -->
+    <ImageView
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="32dp"
+        android:contentDescription="App Logo"
+        android:src="@drawable/logo" />
+
+    <!-- Поле за email -->
     <EditText
         android:id="@+id/loginEmailEditText"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="252dp"
-        android:hint="Email"
-        android:inputType="textEmailAddress"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/loginPasswordEditText"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/edit_text_background"
+        android:hint="Имейл"
+        android:inputType="text"
+        android:padding="12dp" />
 
+    <!-- Поле за парола -->
     <EditText
         android:id="@+id/loginPasswordEditText"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Password"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/edit_text_background"
+        android:drawableStart="@drawable/password_lock"
+        android:hint="Парола"
         android:inputType="textPassword"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/loginButton"
-        app:layout_constraintTop_toBottomOf="@+id/loginEmailEditText" />
+        android:padding="12dp" />
 
+    <!-- Бутон за вход -->
     <Button
         android:id="@+id/loginButton"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Login"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/goToRegisterButton"
-        app:layout_constraintTop_toBottomOf="@+id/loginPasswordEditText" />
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/button_background"
+        android:backgroundTint="#6200EE"
+        android:text="Вход"
+        android:textColor="#FFFFFF" />
 
+
+    <!-- Бутон за Google логин с иконка -->
+    <Button
+        android:id="@+id/googleLoginButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#FFFFFF"
+        android:background="@drawable/button_background"
+        android:drawableStart="@drawable/google"
+        android:drawablePadding="8dp"
+        android:text="Вход с Google профил"
+        android:textColor="#000000" />
+
+    <!-- Бутон за регистрация -->
     <Button
         android:id="@+id/goToRegisterButton"
-        android:layout_width="379dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Go to Register"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/loginButton" />
+        android:layout_marginTop="16dp"
+        android:backgroundTint="#6200EE"
+        android:background="@drawable/button_background"
+        android:text="Към Регистрация"
+        android:textColor="#FFFFFF" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
+
