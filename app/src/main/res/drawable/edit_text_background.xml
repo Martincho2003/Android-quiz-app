@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Фокусирано състояние -->
+
     <item android:state_focused="true">
         <shape android:shape="rectangle">
             <solid android:color="#FFFFFF" />
@@ -15,7 +15,7 @@
                 android:bottom="10dp" />
         </shape>
     </item>
-    <!-- Нормално състояние -->
+
     <item>
         <shape android:shape="rectangle">
             <solid android:color="#FFFFFF" />
