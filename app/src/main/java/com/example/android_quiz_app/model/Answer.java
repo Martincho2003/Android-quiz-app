@@ -1,5 +1,8 @@
 package com.example.android_quiz_app.model;
-public class Answer {
+
+import java.io.Serializable;
+
+public class Answer implements Serializable {
     private String answer;
     private String is_correct;
 

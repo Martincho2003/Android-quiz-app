@@ -47,6 +47,18 @@
         <activity
             android:name=".activities.QuestionSelectionActivity"
             android:exported="false" />
+        <activity
+            android:name=".activities.MultiplayerModeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.MultiplayerGameActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.JoinRoomActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.CreateRoomActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

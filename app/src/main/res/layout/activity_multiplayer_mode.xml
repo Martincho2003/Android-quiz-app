@@ -8,21 +8,21 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Multiplayer Mode"
+        android:textSize="24sp"
         android:layout_gravity="center"
-        android:layout_marginBottom="32dp"
-        android:text="Welcome to the Quiz App!"
-        android:textSize="24sp" />
+        android:layout_marginBottom="32dp"/>
 
     <Button
-        android:id="@+id/singlePlayerButton"
+        android:id="@+id/createRoomButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Single Player"
+        android:text="Create Room"
         android:layout_marginBottom="16dp"/>
 
     <Button
-        android:id="@+id/multiplayerButton"
+        android:id="@+id/joinRoomButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Multiplayer"/>
+        android:text="Join Room"/>
 </LinearLayout>
