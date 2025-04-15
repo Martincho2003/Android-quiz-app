@@ -71,6 +71,15 @@
             android:layout_marginBottom="24dp"
             android:drawablePadding="8dp"/>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="*Паролата трябва да е минимум 8 символа"
+            android:textSize="14sp"
+            android:textColor="#D32F2F"
+            android:layout_marginBottom="16dp"
+            android:layout_gravity="start"/>
+
         <Button
             android:id="@+id/registerButton"
             android:layout_width="match_parent"
@@ -84,7 +93,7 @@
             android:textSize="16sp" />
 
         <Button
-            android:id="@+id/backToLoginButton"
+            android:id="@+id/goToLoginButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="#FFFFFF"

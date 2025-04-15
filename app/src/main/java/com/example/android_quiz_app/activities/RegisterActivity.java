@@ -1,7 +1,11 @@
 package com.example.android_quiz_app.activities;
 
+import android.animation.Animator;
+import android.animation.AnimatorInflater;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -17,6 +21,7 @@ public class RegisterActivity extends AppCompatActivity {
     private Button registerButton, goToLoginButton;
     private RegisterViewModel viewModel;
 
+    @SuppressLint({"MissingInflatedId", "ClickableViewAccessibility"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,6 +34,15 @@ public class RegisterActivity extends AppCompatActivity {
         passwordEditText = findViewById(R.id.registerPasswordEditText);
         registerButton = findViewById(R.id.registerButton);
         goToLoginButton = findViewById(R.id.goToLoginButton);
+
+        registerButton.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                Animator animator = AnimatorInflater.loadAnimator(this, R.animator.button_scale);
+                animator.setTarget(registerButton);
+                animator.start();
+            }
+            return false;
+        });
 
         viewModel.getRegistrationState().observe(this, state -> {
             registerButton.setEnabled(true);

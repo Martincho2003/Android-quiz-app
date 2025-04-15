@@ -67,4 +67,6 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata:2.8.3")
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("com.google.firebase:firebase-database")
+    implementation ("com.airbnb.android:lottie:6.4.0")
+    implementation ("androidx.cardview:cardview:1.0.0")
 }
