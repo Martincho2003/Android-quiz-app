@@ -19,7 +19,6 @@ import com.example.android_quiz_app.model.Question;
 import com.example.android_quiz_app.model.Room;
 import com.example.android_quiz_app.viewModel.MultiplayerGameViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MultiplayerGameActivity extends AppCompatActivity {
@@ -104,15 +103,10 @@ public class MultiplayerGameActivity extends AppCompatActivity {
         // Наблюдение за края на играта
         viewModel.getGameFinished().observe(this, finished -> {
             if (finished != null && finished) {
-                int finalPoints = viewModel.getPoints().getValue() != null ? viewModel.getPoints().getValue() : 0;
-                viewModel.getLeaderboard().observe(this, leaderboard -> {
-                    if (leaderboard != null && !leaderboard.isEmpty()) {
-                        showResultsDialog(finalPoints, leaderboard);
-                    } else {
-                        Log.e(TAG, "Leaderboard is null or empty");
-                        showResultsDialog(finalPoints, new ArrayList<>());
-                    }
-                });
+                Intent intent = new Intent(MultiplayerGameActivity.this, MultiplayerGameEndActivity.class);
+                intent.putExtra("room", room);
+                startActivity(intent);
+                finish();
             }
         });
 
@@ -135,30 +129,6 @@ public class MultiplayerGameActivity extends AppCompatActivity {
         answerButton2.setOnClickListener(v -> selectAnswer(1));
         answerButton3.setOnClickListener(v -> selectAnswer(2));
         answerButton4.setOnClickListener(v -> selectAnswer(3));
-    }
-
-    private void showResultsDialog(int finalPoints, List<MultiplayerUser> leaderboard) {
-        StringBuilder message = new StringBuilder();
-        message.append("You scored ").append(finalPoints).append(" points!\n\n");
-        message.append("Leaderboard:\n");
-        for (int i = 0; i < Math.min(3, leaderboard.size()); i++) {
-            MultiplayerUser user = leaderboard.get(i);
-            message.append((i + 1)).append(". ").append(user.getUsername())
-                    .append(" - ").append(user.getGamePoints()).append(" points\n");
-        }
-        String firstPlace = leaderboard.isEmpty() ? "N/A" : leaderboard.get(0).getUsername();
-
-        new AlertDialog.Builder(this)
-                .setTitle("Game Over")
-                .setMessage(message.toString())
-                .setPositiveButton("OK", (dialog, which) -> {
-                    Intent mainIntent = new Intent(MultiplayerGameActivity.this, MainActivity.class);
-                    mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(mainIntent);
-                    finish();
-                })
-                .setCancelable(false)
-                .show();
     }
 
     private void updateQuestionUI() {

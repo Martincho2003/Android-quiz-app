@@ -54,6 +54,9 @@
             android:name=".activities.MultiplayerGameActivity"
             android:exported="false" />
         <activity
+            android:name=".activities.MultiplayerGameEndActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.JoinRoomActivity"
             android:exported="false" />
         <activity

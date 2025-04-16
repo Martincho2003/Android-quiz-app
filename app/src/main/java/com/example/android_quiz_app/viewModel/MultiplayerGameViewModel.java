@@ -55,7 +55,6 @@ public class MultiplayerGameViewModel extends ViewModel {
         });
         if (currentUser == null) {
             Log.e(TAG, "Current user not found in room");
-            gameFinished.setValue(true);
             return;
         }
 
