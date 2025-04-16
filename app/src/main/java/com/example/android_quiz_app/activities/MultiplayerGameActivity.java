@@ -2,14 +2,16 @@ package com.example.android_quiz_app.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
+
+import com.example.android_quiz_app.MainActivity;
 import com.example.android_quiz_app.R;
 import com.example.android_quiz_app.model.Answer;
 import com.example.android_quiz_app.model.MultiplayerUser;
@@ -17,42 +19,40 @@ import com.example.android_quiz_app.model.Question;
 import com.example.android_quiz_app.model.Room;
 import com.example.android_quiz_app.viewModel.MultiplayerGameViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MultiplayerGameActivity extends AppCompatActivity {
 
     private static final String TAG = "MultiplayerGameActivity";
-    private TextView questionNumberTextView, timerTextView, questionTextView, resultsTextView;
-    private RadioGroup answerRadioGroup;
-    private Button submitAnswerButton, backToMenuButton;
-    private LinearLayout questionLayout, resultsLayout;
+    private TextView questionTextView, timerTextView, pointsTextView;
+    private Button answerButton1, answerButton2, answerButton3, answerButton4;
     private MultiplayerGameViewModel viewModel;
+    private List<Question> currentQuestions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_multiplayer_game);
 
-        // Инициализиране на UI елементите
-        questionNumberTextView = findViewById(R.id.questionNumberTextView);
-        timerTextView = findViewById(R.id.timerTextView);
         questionTextView = findViewById(R.id.questionTextView);
-        answerRadioGroup = findViewById(R.id.answerRadioGroup);
-        submitAnswerButton = findViewById(R.id.submitAnswerButton);
-        questionLayout = findViewById(R.id.questionLayout);
-        resultsLayout = findViewById(R.id.resultsLayout);
-        resultsTextView = findViewById(R.id.resultsTextView);
-        backToMenuButton = findViewById(R.id.backToMenuButton);
+        timerTextView = findViewById(R.id.timerTextView);
+        pointsTextView = findViewById(R.id.pointsTextView);
+        answerButton1 = findViewById(R.id.answerButton1);
+        answerButton2 = findViewById(R.id.answerButton2);
+        answerButton3 = findViewById(R.id.answerButton3);
+        answerButton4 = findViewById(R.id.answerButton4);
 
-        // Вземане на Room обекта от интента
         Room room = (Room) getIntent().getSerializableExtra("room");
         if (room == null) {
+            Log.e(TAG, "Room is null in MultiplayerGameActivity");
             Toast.makeText(this, "Error: Room not found", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
+        Log.d(TAG, "Room received: " + room.getCreatorNickname() + ", questions: " + (room.getQuestions() != null ? room.getQuestions().size() : "null"));
 
-        // Инициализиране на ViewModel
+        // Инициализиране на ViewModel с Room
         viewModel = new ViewModelProvider(this, new ViewModelProvider.NewInstanceFactory() {
             @Override
             public <T extends androidx.lifecycle.ViewModel> T create(Class<T> modelClass) {
@@ -60,73 +60,138 @@ public class MultiplayerGameActivity extends AppCompatActivity {
             }
         }).get(MultiplayerGameViewModel.class);
 
-        // Наблюдение на LiveData обектите от ViewModel
-        viewModel.getCurrentQuestion().observe(this, this::updateQuestionUI);
-        viewModel.getCurrentQuestionIndex().observe(this, index ->
-                questionNumberTextView.setText("Question " + (index + 1) + "/" + viewModel.getTotalQuestions()));
-        viewModel.getTimeLeft().observe(this, timeLeft ->
-                timerTextView.setText("Time left: " + (timeLeft / 1000) + "s"));
-        viewModel.getGameFinished().observe(this, finished -> {
-            if (finished != null && finished) {
-                showResults();
-            }
-        });
+        questionTextView.setText("Loading questions...");
+        answerButton1.setVisibility(Button.GONE);
+        answerButton2.setVisibility(Button.GONE);
+        answerButton3.setVisibility(Button.GONE);
+        answerButton4.setVisibility(Button.GONE);
 
-        // Обработка на бутона за подаване на отговор
-        submitAnswerButton.setOnClickListener(v -> {
-            int selectedId = answerRadioGroup.getCheckedRadioButtonId();
-            if (selectedId == -1) {
-                Toast.makeText(this, "Please select an answer", Toast.LENGTH_SHORT).show();
+        // Наблюдение за въпросите
+        viewModel.getCurrentQuestions().observe(this, questions -> {
+            if (questions == null || questions.isEmpty()) {
+                Log.e(TAG, "No questions loaded");
+                Toast.makeText(this, "Failed to load questions. Please try again.", Toast.LENGTH_LONG).show();
+                questionTextView.setText("Failed to load questions. Go back and try again.");
+                Button retryButton = new Button(this);
+                retryButton.setText("Go Back");
+                retryButton.setOnClickListener(v -> {
+                    Intent mainIntent = new Intent(MultiplayerGameActivity.this, MainActivity.class);
+                    mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(mainIntent);
+                    finish();
+                });
+                ((LinearLayout) questionTextView.getParent()).addView(retryButton);
                 return;
             }
-            RadioButton selectedButton = findViewById(selectedId);
-            int selectedAnswerIndex = answerRadioGroup.indexOfChild(selectedButton);
-            viewModel.submitAnswer(selectedAnswerIndex);
+            currentQuestions = questions;
+            updateQuestionUI();
+            Log.d(TAG, "Questions loaded: " + questions.size());
         });
 
-        // Обработка на бутона за връщане към менюто
-        backToMenuButton.setOnClickListener(v -> {
-            Intent intent = new Intent(MultiplayerGameActivity.this, GameModeActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            startActivity(intent);
-            finish();
+        // Наблюдение за текущия индекс на въпроса
+        viewModel.getCurrentQuestionIndex().observe(this, index -> {
+            if (currentQuestions == null || currentQuestions.isEmpty()) {
+                Log.w(TAG, "Cannot update UI: No questions loaded");
+                return;
+            }
+            if (index >= currentQuestions.size()) {
+                Log.w(TAG, "Current index out of bounds: " + index);
+                return;
+            }
+            updateQuestionUI();
         });
+
+        // Наблюдение за края на играта
+        viewModel.getGameFinished().observe(this, finished -> {
+            if (finished != null && finished) {
+                int finalPoints = viewModel.getPoints().getValue() != null ? viewModel.getPoints().getValue() : 0;
+                viewModel.getLeaderboard().observe(this, leaderboard -> {
+                    if (leaderboard != null && !leaderboard.isEmpty()) {
+                        showResultsDialog(finalPoints, leaderboard);
+                    } else {
+                        Log.e(TAG, "Leaderboard is null or empty");
+                        showResultsDialog(finalPoints, new ArrayList<>());
+                    }
+                });
+            }
+        });
+
+        // Наблюдение за времето
+        viewModel.getCurrentQuestionTime().observe(this, time -> {
+            if (time != null) {
+                timerTextView.setText("Time: " + time + "s");
+            }
+        });
+
+        // Наблюдение за точките
+        viewModel.getPoints().observe(this, points -> {
+            if (points != null) {
+                pointsTextView.setText("Points: " + points);
+            }
+        });
+
+        // Слушатели за бутоните
+        answerButton1.setOnClickListener(v -> selectAnswer(0));
+        answerButton2.setOnClickListener(v -> selectAnswer(1));
+        answerButton3.setOnClickListener(v -> selectAnswer(2));
+        answerButton4.setOnClickListener(v -> selectAnswer(3));
     }
 
-    private void updateQuestionUI(Question question) {
-        if (question == null) {
-            Toast.makeText(this, "Error: Question not found", Toast.LENGTH_SHORT).show();
-            return;
+    private void showResultsDialog(int finalPoints, List<MultiplayerUser> leaderboard) {
+        StringBuilder message = new StringBuilder();
+        message.append("You scored ").append(finalPoints).append(" points!\n\n");
+        message.append("Leaderboard:\n");
+        for (int i = 0; i < Math.min(3, leaderboard.size()); i++) {
+            MultiplayerUser user = leaderboard.get(i);
+            message.append((i + 1)).append(". ").append(user.getUsername())
+                    .append(" - ").append(user.getGamePoints()).append(" points\n");
         }
+        String firstPlace = leaderboard.isEmpty() ? "N/A" : leaderboard.get(0).getUsername();
 
-        questionTextView.setText(question.getQuestion());
-        answerRadioGroup.removeAllViews();
+        new AlertDialog.Builder(this)
+                .setTitle("Game Over")
+                .setMessage(message.toString())
+                .setPositiveButton("OK", (dialog, which) -> {
+                    Intent mainIntent = new Intent(MultiplayerGameActivity.this, MainActivity.class);
+                    mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(mainIntent);
+                    finish();
+                })
+                .setCancelable(false)
+                .show();
+    }
 
-        for (Answer answer : question.getAnswers()) {
-            RadioButton radioButton = new RadioButton(this);
-            radioButton.setText(answer.getAnswer());
-            answerRadioGroup.addView(radioButton);
+    private void updateQuestionUI() {
+        int currentIndex = viewModel.getCurrentQuestionIndex().getValue() != null ? viewModel.getCurrentQuestionIndex().getValue() : 0;
+        if (currentIndex < currentQuestions.size()) {
+            Question question = currentQuestions.get(currentIndex);
+            questionTextView.setText(question.getQuestion());
+
+            List<Answer> answers = question.getAnswers();
+            answerButton1.setText(answers.size() > 0 ? answers.get(0).getAnswer() : "");
+            answerButton2.setText(answers.size() > 1 ? answers.get(1).getAnswer() : "");
+            answerButton3.setText(answers.size() > 2 ? answers.get(2).getAnswer() : "");
+            answerButton4.setText(answers.size() > 3 ? answers.get(3).getAnswer() : "");
+
+            answerButton1.setVisibility(answers.size() > 0 ? Button.VISIBLE : Button.GONE);
+            answerButton2.setVisibility(answers.size() > 1 ? Button.VISIBLE : Button.GONE);
+            answerButton3.setVisibility(answers.size() > 2 ? Button.VISIBLE : Button.GONE);
+            answerButton4.setVisibility(answers.size() > 3 ? Button.VISIBLE : Button.GONE);
         }
     }
 
-    private void showResults() {
-        questionLayout.setVisibility(LinearLayout.GONE);
-        resultsLayout.setVisibility(LinearLayout.VISIBLE);
-
-        Room room = viewModel.getRoom().getValue();
-        if (room == null) {
-            resultsTextView.setText("Error: Room data not available");
-            return;
+    private void selectAnswer(int answerIndex) {
+        int currentIndex = viewModel.getCurrentQuestionIndex().getValue() != null ? viewModel.getCurrentQuestionIndex().getValue() : 0;
+        if (currentIndex < currentQuestions.size()) {
+            List<Answer> answers = currentQuestions.get(currentIndex).getAnswers();
+            if (answerIndex < answers.size()) {
+                viewModel.checkAnswer(answers.get(answerIndex));
+            }
         }
+    }
 
-        StringBuilder results = new StringBuilder();
-        List<MultiplayerUser> users = room.getUsers();
-        users.sort((u1, u2) -> Integer.compare(u2.getGamePoints(), u1.getGamePoints())); // Сортираме по точки
-
-        for (MultiplayerUser user : users) {
-            results.append(user.getUsername()).append(": ").append(user.getGamePoints()).append(" points\n");
-        }
-
-        resultsTextView.setText(results.toString());
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }

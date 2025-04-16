@@ -1,9 +1,13 @@
 package com.example.android_quiz_app.repository;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.android_quiz_app.model.User;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -19,13 +23,16 @@ import java.util.Map;
 public class MultiplayerService {
     private static MultiplayerService instance;
     private final DatabaseReference roomsRef;
+    private final DatabaseReference usersRef;
     private final MutableLiveData<List<Room>> roomsLiveData;
+    private final FirebaseAuth auth;
 
     private MultiplayerService() {
         roomsRef = FirebaseManager.getInstance().getRoomsReference();
+        usersRef = FirebaseManager.getInstance().getUsersReference();
+        this.auth = FirebaseAuth.getInstance();
         roomsLiveData = new MutableLiveData<>(new ArrayList<>());
 
-        // Слушаме за промени в стаите в реално време
         roomsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -94,5 +101,27 @@ public class MultiplayerService {
             }
         }
         updateRoom(room);
+    }
+
+    public String getCurrentUserId() {
+        return auth.getCurrentUser().getUid();
+    }
+
+    public LiveData<MultiplayerUser> getMultiplayerUserDetails() {
+        MutableLiveData<MultiplayerUser> userDetailsLiveData = new MutableLiveData<>();
+
+        String userId = auth.getCurrentUser().getUid();
+        usersRef.child(userId).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DataSnapshot snapshot = task.getResult();
+                User userDetails = snapshot.getValue(User.class);
+                MultiplayerUser multiplayerUserDetails = new MultiplayerUser(userDetails.getUsername());
+                userDetailsLiveData.setValue(multiplayerUserDetails);
+            } else {
+                userDetailsLiveData.setValue(null);
+            }
+        });
+
+        return userDetailsLiveData;
     }
 }
