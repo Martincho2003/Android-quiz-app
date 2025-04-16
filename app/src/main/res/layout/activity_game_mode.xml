@@ -1,24 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
-    android:gravity="center">
+    android:background="@drawable/download"
+    android:padding="16dp">
 
     <TextView
+        android:id="@+id/gameModeTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Game Mode"
-        android:textSize="24sp"
         android:gravity="center"
-        android:padding="16dp" />
+        android:padding="16dp"
+        android:shadowColor="#80000000"
+        android:shadowDx="2"
+        android:shadowDy="2"
+        android:shadowRadius="4"
+        android:text="Режим на играта"
+        android:textColor="#021368"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Бутон за Игра за един -->
+
+    <!-- Бутон за Игра за двама -->
     <Button
         android:id="@+id/singlePlayerButton"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Single Player"
-        android:layout_marginTop="16dp" />
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="16dp"
+        android:animationCache="true"
+        android:background="@drawable/gradient_button"
+        android:contentDescription="Start single player game mode"
+        android:drawableStart="@drawable/singleplayer"
+        android:padding="12dp"
+        android:scaleX="1"
+        android:scaleY="1"
+        android:text="Игра за един"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/gameModeTitle" />
 
-</LinearLayout>
+    <Button
+        android:id="@+id/multiPlayerButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:animationCache="true"
+        android:background="@drawable/gradient_button"
+        android:contentDescription="Start multiplayer game mode"
+        android:padding="12dp"
+        android:scaleX="1"
+        android:scaleY="1"
+        android:text="Игра за двама"
+        android:drawableStart="@drawable/multiplayer"
+        android:textStyle="bold"
+        android:textColor="#FFFF"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/singlePlayerButton" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/backgroundAnimation"
+        android:layout_width="320dp"
+        android:layout_height="268dp"
+        android:alpha="1.0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.8"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.953"
+        app:layout_constraintWidth_percent="0.8"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/game_mode"
+        app:lottie_speed="0.6" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
