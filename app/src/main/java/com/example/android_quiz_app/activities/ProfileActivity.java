@@ -52,10 +52,11 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void updateProfileUI(User user) {
         if (user != null) {
-            usernameTextView.setText("Username: " + user.getUsername());
-            pointsTextView.setText("Points: " + user.getPoints());
-            lastDayPlayedTextView.setText("Last Day Played: " + (user.getLastDayPlayed() != null ? user.getLastDayPlayed() : "Never"));
-            playedGamesTodayTextView.setText("Games Played Today: " + user.getPlayedGamesToday());
+            usernameTextView.setText("Потребителско име: " + user.getUsername());
+            pointsTextView.setText("Точки: " + user.getPoints());
+            lastDayPlayedTextView.setText("Последна игра: " + (user.getLastDayPlayed() != null &&
+                    !user.getLastDayPlayed().equals("1.1.1970") ? user.getLastDayPlayed() : "Не е изиграна игра"));
+            playedGamesTodayTextView.setText("Игри днес: " + user.getPlayedGamesToday());
         }
     }
 }
