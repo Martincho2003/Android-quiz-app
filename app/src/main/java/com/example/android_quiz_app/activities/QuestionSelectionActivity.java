@@ -15,7 +15,6 @@ import java.util.List;
 
 public class QuestionSelectionActivity extends AppCompatActivity {
 
-    private CheckBox allSubjectsCheckBox, allDifficultiesCheckBox;
     private LinearLayout subjectsContainer, difficultiesContainer;
     private Button startGameButton;
     private List<CheckBox> subjectCheckBoxes;

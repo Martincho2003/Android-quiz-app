@@ -29,7 +29,7 @@ public class GameService {
     private final DatabaseReference databaseQuestionReference;
     private final DatabaseReference databaseUserReference;
     private final FirebaseAuth auth;
-    private static final int MAX_FETCH_ATTEMPTS = 12;
+    private static final int MAX_FETCH_ATTEMPTS = 13;
     private final Map<String, List<Question>> questionsCache = new HashMap<>();
 
     public GameService() {
@@ -320,11 +320,12 @@ public class GameService {
                         boolean isSameDay = lastPlayedDate != null && Calendar.getInstance().getTime().getTime() - lastPlayedDate.getTime() < 24 * 60 * 60 * 1000;
 
                         if (isSameDay) {
-                            if (userDetails.getPlayedGamesToday() < 3) {
+                            if (userDetails.getPlayedGamesToday() < 5) {
                                 userRef.child("points").setValue(userDetails.getPoints() + gamePoints);
                                 userRef.child("playedGamesToday").setValue(userDetails.getPlayedGamesToday() + 1);
                                 Log.d(TAG, "Updated points (same day): " + (userDetails.getPoints() + gamePoints));
                             } else {
+                                userRef.child("playedGamesToday").setValue(userDetails.getPlayedGamesToday() + 1);
                                 Log.w(TAG, "User has reached the daily game limit");
                             }
                         } else {
@@ -342,4 +343,6 @@ public class GameService {
             }
         });
     }
+
+
 }

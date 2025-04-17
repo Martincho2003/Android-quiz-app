@@ -49,7 +49,7 @@ public class GameViewModel extends ViewModel {
                 currentIsExcludeList.clear();
 
                 for (Question question : loadedQuestions) {
-                    currentSecondsList.add(question.getDifficulty() == Difficulty.HARD ? 30 : 20);
+                    currentSecondsList.add(question.getDifficulty() == Difficulty.HARD ? 31 : 21);
                     currentIsAddTimeList.add(false);
                     currentIsExcludeList.add(false);
                 }

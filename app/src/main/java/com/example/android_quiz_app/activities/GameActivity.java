@@ -49,15 +49,6 @@ public class GameActivity extends AppCompatActivity {
         ArrayList<Subject> subjects = (ArrayList<Subject>) intent.getSerializableExtra("subjects");
         ArrayList<Difficulty> difficulties = (ArrayList<Difficulty>) intent.getSerializableExtra("difficulties");
 
-        if (subjects == null || subjects.isEmpty()) {
-            Log.w(TAG, "No subjects provided, using all subjects");
-            subjects = new ArrayList<>(List.of(Subject.values()));
-        }
-        if (difficulties == null || difficulties.isEmpty()) {
-            Log.w(TAG, "No difficulties provided, using all difficulties");
-            difficulties = new ArrayList<>(List.of(Difficulty.values()));
-        }
-
         Log.d(TAG, "Subjects: " + subjects.toString());
         Log.d(TAG, "Difficulties: " + difficulties.toString());
 

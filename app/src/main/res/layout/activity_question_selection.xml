@@ -24,13 +24,6 @@
             android:textSize="18sp"
             android:padding="8dp" />
 
-        <CheckBox
-            android:id="@+id/allSubjectsCheckBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="All Subjects"
-            android:padding="8dp" />
-
         <LinearLayout
             android:id="@+id/subjectsContainer"
             android:layout_width="match_parent"
@@ -42,13 +35,6 @@
             android:layout_height="wrap_content"
             android:text="Difficulties"
             android:textSize="18sp"
-            android:padding="8dp" />
-
-        <CheckBox
-            android:id="@+id/allDifficultiesCheckBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="All Difficulties"
             android:padding="8dp" />
 
         <LinearLayout
