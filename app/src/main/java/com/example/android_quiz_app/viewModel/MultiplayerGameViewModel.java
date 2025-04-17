@@ -10,7 +10,7 @@ import com.example.android_quiz_app.model.Difficulty;
 import com.example.android_quiz_app.model.MultiplayerUser;
 import com.example.android_quiz_app.model.Question;
 import com.example.android_quiz_app.model.Room;
-import com.example.android_quiz_app.repository.MultiplayerService;
+import com.example.android_quiz_app.service.MultiplayerService;
 
 import java.util.Collections;
 import java.util.Comparator;

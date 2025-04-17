@@ -17,7 +17,7 @@ import com.example.android_quiz_app.viewModel.RegisterViewModel;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private EditText usernameEditText, emailEditText, passwordEditText;
+    private EditText usernameEditText, emailEditText, passwordEditText, confirmPasswordEditText;
     private Button registerButton, goToLoginButton;
     private RegisterViewModel viewModel;
 
@@ -32,6 +32,7 @@ public class RegisterActivity extends AppCompatActivity {
         usernameEditText = findViewById(R.id.registerUsernameEditText);
         emailEditText = findViewById(R.id.registerEmailEditText);
         passwordEditText = findViewById(R.id.registerPasswordEditText);
+        confirmPasswordEditText = findViewById(R.id.registerConfirmPasswordEditText);
         registerButton = findViewById(R.id.registerButton);
         goToLoginButton = findViewById(R.id.goToLoginButton);
 
@@ -51,9 +52,10 @@ public class RegisterActivity extends AppCompatActivity {
             String username = usernameEditText.getText().toString().trim();
             String email = emailEditText.getText().toString().trim();
             String password = passwordEditText.getText().toString().trim();
+            String confirmPassword = confirmPasswordEditText.getText().toString().trim();
 
             registerButton.setEnabled(false);
-            viewModel.register(username, email, password);
+            viewModel.register(username, email, password, confirmPassword);
         });
 
         goToLoginButton.setOnClickListener(v -> {

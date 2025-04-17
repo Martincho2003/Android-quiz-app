@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import com.example.android_quiz_app.model.User;
-import com.example.android_quiz_app.repository.FirebaseManager;
+import com.example.android_quiz_app.service.FirebaseManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 
@@ -24,7 +24,7 @@ public class RegisterViewModel extends ViewModel {
         return registrationState;
     }
 
-    public void register(String username, String email, String password) {
+    public void register(String username, String email, String password, String confirmPassword) {
         if (TextUtils.isEmpty(username)) {
             registrationState.setValue(new RegistrationState(false, "Username is required"));
             return;
@@ -39,6 +39,10 @@ public class RegisterViewModel extends ViewModel {
         }
         if (password.length() < 8) {
             registrationState.setValue(new RegistrationState(false, "Password must be at least 8 characters"));
+            return;
+        }
+        if (!password.equals(confirmPassword)) {
+            registrationState.setValue(new RegistrationState(false, "Passwords do not match"));
             return;
         }
 

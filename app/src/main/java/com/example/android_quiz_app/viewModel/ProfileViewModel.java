@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import com.example.android_quiz_app.model.User;
-import com.example.android_quiz_app.repository.FirebaseManager;
+import com.example.android_quiz_app.service.FirebaseManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 

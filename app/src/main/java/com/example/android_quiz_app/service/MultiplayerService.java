@@ -1,4 +1,4 @@
-package com.example.android_quiz_app.repository;
+package com.example.android_quiz_app.service;
 
 import android.util.Log;
 

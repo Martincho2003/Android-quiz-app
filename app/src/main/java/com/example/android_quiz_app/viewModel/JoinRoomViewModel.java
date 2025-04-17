@@ -6,8 +6,8 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import com.example.android_quiz_app.model.MultiplayerUser;
 import com.example.android_quiz_app.model.Room;
-import com.example.android_quiz_app.repository.GameService;
-import com.example.android_quiz_app.repository.MultiplayerService;
+import com.example.android_quiz_app.service.GameService;
+import com.example.android_quiz_app.service.MultiplayerService;
 import java.util.List;
 
 public class JoinRoomViewModel extends ViewModel {
