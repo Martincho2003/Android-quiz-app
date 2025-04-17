@@ -14,7 +14,7 @@ public class GameModeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_game_mode);
 
         Button singlePlayerButton = findViewById(R.id.singlePlayerButton);
-        Button multiplayerButton = findViewById(R.id.multiplayerButton);
+        Button multiplayerButton = findViewById(R.id.multiPlayerButton);
 
         singlePlayerButton.setOnClickListener(v -> {
             Intent intent = new Intent(GameModeActivity.this, QuestionSelectionActivity.class);
