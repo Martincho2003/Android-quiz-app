@@ -79,9 +79,6 @@ public class MultiplayerGameViewModel extends ViewModel {
 
         Question currentQuestion = questions.get(currentIndex);
         long timeInMillis = (currentQuestion.getDifficulty() == Difficulty.HARD) ? 31000 : 21000;
-        if (currentIndex == 0) {
-            timeInMillis = (currentQuestion.getDifficulty() == Difficulty.HARD) ? 32000 : 22000;
-        }
         timer = new CountDownTimer(timeInMillis, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
