@@ -6,11 +6,6 @@
     android:layout_height="match_parent"
     android:background="@drawable/download"
     android:padding="16dp">
-
-    <!-- Бутон за Игра за един -->
-
-    <!-- Бутон за Игра за двама -->
-
     <TextView
         android:id="@+id/gameModeTitle"
         android:layout_width="match_parent"
@@ -30,7 +25,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
+  
     <Button
         android:id="@+id/singlePlayerButton"
         android:layout_width="0dp"

@@ -10,21 +10,18 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.android_quiz_app.R;
 import com.example.android_quiz_app.model.User;
 import com.example.android_quiz_app.viewModel.ProfileViewModel;
-import com.google.firebase.auth.FirebaseAuth;
 
 public class ProfileActivity extends AppCompatActivity {
 
     private TextView usernameTextView, pointsTextView, lastDayPlayedTextView, playedGamesTodayTextView;
     private Button logoutButton;
     private ProfileViewModel viewModel;
-    private FirebaseAuth auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        auth = FirebaseAuth.getInstance();
         viewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
 
         usernameTextView = findViewById(R.id.usernameTextView);

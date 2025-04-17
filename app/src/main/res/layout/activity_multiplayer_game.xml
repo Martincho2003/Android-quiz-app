@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Multiplayer Game"
+        android:textSize="24sp"
+        android:gravity="center"
+        android:padding="16dp" />
+
+    <TextView
+        android:id="@+id/pointsTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Points: 0"
+        android:textSize="18sp"
+        android:padding="8dp" />
+
+    <TextView
+        android:id="@+id/timerTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Time: 0s"
+        android:textSize="18sp"
+        android:padding="8dp" />
+
+    <TextView
+        android:id="@+id/questionTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Question"
+        android:textSize="18sp"
+        android:padding="8dp" />
+
+    <Button
+        android:id="@+id/answerButton1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Answer 1"
+        android:layout_marginTop="8dp" />
+
+    <Button
+        android:id="@+id/answerButton2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Answer 2"
+        android:layout_marginTop="8dp" />
+
+    <Button
+        android:id="@+id/answerButton3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Answer 3"
+        android:layout_marginTop="8dp" />
+
+    <Button
+        android:id="@+id/answerButton4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Answer 4"
+        android:layout_marginTop="8dp" />
+
+</LinearLayout>

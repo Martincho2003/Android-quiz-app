@@ -1,7 +1,9 @@
 package com.example.android_quiz_app.model;
 
 public enum Subject {
-    BIOLOGY("biology")
+    BIOLOGY("biology"),
+    HISTORY("history"),
+    GEOGRAPHY("geography")
     ;
 
     private final String value;

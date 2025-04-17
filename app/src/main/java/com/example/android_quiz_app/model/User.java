@@ -3,11 +3,10 @@ package com.example.android_quiz_app.model;
 public class User {
     private String username;
     private int points;
-    private String lastDayPlayed; // Променено от Date на String
+    private String lastDayPlayed;
     private int playedGamesToday;
 
     public User() {
-        // Празен конструктор, необходим за Firebase
     }
 
     public User(String username, int points, String lastDayPlayed, int playedGamesToday) {

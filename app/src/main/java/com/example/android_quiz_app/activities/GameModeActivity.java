@@ -8,17 +8,21 @@ import com.example.android_quiz_app.R;
 
 public class GameModeActivity extends AppCompatActivity {
 
-    private Button singlePlayerButton;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_mode);
 
-        singlePlayerButton = findViewById(R.id.singlePlayerButton);
+        Button singlePlayerButton = findViewById(R.id.singlePlayerButton);
+        Button multiplayerButton = findViewById(R.id.multiplayerButton);
 
         singlePlayerButton.setOnClickListener(v -> {
             Intent intent = new Intent(GameModeActivity.this, QuestionSelectionActivity.class);
+            startActivity(intent);
+        });
+
+        multiplayerButton.setOnClickListener(v -> {
+            Intent intent = new Intent(GameModeActivity.this, MultiplayerModeActivity.class);
             startActivity(intent);
         });
     }
