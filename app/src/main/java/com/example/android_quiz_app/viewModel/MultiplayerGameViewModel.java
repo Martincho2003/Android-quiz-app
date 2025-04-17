@@ -40,7 +40,7 @@ public class MultiplayerGameViewModel extends ViewModel {
             return;
         }
 
-        multiplayerService.getMultiplayerUserDetails().observeForever( user -> {
+        multiplayerService.getMultiplayerUserDetails().observeForever(user -> {
             if (user != null) {
                 for (MultiplayerUser muser : room.getUsers()) {
                     Log.d(TAG, "Checking user: " + muser.getUsername());
@@ -55,14 +55,13 @@ public class MultiplayerGameViewModel extends ViewModel {
         });
         if (currentUser == null) {
             Log.e(TAG, "Current user not found in room");
-            return;
         }
 
-        currentQuestions.observeForever(questions -> {
-            if (questions != null && !questions.isEmpty() && currentQuestionIndex.getValue() == 0) {
-                startTimer();
-            }
-        });
+        List<Question> questions = currentQuestions.getValue();
+        if (questions != null && !questions.isEmpty() && currentQuestionIndex.getValue() == 0) {
+            startTimer();
+        }
+
         updateLeaderboard();
     }
 
@@ -80,6 +79,9 @@ public class MultiplayerGameViewModel extends ViewModel {
 
         Question currentQuestion = questions.get(currentIndex);
         long timeInMillis = (currentQuestion.getDifficulty() == Difficulty.HARD) ? 30000 : 20000;
+        if (currentIndex == 0) {
+            timeInMillis = (currentQuestion.getDifficulty() == Difficulty.HARD) ? 31000 : 21000;
+        }
         timer = new CountDownTimer(timeInMillis, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -107,8 +109,7 @@ public class MultiplayerGameViewModel extends ViewModel {
             int pointsToAdd = questions.get(currentIndex).getDifficulty() == Difficulty.HARD ? 6 : 3;
             points.setValue(currentPoints + pointsToAdd);
             currentUser.setGamePoints(currentPoints + pointsToAdd);
-            multiplayerService.updateUserPoints(room, currentUser);
-            Log.d(TAG, "Correct answer, points updated to: " + (currentPoints + pointsToAdd));
+            Log.d(TAG, "Correct answer, points updated locally to: " + (currentPoints + pointsToAdd));
         } else {
             Log.d(TAG, "Incorrect answer, no points added");
         }
@@ -135,10 +136,11 @@ public class MultiplayerGameViewModel extends ViewModel {
         if (timer != null) {
             timer.cancel();
         }
-        multiplayerService.updateUserPoints(room, currentUser); // Синхронизиране на финалните точки
+        // Синхронизиране на точките с Firebase само при приключване на играта
+        multiplayerService.updateUserPoints(room, currentUser);
         updateLeaderboard();
         gameFinished.setValue(true);
-        Log.d(TAG, "Game ended with points: " + points.getValue());
+        Log.d(TAG, "Game ended with points: " + points.getValue() + ", synced to Firebase");
     }
 
     private void updateLeaderboard() {

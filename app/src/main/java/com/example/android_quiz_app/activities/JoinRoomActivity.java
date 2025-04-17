@@ -14,6 +14,9 @@ import com.example.android_quiz_app.R;
 import com.example.android_quiz_app.model.Room;
 import com.example.android_quiz_app.viewModel.JoinRoomViewModel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class JoinRoomActivity extends AppCompatActivity {
 
     private static final String TAG = "JoinRoomActivity";
@@ -46,7 +49,13 @@ public class JoinRoomActivity extends AppCompatActivity {
         // Наблюдаваме списъка със стаи
         viewModel.getRooms().observe(this, rooms -> {
             Log.d(TAG, "Rooms updated: " + (rooms != null ? rooms.size() : 0));
-            roomAdapter.setRooms(rooms);
+            List<Room> filteredRooms = new ArrayList<>();
+            for (Room room : rooms) {
+                if (!room.isGameStarted()) {
+                    filteredRooms.add(room);
+                }
+            }
+            roomAdapter.setRooms(filteredRooms);
         });
 
         // Наблюдаваме присъединената стая

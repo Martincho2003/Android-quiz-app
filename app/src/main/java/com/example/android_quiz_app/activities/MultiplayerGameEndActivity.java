@@ -3,6 +3,7 @@ package com.example.android_quiz_app.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
@@ -20,6 +21,7 @@ public class MultiplayerGameEndActivity extends AppCompatActivity {
 
     private static final String TAG = "MultiplayerGameEndActivity";
     private TextView leaderboardTextView;
+    private Button backToMainButton;
     private Room room;
     private MultiplayerService multiplayerService;
 
@@ -29,6 +31,7 @@ public class MultiplayerGameEndActivity extends AppCompatActivity {
         setContentView(R.layout.activity_multiplayer_game_end);
 
         leaderboardTextView = findViewById(R.id.leaderboardTextView);
+        backToMainButton = findViewById(R.id.backToMainButton);
 
         // Вземане на Room от Intent
         room = (Room) getIntent().getSerializableExtra("room");
@@ -52,12 +55,13 @@ public class MultiplayerGameEndActivity extends AppCompatActivity {
             }
         });
 
+        backToMainButton.setOnClickListener( v -> onBackToMainClicked());
+
         updateLeaderboard();
     }
 
     private void updateLeaderboard() {
         StringBuilder message = new StringBuilder();
-        message.append("Your score: ").append(getCurrentUserPoints()).append(" points\n\n");
         message.append("Leaderboard:\n");
         List<MultiplayerUser> users = room.getUsers();
         if (users != null) {
@@ -82,7 +86,7 @@ public class MultiplayerGameEndActivity extends AppCompatActivity {
         }
         return 0;
     }
-    public void onBackToMainClicked(View view) {
+    public void onBackToMainClicked() {
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);

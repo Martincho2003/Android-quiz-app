@@ -48,7 +48,7 @@ public class MultiplayerService {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                // Обработка на грешка
+                Log.e("MultiplayerService", "Failed to load rooms: " + error.getMessage());
             }
         });
     }
@@ -94,31 +94,60 @@ public class MultiplayerService {
     }
 
     public void updateUserPoints(Room room, MultiplayerUser user) {
-        for (int i = 0; i < room.getUsers().size(); i++) {
-            if (room.getUsers().get(i).getUsername().equals(user.getUsername())) {
-                room.getUsers().set(i, user);
-                break;
+        roomsRef.child(room.getCreatorNickname()).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DataSnapshot snapshot = task.getResult();
+                Room firebaseRoom = snapshot.getValue(Room.class);
+                if (firebaseRoom != null) {
+                    List<MultiplayerUser> users = firebaseRoom.getUsers();
+                    if (users != null) {
+                        for (int i = 0; i < users.size(); i++) {
+                            if (users.get(i).getUsername().equals(user.getUsername())) {
+                                users.set(i, user);
+                                break;
+                            }
+                        }
+                        firebaseRoom.setUsers(users);
+                        updateRoom(firebaseRoom);
+                        Log.d("MultiplayerService", "User points updated in Firebase for user: " + user.getUsername());
+                    } else {
+                        Log.e("MultiplayerService", "Users list is null in room: " + room.getCreatorNickname());
+                    }
+                } else {
+                    Log.e("MultiplayerService", "Room not found in Firebase: " + room.getCreatorNickname());
+                }
+            } else {
+                Log.e("MultiplayerService", "Failed to fetch room from Firebase: " + task.getException().getMessage());
             }
-        }
-        updateRoom(room);
+        });
     }
 
     public String getCurrentUserId() {
-        return auth.getCurrentUser().getUid();
+        return auth.getCurrentUser() != null ? auth.getCurrentUser().getUid() : null;
     }
 
     public LiveData<MultiplayerUser> getMultiplayerUserDetails() {
         MutableLiveData<MultiplayerUser> userDetailsLiveData = new MutableLiveData<>();
 
-        String userId = auth.getCurrentUser().getUid();
+        String userId = getCurrentUserId();
+        if (userId == null) {
+            userDetailsLiveData.setValue(null);
+            return userDetailsLiveData;
+        }
+
         usersRef.child(userId).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 DataSnapshot snapshot = task.getResult();
                 User userDetails = snapshot.getValue(User.class);
-                MultiplayerUser multiplayerUserDetails = new MultiplayerUser(userDetails.getUsername());
-                userDetailsLiveData.setValue(multiplayerUserDetails);
+                if (userDetails != null) {
+                    MultiplayerUser multiplayerUserDetails = new MultiplayerUser(userDetails.getUsername());
+                    userDetailsLiveData.setValue(multiplayerUserDetails);
+                } else {
+                    userDetailsLiveData.setValue(null);
+                }
             } else {
                 userDetailsLiveData.setValue(null);
+                Log.e("MultiplayerService", "Failed to fetch user details: " + task.getException().getMessage());
             }
         });
 

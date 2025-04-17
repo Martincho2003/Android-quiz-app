@@ -3,12 +3,13 @@ package com.example.android_quiz_app.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.android_quiz_app.MainActivity;
@@ -28,6 +29,11 @@ public class MultiplayerGameActivity extends AppCompatActivity {
     private Button answerButton1, answerButton2, answerButton3, answerButton4;
     private MultiplayerGameViewModel viewModel;
     private List<Question> currentQuestions;
+    private Observer<List<Question>> questionsObserver;
+    private Observer<Integer> questionIndexObserver;
+    private Observer<Boolean> gameFinishedObserver;
+    private Observer<Long> timerObserver;
+    private Observer<Integer> pointsObserver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,13 +66,13 @@ public class MultiplayerGameActivity extends AppCompatActivity {
         }).get(MultiplayerGameViewModel.class);
 
         questionTextView.setText("Loading questions...");
-        answerButton1.setVisibility(Button.GONE);
-        answerButton2.setVisibility(Button.GONE);
-        answerButton3.setVisibility(Button.GONE);
-        answerButton4.setVisibility(Button.GONE);
+        answerButton1.setVisibility(View.GONE);
+        answerButton2.setVisibility(View.GONE);
+        answerButton3.setVisibility(View.GONE);
+        answerButton4.setVisibility(View.GONE);
 
         // Наблюдение за въпросите
-        viewModel.getCurrentQuestions().observe(this, questions -> {
+        questionsObserver = questions -> {
             if (questions == null || questions.isEmpty()) {
                 Log.e(TAG, "No questions loaded");
                 Toast.makeText(this, "Failed to load questions. Please try again.", Toast.LENGTH_LONG).show();
@@ -77,6 +83,7 @@ public class MultiplayerGameActivity extends AppCompatActivity {
                     Intent mainIntent = new Intent(MultiplayerGameActivity.this, MainActivity.class);
                     mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(mainIntent);
+                    cleanupObservers();
                     finish();
                 });
                 ((LinearLayout) questionTextView.getParent()).addView(retryButton);
@@ -85,10 +92,11 @@ public class MultiplayerGameActivity extends AppCompatActivity {
             currentQuestions = questions;
             updateQuestionUI();
             Log.d(TAG, "Questions loaded: " + questions.size());
-        });
+        };
+        viewModel.getCurrentQuestions().observe(this, questionsObserver);
 
         // Наблюдение за текущия индекс на въпроса
-        viewModel.getCurrentQuestionIndex().observe(this, index -> {
+        questionIndexObserver = index -> {
             if (currentQuestions == null || currentQuestions.isEmpty()) {
                 Log.w(TAG, "Cannot update UI: No questions loaded");
                 return;
@@ -98,31 +106,36 @@ public class MultiplayerGameActivity extends AppCompatActivity {
                 return;
             }
             updateQuestionUI();
-        });
+        };
+        viewModel.getCurrentQuestionIndex().observe(this, questionIndexObserver);
 
         // Наблюдение за края на играта
-        viewModel.getGameFinished().observe(this, finished -> {
+        gameFinishedObserver = finished -> {
             if (finished != null && finished) {
                 Intent intent = new Intent(MultiplayerGameActivity.this, MultiplayerGameEndActivity.class);
                 intent.putExtra("room", room);
                 startActivity(intent);
+                cleanupObservers();
                 finish();
             }
-        });
+        };
+        viewModel.getGameFinished().observe(this, gameFinishedObserver);
 
         // Наблюдение за времето
-        viewModel.getCurrentQuestionTime().observe(this, time -> {
+        timerObserver = time -> {
             if (time != null) {
                 timerTextView.setText("Time: " + time + "s");
             }
-        });
+        };
+        viewModel.getCurrentQuestionTime().observe(this, timerObserver);
 
         // Наблюдение за точките
-        viewModel.getPoints().observe(this, points -> {
+        pointsObserver = points -> {
             if (points != null) {
                 pointsTextView.setText("Points: " + points);
             }
-        });
+        };
+        viewModel.getPoints().observe(this, pointsObserver);
 
         // Слушатели за бутоните
         answerButton1.setOnClickListener(v -> selectAnswer(0));
@@ -143,10 +156,10 @@ public class MultiplayerGameActivity extends AppCompatActivity {
             answerButton3.setText(answers.size() > 2 ? answers.get(2).getAnswer() : "");
             answerButton4.setText(answers.size() > 3 ? answers.get(3).getAnswer() : "");
 
-            answerButton1.setVisibility(answers.size() > 0 ? Button.VISIBLE : Button.GONE);
-            answerButton2.setVisibility(answers.size() > 1 ? Button.VISIBLE : Button.GONE);
-            answerButton3.setVisibility(answers.size() > 2 ? Button.VISIBLE : Button.GONE);
-            answerButton4.setVisibility(answers.size() > 3 ? Button.VISIBLE : Button.GONE);
+            answerButton1.setVisibility(answers.size() > 0 ? View.VISIBLE : View.GONE);
+            answerButton2.setVisibility(answers.size() > 1 ? View.VISIBLE : View.GONE);
+            answerButton3.setVisibility(answers.size() > 2 ? View.VISIBLE : View.GONE);
+            answerButton4.setVisibility(answers.size() > 3 ? View.VISIBLE : View.GONE);
         }
     }
 
@@ -160,8 +173,27 @@ public class MultiplayerGameActivity extends AppCompatActivity {
         }
     }
 
+    private void cleanupObservers() {
+        if (questionsObserver != null) {
+            viewModel.getCurrentQuestions().removeObserver(questionsObserver);
+        }
+        if (questionIndexObserver != null) {
+            viewModel.getCurrentQuestionIndex().removeObserver(questionIndexObserver);
+        }
+        if (gameFinishedObserver != null) {
+            viewModel.getGameFinished().removeObserver(gameFinishedObserver);
+        }
+        if (timerObserver != null) {
+            viewModel.getCurrentQuestionTime().removeObserver(timerObserver);
+        }
+        if (pointsObserver != null) {
+            viewModel.getPoints().removeObserver(pointsObserver);
+        }
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        cleanupObservers();
     }
 }
