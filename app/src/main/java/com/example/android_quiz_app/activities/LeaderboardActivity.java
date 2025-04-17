@@ -1,5 +1,6 @@
 package com.example.android_quiz_app.activities;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -20,6 +21,7 @@ public class LeaderboardActivity extends AppCompatActivity {
     private ArrayAdapter<String> adapter;
     private List<String> leaderboardEntries;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

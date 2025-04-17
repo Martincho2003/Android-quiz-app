@@ -35,14 +35,6 @@ public class RegisterActivity extends AppCompatActivity {
         registerButton = findViewById(R.id.registerButton);
         goToLoginButton = findViewById(R.id.goToLoginButton);
 
-        registerButton.setOnTouchListener((v, event) -> {
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                Animator animator = AnimatorInflater.loadAnimator(this, R.animator.button_scale);
-                animator.setTarget(registerButton);
-                animator.start();
-            }
-            return false;
-        });
 
         viewModel.getRegistrationState().observe(this, state -> {
             registerButton.setEnabled(true);
