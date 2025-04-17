@@ -1,7 +1,11 @@
 package com.example.android_quiz_app.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.method.PasswordTransformationMethod;
+import android.text.method.SingleLineTransformationMethod;
+import android.view.MotionEvent;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -16,7 +20,10 @@ public class LoginActivity extends AppCompatActivity {
     private EditText emailEditText, passwordEditText;
     private Button loginButton, goToRegisterButton;
     private LoginViewModel viewModel;
+    private boolean isPasswordVisible = false;
 
+
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,6 +36,7 @@ public class LoginActivity extends AppCompatActivity {
         loginButton = findViewById(R.id.loginButton);
         goToRegisterButton = findViewById(R.id.goToRegisterButton);
 
+
         viewModel.getLoginState().observe(this, state -> {
             loginButton.setEnabled(true);
             Toast.makeText(LoginActivity.this, state.getMessage(), Toast.LENGTH_LONG).show();
@@ -38,6 +46,16 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
             }
+        });
+
+        passwordEditText.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                if (event.getRawX() >= (passwordEditText.getRight() - passwordEditText.getCompoundDrawables()[2].getBounds().width())) {
+                    togglePasswordVisibility();
+                    return true;
+                }
+            }
+            return false;
         });
 
         loginButton.setOnClickListener(v -> {
@@ -53,5 +71,20 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         });
+    }
+
+    private void togglePasswordVisibility() {
+        if (isPasswordVisible) {
+            passwordEditText.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            passwordEditText.setCompoundDrawablesWithIntrinsicBounds(
+                    R.drawable.password_lock, 0, R.drawable.eye, 0);
+            isPasswordVisible = false;
+        } else {
+            passwordEditText.setTransformationMethod(SingleLineTransformationMethod.getInstance());
+            passwordEditText.setCompoundDrawablesWithIntrinsicBounds(
+                    R.drawable.password_lock, 0, R.drawable.no_eye, 0);
+            isPasswordVisible = true;
+        }
+        passwordEditText.setSelection(passwordEditText.getText().length());
     }
 }

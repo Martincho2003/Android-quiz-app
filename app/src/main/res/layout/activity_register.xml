@@ -9,14 +9,17 @@
     android:padding="20dp">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/titleTextView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginBottom="24dp"
+        android:background="@drawable/title_background"
         android:text="Регистрация"
-        android:textColor="#3F51B5"
         android:textSize="28sp"
-        android:textStyle="bold" />
+        android:textColor="#FFFFFF"
+        android:gravity="center"
+        android:padding="16dp"
+        android:layout_marginBottom="16dp"
+        android:textStyle="bold"/>
 
     <EditText
         android:id="@+id/registerEmailEditText"
@@ -26,6 +29,7 @@
         android:background="@drawable/edit_text_background"
         android:drawablePadding="8dp"
         android:hint="Имейл"
+        android:drawableStart="@drawable/email"
         android:inputType="textEmailAddress"
         android:padding="12dp" />
 
@@ -37,6 +41,7 @@
         android:background="@drawable/edit_text_background"
         android:drawablePadding="8dp"
         android:hint="Потребителско име"
+        android:drawableStart="@drawable/username"
         android:inputType="text"
         android:padding="12dp" />
 
@@ -48,6 +53,8 @@
         android:background="@drawable/edit_text_background"
         android:drawablePadding="8dp"
         android:hint="Парола"
+        android:drawableStart="@drawable/password_lock"
+        android:drawableEnd="@drawable/eye"
         android:inputType="textPassword"
         android:padding="12dp" />
 
@@ -59,6 +66,8 @@
         android:background="@drawable/edit_text_background"
         android:drawablePadding="8dp"
         android:hint="Потвърди парола"
+        android:drawableStart="@drawable/password_lock"
+        android:drawableEnd="@drawable/eye"
         android:inputType="textPassword"
         android:padding="12dp" />
 

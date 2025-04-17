@@ -22,6 +22,8 @@
         android:layout_marginBottom="16dp"
         android:background="@drawable/edit_text_background"
         android:hint="Имейл"
+        android:drawablePadding="10dp"
+        android:drawableStart="@drawable/email"
         android:inputType="text"
         android:padding="12dp" />
 
@@ -33,6 +35,8 @@
         android:background="@drawable/edit_text_background"
         android:drawableStart="@drawable/password_lock"
         android:hint="Парола"
+        android:drawablePadding="10dp"
+        android:drawableEnd="@drawable/eye"
         android:inputType="textPassword"
         android:padding="12dp" />
 
@@ -41,9 +45,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="32dp"
-        android:background="@drawable/gradient_button"
-
+        android:background="@drawable/gradient_login_button"
         android:text="Вход"
+        android:textSize = "16sp"
         android:textColor="#FFFFFF" />
 
 
@@ -56,6 +60,7 @@
         android:drawableStart="@drawable/google"
         android:drawablePadding="8dp"
         android:text="Вход с Google профил"
+        android:textSize = "16sp"
         android:textColor="#000000" />
 
     <Button
@@ -64,7 +69,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:background="@drawable/gradient_button"
-        android:text="Към Регистрация"
+        android:text="Регистрация"
+        android:textSize = "16sp"
         android:textColor="#FFFFFF" />
 
 </LinearLayout>

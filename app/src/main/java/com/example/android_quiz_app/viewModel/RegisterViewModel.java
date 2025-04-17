@@ -8,6 +8,7 @@ import com.example.android_quiz_app.model.User;
 import com.example.android_quiz_app.repository.FirebaseManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
+import java.io.IOException;
 
 public class RegisterViewModel extends ViewModel {
     private FirebaseAuth auth;
@@ -24,24 +25,30 @@ public class RegisterViewModel extends ViewModel {
         return registrationState;
     }
 
-    public void register(String username, String email, String password) {
+    public void register(String username, String email, String password, String confirmPassword) {
+        // Validate inputs
         if (TextUtils.isEmpty(username)) {
-            registrationState.setValue(new RegistrationState(false, "Username is required"));
+            registrationState.setValue(new RegistrationState(false, "Потребителското име е задължително"));
             return;
         }
         if (TextUtils.isEmpty(email)) {
-            registrationState.setValue(new RegistrationState(false, "Email is required"));
+            registrationState.setValue(new RegistrationState(false, "Имейлът е задължителен"));
             return;
         }
         if (TextUtils.isEmpty(password)) {
-            registrationState.setValue(new RegistrationState(false, "Password is required"));
+            registrationState.setValue(new RegistrationState(false, "Паролата е задължителна"));
             return;
         }
         if (password.length() < 8) {
-            registrationState.setValue(new RegistrationState(false, "Password must be at least 8 characters"));
+            registrationState.setValue(new RegistrationState(false, "Паролата трябва да е поне 8 символа"));
+            return;
+        }
+        if (!password.equals(confirmPassword)) {
+            registrationState.setValue(new RegistrationState(false, "Паролите не съвпадат"));
             return;
         }
 
+        // Attempt Firebase registration
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -50,24 +57,37 @@ public class RegisterViewModel extends ViewModel {
 
                         databaseReference.child(userId).setValue(user)
                                 .addOnSuccessListener(aVoid -> {
-                                    registrationState.setValue(new RegistrationState(true, "Registration successful"));
+                                    registrationState.setValue(new RegistrationState(true, "Регистрацията е успешна"));
                                 })
                                 .addOnFailureListener(e -> {
+                                    // Delete the Firebase user if database write fails
                                     auth.getCurrentUser().delete()
                                             .addOnCompleteListener(deleteTask -> {
                                                 if (deleteTask.isSuccessful()) {
-                                                    registrationState.setValue(new RegistrationState(false, "Registration failed, please try again"));
+                                                    registrationState.setValue(new RegistrationState(false, "Регистрацията неуспешна, моля, опитайте отново"));
                                                 } else {
-                                                    registrationState.setValue(new RegistrationState(false, "Registration failed, please log out and try again"));
+                                                    registrationState.setValue(new RegistrationState(false, "Регистрацията неуспешна, моля, излезте и опитайте отново"));
                                                 }
                                             });
                                 });
                     } else {
-                        registrationState.setValue(new RegistrationState(false, "Registration failed: " + task.getException().getMessage()));
+                        // Handle specific Firebase errors
+                        String errorMessage = "Регистрацията неуспешна";
+                        if (task.getException() != null) {
+                            errorMessage += ": " + task.getException().getMessage();
+                            if (task.getException() instanceof java.io.IOException) {
+                                errorMessage = "Мрежова грешка (напр. reCAPTCHA неуспех). Моля, проверете интернет връзката си и опитайте отново.";
+                            }
+                        }
+                        registrationState.setValue(new RegistrationState(false, errorMessage));
                     }
                 })
                 .addOnFailureListener(e -> {
-                    registrationState.setValue(new RegistrationState(false, "Registration failed: " + e.getMessage()));
+                    String errorMessage = "Регистрацията неуспешна: " + e.getMessage();
+                    if (e instanceof java.io.IOException) {
+                        errorMessage = "Мрежова грешка (напр. reCAPTCHA неуспех). Моля, проверете интернет връзката си и опитайте отново.";
+                    }
+                    registrationState.setValue(new RegistrationState(false, errorMessage));
                 });
     }
 
