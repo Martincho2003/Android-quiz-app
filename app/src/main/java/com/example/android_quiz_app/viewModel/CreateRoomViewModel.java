@@ -30,17 +30,14 @@ public class CreateRoomViewModel extends ViewModel {
         loadedQuestions = new MutableLiveData<>();
         roomCreationFailed = new MutableLiveData<>(false);
 
-        // Зареждаме текущия потребител
         gameService.getUserDetails().observeForever(user -> {
             if (user != null) {
-                // Превръщаме User в MultiplayerUser
                 MultiplayerUser multiplayerUser = new MultiplayerUser(user.getUsername());
                 currentUser.setValue(multiplayerUser);
                 Log.d(TAG, "Current user loaded: " + multiplayerUser.getUsername());
             }
         });
 
-        // Наблюдаваме промените в стаите
         multiplayerService.getRooms().observeForever(rooms -> {
             Room currentRoom = createdRoom.getValue();
             if (currentRoom != null) {
@@ -66,7 +63,6 @@ public class CreateRoomViewModel extends ViewModel {
         multiplayerService.createRoom(room);
         createdRoom.setValue(room);
 
-        // Зареждаме въпросите
         gameService.getQuestionsFromPub(difficulties, subjects).observeForever(questions -> {
             if (questions != null && !questions.isEmpty()) {
                 room.setQuestions(questions);

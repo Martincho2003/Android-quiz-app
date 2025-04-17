@@ -31,22 +31,18 @@ public class JoinRoomActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_join_room);
 
-        // Инициализиране на UI елементите
         roomsRecyclerView = findViewById(R.id.roomsRecyclerView);
         roomListLayout = findViewById(R.id.roomListLayout);
         waitingLayout = findViewById(R.id.waitingLayout);
         roomTitleTextView = findViewById(R.id.roomTitleTextView);
         playersTextView = findViewById(R.id.playersTextView);
 
-        // Настройка на RecyclerView
         roomsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         roomAdapter = new RoomAdapter(this::joinRoom);
         roomsRecyclerView.setAdapter(roomAdapter);
 
-        // Инициализиране на ViewModel
         viewModel = new ViewModelProvider(this).get(JoinRoomViewModel.class);
 
-        // Наблюдаваме списъка със стаи
         viewModel.getRooms().observe(this, rooms -> {
             Log.d(TAG, "Rooms updated: " + (rooms != null ? rooms.size() : 0));
             List<Room> filteredRooms = new ArrayList<>();
@@ -58,7 +54,6 @@ public class JoinRoomActivity extends AppCompatActivity {
             roomAdapter.setRooms(filteredRooms);
         });
 
-        // Наблюдаваме присъединената стая
         viewModel.getJoinedRoom().observe(this, room -> {
             if (room != null) {
                 Log.d(TAG, "Joined room updated: " + room.getCreatorNickname() + ", isGameStarted: " + room.isGameStarted());

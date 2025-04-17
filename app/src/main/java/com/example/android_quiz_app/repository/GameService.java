@@ -29,7 +29,7 @@ public class GameService {
     private final DatabaseReference databaseQuestionReference;
     private final DatabaseReference databaseUserReference;
     private final FirebaseAuth auth;
-    private static final int MAX_FETCH_ATTEMPTS = 12;
+    private static final int MAX_FETCH_ATTEMPTS = 13;
     private final Map<String, List<Question>> questionsCache = new HashMap<>();
 
     public GameService() {

@@ -45,7 +45,6 @@ public class CreateRoomActivity extends AppCompatActivity {
         subjectCheckBoxes = new ArrayList<>();
         difficultyCheckBoxes = new ArrayList<>();
 
-        // Динамично генериране на чекбоксове за предмети
         for (Subject subject : Subject.values()) {
             CheckBox checkBox = new CheckBox(this);
             checkBox.setText(subject.getValue());
@@ -54,7 +53,6 @@ public class CreateRoomActivity extends AppCompatActivity {
             subjectCheckBoxes.add(checkBox);
         }
 
-        // Динамично генериране на чекбоксове за трудности
         for (Difficulty difficulty : Difficulty.values()) {
             CheckBox checkBox = new CheckBox(this);
             checkBox.setText(difficulty.getValue());
@@ -68,7 +66,6 @@ public class CreateRoomActivity extends AppCompatActivity {
         createRoomButton.setOnClickListener(v -> createRoom());
         startGameButton.setOnClickListener(v -> startGame());
 
-        // Наблюдаваме дали стаята е създадена успешно
         viewModel.getLoadedQuestions().observe(this, questions -> {
             if (questions != null) {
                 Log.d(TAG, "Loaded questions successfully, switching to waiting screen");
@@ -78,7 +75,6 @@ public class CreateRoomActivity extends AppCompatActivity {
             }
         });
 
-        // Наблюдаваме за грешки при създаване на стаята
         viewModel.getRoomCreationFailed().observe(this, failed -> {
             if (failed != null && failed) {
                 Log.e(TAG, "Room creation failed");
@@ -86,7 +82,6 @@ public class CreateRoomActivity extends AppCompatActivity {
             }
         });
 
-        // Наблюдаваме промените в стаята
         viewModel.getCreatedRoom().observe(this, room -> {
             if (room != null) {
                 Log.d(TAG, "Room updated: " + room.getCreatorNickname() + ", players: " + room.getUsers().size());

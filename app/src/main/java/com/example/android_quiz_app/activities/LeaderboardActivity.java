@@ -25,16 +25,13 @@ public class LeaderboardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_leaderboard);
 
-        // Инициализиране на ViewModel
         viewModel = new ViewModelProvider(this).get(LeaderboardViewModel.class);
 
-        // Инициализиране на UI елементите
         leaderboardListView = findViewById(R.id.leaderboardListView);
         leaderboardEntries = new ArrayList<>();
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, leaderboardEntries);
         leaderboardListView.setAdapter(adapter);
 
-        // Наблюдение на състоянието на класацията
         viewModel.getLeaderboardState().observe(this, state -> {
             if (state.isSuccess()) {
                 updateLeaderboard(state.getTopUsers());
@@ -42,7 +39,6 @@ public class LeaderboardActivity extends AppCompatActivity {
             Toast.makeText(LeaderboardActivity.this, state.getMessage(), Toast.LENGTH_LONG).show();
         });
 
-        // Извличане на топ потребители
         viewModel.getTop10Users();
     }
 

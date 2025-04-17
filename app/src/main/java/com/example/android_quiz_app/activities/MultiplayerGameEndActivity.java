@@ -6,14 +6,12 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 
 import com.example.android_quiz_app.MainActivity;
 import com.example.android_quiz_app.R;
 import com.example.android_quiz_app.model.MultiplayerUser;
 import com.example.android_quiz_app.model.Room;
 import com.example.android_quiz_app.repository.MultiplayerService;
-import com.google.firebase.database.core.view.View;
 
 import java.util.List;
 
@@ -33,7 +31,6 @@ public class MultiplayerGameEndActivity extends AppCompatActivity {
         leaderboardTextView = findViewById(R.id.leaderboardTextView);
         backToMainButton = findViewById(R.id.backToMainButton);
 
-        // Вземане на Room от Intent
         room = (Room) getIntent().getSerializableExtra("room");
         if (room == null) {
             Log.e(TAG, "Room is null in MultiplayerGameEndActivity");
@@ -44,11 +41,10 @@ public class MultiplayerGameEndActivity extends AppCompatActivity {
 
         multiplayerService = MultiplayerService.getInstance();
 
-        // Наблюдение за промени в стаите
         multiplayerService.getRooms().observe(this, rooms -> {
             for (Room updatedRoom : rooms) {
                 if (updatedRoom.getCreatorNickname().equals(room.getCreatorNickname())) {
-                    room = updatedRoom; // Актуализиране на локалния Room
+                    room = updatedRoom;
                     updateLeaderboard();
                     break;
                 }
@@ -75,17 +71,6 @@ public class MultiplayerGameEndActivity extends AppCompatActivity {
         leaderboardTextView.setText(message.toString());
     }
 
-    private int getCurrentUserPoints() {
-        String currentUserId = multiplayerService.getCurrentUserId();
-        if (currentUserId != null) {
-            for (MultiplayerUser user : room.getUsers()) {
-                if (user.getUsername().equals(currentUserId)) {
-                    return user.getGamePoints();
-                }
-            }
-        }
-        return 0;
-    }
     public void onBackToMainClicked() {
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

@@ -15,7 +15,6 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.android_quiz_app.MainActivity;
 import com.example.android_quiz_app.R;
 import com.example.android_quiz_app.model.Answer;
-import com.example.android_quiz_app.model.MultiplayerUser;
 import com.example.android_quiz_app.model.Question;
 import com.example.android_quiz_app.model.Room;
 import com.example.android_quiz_app.viewModel.MultiplayerGameViewModel;
@@ -57,7 +56,6 @@ public class MultiplayerGameActivity extends AppCompatActivity {
         }
         Log.d(TAG, "Room received: " + room.getCreatorNickname() + ", questions: " + (room.getQuestions() != null ? room.getQuestions().size() : "null"));
 
-        // Инициализиране на ViewModel с Room
         viewModel = new ViewModelProvider(this, new ViewModelProvider.NewInstanceFactory() {
             @Override
             public <T extends androidx.lifecycle.ViewModel> T create(Class<T> modelClass) {
@@ -71,7 +69,6 @@ public class MultiplayerGameActivity extends AppCompatActivity {
         answerButton3.setVisibility(View.GONE);
         answerButton4.setVisibility(View.GONE);
 
-        // Наблюдение за въпросите
         questionsObserver = questions -> {
             if (questions == null || questions.isEmpty()) {
                 Log.e(TAG, "No questions loaded");
@@ -95,7 +92,6 @@ public class MultiplayerGameActivity extends AppCompatActivity {
         };
         viewModel.getCurrentQuestions().observe(this, questionsObserver);
 
-        // Наблюдение за текущия индекс на въпроса
         questionIndexObserver = index -> {
             if (currentQuestions == null || currentQuestions.isEmpty()) {
                 Log.w(TAG, "Cannot update UI: No questions loaded");
@@ -109,7 +105,6 @@ public class MultiplayerGameActivity extends AppCompatActivity {
         };
         viewModel.getCurrentQuestionIndex().observe(this, questionIndexObserver);
 
-        // Наблюдение за края на играта
         gameFinishedObserver = finished -> {
             if (finished != null && finished) {
                 Intent intent = new Intent(MultiplayerGameActivity.this, MultiplayerGameEndActivity.class);
@@ -121,7 +116,6 @@ public class MultiplayerGameActivity extends AppCompatActivity {
         };
         viewModel.getGameFinished().observe(this, gameFinishedObserver);
 
-        // Наблюдение за времето
         timerObserver = time -> {
             if (time != null) {
                 timerTextView.setText("Time: " + time + "s");
@@ -129,7 +123,6 @@ public class MultiplayerGameActivity extends AppCompatActivity {
         };
         viewModel.getCurrentQuestionTime().observe(this, timerObserver);
 
-        // Наблюдение за точките
         pointsObserver = points -> {
             if (points != null) {
                 pointsTextView.setText("Points: " + points);
@@ -137,7 +130,6 @@ public class MultiplayerGameActivity extends AppCompatActivity {
         };
         viewModel.getPoints().observe(this, pointsObserver);
 
-        // Слушатели за бутоните
         answerButton1.setOnClickListener(v -> selectAnswer(0));
         answerButton2.setOnClickListener(v -> selectAnswer(1));
         answerButton3.setOnClickListener(v -> selectAnswer(2));

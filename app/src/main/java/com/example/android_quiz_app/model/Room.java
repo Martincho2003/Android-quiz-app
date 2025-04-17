@@ -20,7 +20,6 @@ public class Room implements Serializable {
     private List<Question> questions;
 
     public Room() {
-        // Празен конструктор за Firebase
     }
 
     public Room(String creatorNickname, List<Subject> subjects, List<Difficulty> difficulties) {

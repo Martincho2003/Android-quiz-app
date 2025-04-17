@@ -25,7 +25,6 @@ public class JoinRoomViewModel extends ViewModel {
         joinedRoom = new MutableLiveData<>();
         rooms = new MutableLiveData<>();
 
-        // Зареждаме текущия потребител
         gameService.getUserDetails().observeForever(user -> {
             if (user != null) {
                 MultiplayerUser multiplayerUser = new MultiplayerUser(user.getUsername());
@@ -36,7 +35,6 @@ public class JoinRoomViewModel extends ViewModel {
             }
         });
 
-        // Наблюдаваме списъка със стаи
         multiplayerService.getRooms().observeForever(roomList -> {
             rooms.setValue(roomList);
             Room currentJoinedRoom = joinedRoom.getValue();

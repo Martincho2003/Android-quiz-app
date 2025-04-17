@@ -3,29 +3,30 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:gravity="center">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Game Over"
-        android:textSize="24sp"
         android:gravity="center"
-        android:padding="16dp" />
+        android:padding="16dp"
+        android:text="Game Over"
+        android:textSize="24sp" />
 
     <TextView
         android:id="@+id/leaderboardTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="8dp"
         android:text="Loading leaderboard..."
-        android:textSize="18sp"
-        android:padding="8dp" />
+        android:textSize="18sp" />
 
     <Button
         android:id="@+id/backToMainButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Back to Main"
-        android:layout_gravity="center" />
+        android:gravity="center"
+        android:text="Back to Main" />
 
 </LinearLayout>
