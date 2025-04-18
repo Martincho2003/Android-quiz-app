@@ -28,7 +28,7 @@ import java.util.List;
 public class GameActivity extends AppCompatActivity {
 
     private static final String TAG = "GameActivity";
-    private TextView questionTextView, timerTextView, pointsTextView;
+    private TextView questionTextView, timerTextView, pointsTextView,questionCountTextView;
     private Button answerButton1, answerButton2, answerButton3, answerButton4, addTimeButton, excludeButton;
     private GameViewModel viewModel;
     private List<Question> currentQuestions;
@@ -41,6 +41,7 @@ public class GameActivity extends AppCompatActivity {
         questionTextView = findViewById(R.id.questionTextView);
         timerTextView = findViewById(R.id.timerTextView);
         pointsTextView = findViewById(R.id.pointsTextView);
+        questionCountTextView = findViewById(R.id.questionCountTextView);
         answerButton1 = findViewById(R.id.answerButton1);
         answerButton2 = findViewById(R.id.answerButton2);
         answerButton3 = findViewById(R.id.answerButton3);
@@ -107,11 +108,11 @@ public class GameActivity extends AppCompatActivity {
         });
 
         viewModel.getCurrentQuestionTime().observe(this, time -> {
-            timerTextView.setText("Time: " + time + "s");
+            timerTextView.setText("Време: " + time + "s");
         });
 
         viewModel.getPoints().observe(this, points -> {
-            pointsTextView.setText("Points: " + points);
+            pointsTextView.setText("Точки: " + points);
             if (currentQuestions != null && !currentQuestions.isEmpty()) {
                 updateButtonsState();
             }
@@ -192,11 +193,14 @@ public class GameActivity extends AppCompatActivity {
             Question question = currentQuestions.get(currentIndex);
             questionTextView.setText(question.getQuestion());
 
+            questionCountTextView.setText(String.format("Въпрос: %d от %d", currentIndex + 1, currentQuestions.size()));
+
             List<Answer> answers = question.getAnswers();
-            answerButton1.setText(answers.size() > 0 ? answers.get(0).getAnswer() : "");
-            answerButton2.setText(answers.size() > 1 ? answers.get(1).getAnswer() : "");
-            answerButton3.setText(answers.size() > 2 ? answers.get(2).getAnswer() : "");
-            answerButton4.setText(answers.size() > 3 ? answers.get(3).getAnswer() : "");
+            answerButton1.setText(answers.size() > 0 ? "А) " + answers.get(0).getAnswer() : "");
+            answerButton2.setText(answers.size() > 1 ? "Б) " + answers.get(1).getAnswer() : "");
+            answerButton3.setText(answers.size() > 2 ? "В) " + answers.get(2).getAnswer() : "");
+            answerButton4.setText(answers.size() > 3 ? "Г) " + answers.get(3).getAnswer() : "");
+
 
             answerButton1.setVisibility(answers.size() > 0 ? Button.VISIBLE : Button.GONE);
             answerButton2.setVisibility(answers.size() > 1 ? Button.VISIBLE : Button.GONE);
