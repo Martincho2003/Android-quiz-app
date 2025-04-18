@@ -5,8 +5,6 @@
     android:layout_height="match_parent"
     android:background="@drawable/download"
     android:padding="16dp">
-
-    <!-- Title with logos -->
     <LinearLayout
         android:id="@+id/titleLayout"
         android:layout_width="match_parent"
@@ -36,8 +34,6 @@
             android:src="@drawable/logo"
             android:contentDescription="Right Logo" />
     </LinearLayout>
-
-
     <LinearLayout
         android:id="@+id/pointsLayout"
         android:layout_width="match_parent"
@@ -46,8 +42,6 @@
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:padding="8dp">
-
-
         <TextView
             android:id="@+id/pointsTextView"
             android:layout_width="wrap_content"
@@ -69,7 +63,6 @@
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:padding="8dp">
-
         <TextView
             android:id="@+id/timerTextView"
             android:layout_width="wrap_content"
@@ -82,9 +75,6 @@
             android:textStyle="bold"
             android:layout_marginStart="8dp" />
     </LinearLayout>
-
-    <!-- Answer Buttons -->
-
     <LinearLayout
         android:id="@+id/questionLayout"
         android:layout_width="match_parent"
@@ -94,7 +84,6 @@
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:padding="8dp">
-
         <TextView
             android:id="@+id/questionTextView"
             android:layout_width="wrap_content"
@@ -107,7 +96,6 @@
             android:textSize="20sp"
             android:textStyle="bold" />
     </LinearLayout>
-
     <Button
         android:id="@+id/answerButton1"
         android:layout_width="match_parent"
@@ -116,7 +104,6 @@
         android:layout_marginTop="57dp"
         android:backgroundTint="#F47A76"
         android:text="Answer 1" />
-
     <Button
         android:id="@+id/answerButton2"
         android:layout_width="match_parent"
@@ -125,7 +112,6 @@
         android:layout_marginTop="8dp"
         android:backgroundTint="#F89169"
         android:text="Answer 2" />
-
     <Button
         android:id="@+id/answerButton3"
         android:layout_width="match_parent"
@@ -134,7 +120,6 @@
         android:layout_marginTop="8dp"
         android:backgroundTint="#93EFF0"
         android:text="Answer 3" />
-
     <Button
         android:id="@+id/answerButton4"
         android:layout_width="match_parent"
@@ -143,9 +128,6 @@
         android:layout_marginTop="8dp"
         android:backgroundTint="#A889E9"
         android:text="Answer 4" />
-
-    <!-- Joker Buttons -->
-
     <Button
         android:id="@+id/addTimeButton"
         android:layout_width="match_parent"
@@ -157,19 +139,17 @@
         android:text="Добави време (+20 сек.)"
         android:textSize="18sp"
         android:textStyle="bold" />
-
     <Button
         android:id="@+id/excludeButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/addTimeButton"
-        android:layout_marginTop="22dp"
+        android:layout_marginTop="46dp"
         android:background="@drawable/button_design"
         android:drawableStart="@drawable/exclude"
         android:text="Изключи два отговора"
         android:textSize="18sp"
         android:textStyle="bold" />
-
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottieAnimation"
         android:layout_width="195dp"

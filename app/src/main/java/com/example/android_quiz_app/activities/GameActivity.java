@@ -148,16 +148,13 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void showGameOverDialog(int finalPoints) {
-        // Inflate the custom layout
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_game_over, null);
 
-        // Initialize views
         TextView messageTextView = dialogView.findViewById(R.id.dialog_message);
         Button okButton = dialogView.findViewById(R.id.dialog_ok_button);
         LottieAnimationView lottieAnimationView = dialogView.findViewById(R.id.lottie_game_over);
 
-        // Set the points in the message
         messageTextView.setText("Ти спечели " + finalPoints + " точки!");
 
         if (finalPoints == 0) {
@@ -166,14 +163,11 @@ public class GameActivity extends AppCompatActivity {
             lottieAnimationView.setAnimation(R.raw.gameover);
         }
         lottieAnimationView.playAnimation();
-
-        // Create and show the dialog
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setView(dialogView)
                 .setCancelable(false)
                 .create();
 
-        // Handle OK button click
         okButton.setOnClickListener(v -> {
             Intent mainIntent = new Intent(GameActivity.this, MainActivity.class);
             mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

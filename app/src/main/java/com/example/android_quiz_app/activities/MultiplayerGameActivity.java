@@ -63,7 +63,7 @@ public class MultiplayerGameActivity extends AppCompatActivity {
             }
         }).get(MultiplayerGameViewModel.class);
 
-        questionTextView.setText("Loading questions...");
+        questionTextView.setText("Зареждане на въпросите...");
         answerButton1.setVisibility(View.GONE);
         answerButton2.setVisibility(View.GONE);
         answerButton3.setVisibility(View.GONE);
