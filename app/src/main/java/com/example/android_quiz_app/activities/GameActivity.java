@@ -155,13 +155,20 @@ public class GameActivity extends AppCompatActivity {
         Button okButton = dialogView.findViewById(R.id.dialog_ok_button);
         LottieAnimationView lottieAnimationView = dialogView.findViewById(R.id.lottie_game_over);
 
-        messageTextView.setText("Ти спечели " + finalPoints + " точки!");
 
         if (finalPoints == 0) {
+            messageTextView.setText("Е, не спечели нищо, но поне и не загуби точки!");
+            lottieAnimationView.setAnimation(R.raw.neutral_gameover);
+        }
+        else if(finalPoints < 0){
+            messageTextView.setText("За съжаление изгуби " + finalPoints + " точки!");
             lottieAnimationView.setAnimation(R.raw.sad_gameover);
-        } else {
+        }
+        else {
+            messageTextView.setText("Честито! Ти спечели " + finalPoints + " точки!");
             lottieAnimationView.setAnimation(R.raw.gameover);
         }
+
         lottieAnimationView.playAnimation();
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setView(dialogView)
