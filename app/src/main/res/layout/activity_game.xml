@@ -1,82 +1,183 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:background="@drawable/download"
     android:padding="16dp">
 
-    <TextView
+    <!-- Title with logos -->
+    <LinearLayout
+        android:id="@+id/titleLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Game"
-        android:textSize="24sp"
+        android:orientation="horizontal"
         android:gravity="center"
-        android:padding="16dp" />
+        android:padding="16dp">
 
-    <TextView
-        android:id="@+id/pointsTextView"
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/logo"
+            android:contentDescription="Left Logo" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="QUIZ MASTER"
+            android:textColor="#021368"
+            android:textSize="36sp"
+            android:textStyle="bold"
+            android:layout_marginHorizontal="8dp" />
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/logo"
+            android:contentDescription="Right Logo" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/pointsLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Points: 0"
-        android:textSize="18sp"
-        android:padding="8dp" />
+        android:layout_below="@id/titleLayout"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="8dp">
 
-    <TextView
-        android:id="@+id/timerTextView"
+
+        <TextView
+            android:id="@+id/pointsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Точки: 0"
+            android:drawableStart="@drawable/rating"
+            android:drawablePadding="8dp"
+            android:textSize="20sp"
+            android:textColor="#000"
+            android:textStyle="bold"
+            android:layout_marginStart="8dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/timerLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Time: 0s"
-        android:textSize="18sp"
-        android:padding="8dp" />
+        android:layout_below="@id/pointsLayout"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="8dp">
 
-    <TextView
-        android:id="@+id/questionTextView"
+        <TextView
+            android:id="@+id/timerTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Време: 0s"
+            android:drawableStart="@drawable/time"
+            android:drawablePadding="8dp"
+            android:textSize="20sp"
+            android:textColor="#000"
+            android:textStyle="bold"
+            android:layout_marginStart="8dp" />
+    </LinearLayout>
+
+    <!-- Answer Buttons -->
+
+    <LinearLayout
+        android:id="@+id/questionLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Question"
-        android:textSize="18sp"
-        android:padding="8dp" />
+        android:layout_below="@id/timerLayout"
+        android:layout_marginTop="37dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/questionTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:drawableStart="@drawable/question"
+            android:drawablePadding="8dp"
+            android:text="Въпрос:"
+            android:textColor="#000"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/answerButton1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Answer 1"
-        android:layout_marginTop="8dp" />
+        android:layout_below="@id/questionLayout"
+        android:layout_marginTop="57dp"
+        android:backgroundTint="#F47A76"
+        android:text="Answer 1" />
 
     <Button
         android:id="@+id/answerButton2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Answer 2"
-        android:layout_marginTop="8dp" />
+        android:layout_below="@id/answerButton1"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="#F89169"
+        android:text="Answer 2" />
 
     <Button
         android:id="@+id/answerButton3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Answer 3"
-        android:layout_marginTop="8dp" />
+        android:layout_below="@id/answerButton2"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="#93EFF0"
+        android:text="Answer 3" />
 
     <Button
         android:id="@+id/answerButton4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Answer 4"
-        android:layout_marginTop="8dp" />
+        android:layout_below="@id/answerButton3"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="#A889E9"
+        android:text="Answer 4" />
+
+    <!-- Joker Buttons -->
 
     <Button
         android:id="@+id/addTimeButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Add Time (+20s)"
-        android:layout_marginTop="16dp" />
+        android:layout_below="@id/answerButton4"
+        android:layout_marginTop="73dp"
+        android:background="@drawable/gradient_login_button"
+        android:drawableStart="@drawable/add_time"
+        android:text="Добави време (+20 сек.)"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/excludeButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Exclude Answers"
-        android:layout_marginTop="8dp" />
+        android:layout_below="@id/addTimeButton"
+        android:layout_marginTop="22dp"
+        android:background="@drawable/button_design"
+        android:drawableStart="@drawable/exclude"
+        android:text="Изключи два отговора"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
-</LinearLayout>
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottieAnimation"
+        android:layout_width="195dp"
+        android:layout_height="172dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/questions" />
+
+</RelativeLayout>

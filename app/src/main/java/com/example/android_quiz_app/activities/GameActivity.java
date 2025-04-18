@@ -3,6 +3,8 @@ package com.example.android_quiz_app.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -11,6 +13,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.android_quiz_app.MainActivity;
 import com.example.android_quiz_app.R;
 import com.example.android_quiz_app.factory.GameViewModelFactory;
@@ -55,7 +58,7 @@ public class GameActivity extends AppCompatActivity {
         GameViewModelFactory factory = new GameViewModelFactory(subjects, difficulties);
         viewModel = new ViewModelProvider(this, factory).get(GameViewModel.class);
 
-        questionTextView.setText("Loading questions...");
+        questionTextView.setText("Зареждане на въпросите...");
         answerButton1.setVisibility(Button.GONE);
         answerButton2.setVisibility(Button.GONE);
         answerButton3.setVisibility(Button.GONE);
@@ -145,17 +148,41 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void showGameOverDialog(int finalPoints) {
-        new AlertDialog.Builder(this)
-                .setTitle("Game Over")
-                .setMessage("Ти спечели " + finalPoints + " точки!")
-                .setPositiveButton("OK", (dialog, which) -> {
-                    Intent mainIntent = new Intent(GameActivity.this, MainActivity.class);
-                    mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(mainIntent);
-                    finish();
-                })
+        // Inflate the custom layout
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_game_over, null);
+
+        // Initialize views
+        TextView messageTextView = dialogView.findViewById(R.id.dialog_message);
+        Button okButton = dialogView.findViewById(R.id.dialog_ok_button);
+        LottieAnimationView lottieAnimationView = dialogView.findViewById(R.id.lottie_game_over);
+
+        // Set the points in the message
+        messageTextView.setText("Ти спечели " + finalPoints + " точки!");
+
+        if (finalPoints == 0) {
+            lottieAnimationView.setAnimation(R.raw.sad_gameover);
+        } else {
+            lottieAnimationView.setAnimation(R.raw.gameover);
+        }
+        lottieAnimationView.playAnimation();
+
+        // Create and show the dialog
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
                 .setCancelable(false)
-                .show();
+                .create();
+
+        // Handle OK button click
+        okButton.setOnClickListener(v -> {
+            Intent mainIntent = new Intent(GameActivity.this, MainActivity.class);
+            mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(mainIntent);
+            finish();
+            dialog.dismiss();
+        });
+
+        dialog.show();
     }
 
     private void updateQuestionUI() {
