@@ -53,7 +53,7 @@ public class CreateRoomActivity extends AppCompatActivity {
             checkBox.setTextSize(25);
             checkBox.setTextColor(getResources().getColor(R.color.black));
             checkBox.setTypeface(null, Typeface.BOLD);
-
+            checkBox.setButtonDrawable(R.drawable.custom_checkbox);
             checkBox.setCompoundDrawablePadding(36);
 
             switch (subject) {
