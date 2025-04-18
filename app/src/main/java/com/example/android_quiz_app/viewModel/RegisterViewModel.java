@@ -48,19 +48,16 @@ public class RegisterViewModel extends ViewModel {
             return;
         }
 
-        // Attempt Firebase registration
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         String userId = auth.getCurrentUser().getUid();
                         User user = new User(username, 0, "1.1.1970", 0);
-
                         databaseReference.child(userId).setValue(user)
                                 .addOnSuccessListener(aVoid -> {
                                     registrationState.setValue(new RegistrationState(true, "Регистрацията е успешна"));
                                 })
                                 .addOnFailureListener(e -> {
-                                    // Delete the Firebase user if database write fails
                                     auth.getCurrentUser().delete()
                                             .addOnCompleteListener(deleteTask -> {
                                                 if (deleteTask.isSuccessful()) {
@@ -71,7 +68,6 @@ public class RegisterViewModel extends ViewModel {
                                             });
                                 });
                     } else {
-                        // Handle specific Firebase errors
                         String errorMessage = "Регистрацията неуспешна";
                         if (task.getException() != null) {
                             errorMessage += ": " + task.getException().getMessage();

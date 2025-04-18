@@ -8,14 +8,16 @@
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/backgroundAnimation"
-        android:layout_width="286dp"
-        android:layout_height="374dp"
+        android:layout_width="291dp"
+        android:layout_height="319dp"
         android:alpha="1.0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.8"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.43"
         app:layout_constraintWidth_percent="0.8"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
@@ -29,12 +31,12 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:background="?android:attr/selectableItemBackground"
-        android:drawableTop="@drawable/profile"
+        android:drawableTop="@drawable/avatar"
         android:drawablePadding="4dp"
         android:padding="8dp"
         android:text="Профил"
         android:textColor="#021368"
-        android:textSize="16sp"
+        android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -51,7 +53,7 @@
         android:padding="8dp"
         android:text="Настройки"
         android:textColor="#021368"
-        android:textSize="16sp"
+        android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -84,7 +86,7 @@
             android:shadowRadius="4"
             android:text="QUIZ MASTER"
             android:textColor="#021368"
-            android:textSize="36sp"
+            android:textSize="42sp"
             android:textStyle="bold" />
 
         <ImageView
@@ -97,8 +99,8 @@
 
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="407dp"
+        android:layout_height="224dp"
         android:gravity="center"
         android:orientation="vertical"
         android:padding="24dp"
@@ -110,7 +112,6 @@
             android:id="@+id/startGameButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
             android:background="@drawable/gradient_button"
             android:elevation="4dp"
             android:padding="14dp"
@@ -122,6 +123,7 @@
             android:id="@+id/leaderboardButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
             android:background="@drawable/gradient_button"
             android:elevation="4dp"
             android:padding="14dp"

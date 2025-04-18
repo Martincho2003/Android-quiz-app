@@ -101,7 +101,7 @@
             android:id="@+id/playedGamesTodayTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Игри днес:"
+            android:text="Брой игри за дадения ден:"
             android:drawableStart = "@drawable/game"
             android:textColor="#021368"
             android:textSize="20sp"
