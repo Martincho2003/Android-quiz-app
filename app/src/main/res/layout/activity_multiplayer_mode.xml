@@ -1,28 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:background="@drawable/download"
     android:padding="16dp">
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Multiplayer Mode"
-        android:textSize="24sp"
-        android:layout_gravity="center"
-        android:layout_marginBottom="32dp"/>
+        android:id="@+id/titleTextView"
+        android:layout_width="332dp"
+        android:layout_height="64dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/gradient_button"
+        android:paddingStart="48dp"
+        android:padding="8dp"
+        android:text="Избери опция"
+        android:textColor="@color/white"
+        android:textSize="36sp"
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/createRoomButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Create Room"
-        android:layout_marginBottom="16dp"/>
+        android:layout_below="@id/titleTextView"
+        android:layout_marginTop="204dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/gradient_login_button"
+        android:minHeight="48dp"
+        android:padding="12dp"
+        android:text="Направи стая"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/joinRoomButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Join Room"/>
-</LinearLayout>
+        android:layout_below="@id/createRoomButton"
+        android:background="@drawable/gradient_login_button"
+        android:minHeight="48dp"
+        android:padding="12dp"
+        android:text="Присъедини се към стая"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="32dp" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottieAnimation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/joinRoomButton"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        app:lottie_rawRes="@raw/multiplayer"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true" />
+
+</RelativeLayout>
