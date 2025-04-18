@@ -1,6 +1,7 @@
 package com.example.android_quiz_app.activities;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -48,7 +49,35 @@ public class CreateRoomActivity extends AppCompatActivity {
         for (Subject subject : Subject.values()) {
             CheckBox checkBox = new CheckBox(this);
             checkBox.setText(subject.getValue());
-            checkBox.setPadding(0, 8, 0, 8);
+            checkBox.setPadding(8, 8, 8, 8);
+            checkBox.setTextSize(25);
+            checkBox.setTextColor(getResources().getColor(R.color.black));
+            checkBox.setTypeface(null, Typeface.BOLD);
+
+            checkBox.setCompoundDrawablePadding(36);
+
+            switch (subject) {
+                case BIOLOGY:
+                    checkBox.setText(R.string.subject_biology);
+                    checkBox.setCompoundDrawablesWithIntrinsicBounds(R.drawable.biology, 0, 0, 0);
+                    break;
+                case HISTORY:
+                    checkBox.setText(R.string.subject_history);checkBox.setButtonDrawable(R.drawable.custom_checkbox);
+                    checkBox.setCompoundDrawablesWithIntrinsicBounds(R.drawable.history, 0, 0, 0);
+                    break;
+                case GEOGRAPHY:
+                    checkBox.setText(R.string.subject_geography);
+                    checkBox.setCompoundDrawablesWithIntrinsicBounds(R.drawable.geography, 0, 0, 0);
+                    break;
+            }
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            params.bottomMargin = (int) (16 * getResources().getDisplayMetrics().density); // 16dp margin
+            checkBox.setLayoutParams(params);
+
             subjectsContainer.addView(checkBox);
             subjectCheckBoxes.add(checkBox);
         }
@@ -56,7 +85,30 @@ public class CreateRoomActivity extends AppCompatActivity {
         for (Difficulty difficulty : Difficulty.values()) {
             CheckBox checkBox = new CheckBox(this);
             checkBox.setText(difficulty.getValue());
-            checkBox.setPadding(0, 8, 0, 8);
+            checkBox.setPadding(8, 8, 8, 8);
+            checkBox.setTextSize(25);
+            checkBox.setTextColor(getResources().getColor(R.color.black));
+            checkBox.setTypeface(null, Typeface.BOLD);
+            checkBox.setButtonDrawable(R.drawable.custom_checkbox);
+            checkBox.setCompoundDrawablePadding(36);
+
+            switch (difficulty) {
+                case EASY:
+                    checkBox.setText(R.string.difficulty_easy);
+                    checkBox.setCompoundDrawablesWithIntrinsicBounds(R.drawable.angel, 0, 0, 0);
+                    break;
+                case HARD:
+                    checkBox.setText(R.string.difficulty_hard);
+                    checkBox.setCompoundDrawablesWithIntrinsicBounds(R.drawable.devil, 0, 0, 0);
+                    break;
+            }
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            params.bottomMargin = (int) (16 * getResources().getDisplayMetrics().density); // 16dp margin
+            checkBox.setLayoutParams(params);
+
             difficultiesContainer.addView(checkBox);
             difficultyCheckBoxes.add(checkBox);
         }
@@ -120,7 +172,7 @@ public class CreateRoomActivity extends AppCompatActivity {
     }
 
     private void switchToWaitingScreen() {
-        titleTextView.setText("Room: " + viewModel.getCurrentUser().getValue().getUsername());
+        titleTextView.setText("Стая: " + viewModel.getCurrentUser().getValue().getUsername());
         subjectsContainer.setVisibility(View.GONE);
         difficultiesContainer.setVisibility(View.GONE);
         createRoomButton.setVisibility(View.GONE);
@@ -131,7 +183,7 @@ public class CreateRoomActivity extends AppCompatActivity {
 
     private void updateWaitingScreen(Room room) {
         int playerCount = room.getUsers().size();
-        playersTextView.setText("Players: " + playerCount + "/4");
+        playersTextView.setText("Играчи: " + playerCount + "/4");
         startGameButton.setEnabled(playerCount >= 2 && !room.isGameStarted());
         Log.d(TAG, "Updated waiting screen, players: " + playerCount + ", isGameStarted: " + room.isGameStarted());
 

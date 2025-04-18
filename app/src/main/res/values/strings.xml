@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Android_quiz_app</string>
     <string name="title_activity_login">LoginActivity</string>
+    <string name="subject_biology">Биология</string>
+    <string name="subject_history">История</string>
+    <string name="subject_geography">География</string>
+    <string name="difficulty_easy">Лесно</string>
+    <string name="difficulty_hard">Трудно</string>
 </resources>

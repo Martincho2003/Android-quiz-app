@@ -161,7 +161,7 @@ public class GameActivity extends AppCompatActivity {
             lottieAnimationView.setAnimation(R.raw.neutral_gameover);
         }
         else if(finalPoints < 0){
-            messageTextView.setText("За съжаление изгуби " + finalPoints + " точки!");
+            messageTextView.setText("За съжаление изгуби " + Math.abs(finalPoints) + " точки!");
             lottieAnimationView.setAnimation(R.raw.sad_gameover);
         }
         else {
