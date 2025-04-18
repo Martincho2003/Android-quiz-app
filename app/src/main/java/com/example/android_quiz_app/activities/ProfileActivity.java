@@ -14,7 +14,7 @@ import com.example.android_quiz_app.viewModel.ProfileViewModel;
 public class ProfileActivity extends AppCompatActivity {
 
     private TextView usernameTextView, pointsTextView, lastDayPlayedTextView, playedGamesTodayTextView;
-    private Button logoutButton;
+    private Button logoutButton, changePasswordButton;
     private ProfileViewModel viewModel;
 
     @Override
@@ -29,6 +29,7 @@ public class ProfileActivity extends AppCompatActivity {
         lastDayPlayedTextView = findViewById(R.id.lastDayPlayedTextView);
         playedGamesTodayTextView = findViewById(R.id.playedGamesTodayTextView);
         logoutButton = findViewById(R.id.logoutButton);
+        changePasswordButton = findViewById(R.id.changePasswordButton);
 
         viewModel.getProfileState().observe(this, state -> {
             if (state.isSuccess()) {
@@ -48,6 +49,12 @@ public class ProfileActivity extends AppCompatActivity {
         logoutButton.setOnClickListener(v -> {
             viewModel.logout();
         });
+
+        changePasswordButton.setOnClickListener(v -> {
+            Intent intent = new Intent(ProfileActivity.this, ChangePasswordActivity.class);
+            startActivity(intent);
+        });
+
     }
 
     private void updateProfileUI(User user) {
