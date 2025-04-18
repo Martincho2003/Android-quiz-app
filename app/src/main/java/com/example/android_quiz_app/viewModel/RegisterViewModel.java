@@ -53,7 +53,6 @@ public class RegisterViewModel extends ViewModel {
             if (task.isSuccessful()) {
                 DataSnapshot snapshot = task.getResult();
                 boolean usernameExists = false;
-
                 for (DataSnapshot userSnapshot : snapshot.getChildren()) {
                     User existingUser = userSnapshot.getValue(User.class);
                     if (existingUser != null && username.equals(existingUser.getUsername())) {
@@ -61,12 +60,10 @@ public class RegisterViewModel extends ViewModel {
                         break;
                     }
                 }
-
                 if (usernameExists) {
                     registrationState.setValue(new RegistrationState(false, "Username already exists, please choose another one"));
                     return;
                 }
-
                 auth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(task2 -> {
                             if (task2.isSuccessful()) {
