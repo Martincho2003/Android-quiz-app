@@ -3,9 +3,14 @@ package com.example.android_quiz_app.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.activity.OnBackPressedCallback;
+import androidx.activity.OnBackPressedDispatcher;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -29,6 +34,9 @@ public class JoinRoomActivity extends AppCompatActivity {
     private TextView roomTitleTextView, playersTextView;
     private LottieAnimationView joinAnimation, waitingAnimation1, waitingAnimation2, waitingAnimation3, waitingAnimation4;
     private LottieAnimationView questionMarkAnimation1, questionMarkAnimation2, questionMarkAnimation3;
+    private TextView selectedSubjectsTextView, selectedDifficultiesTextView, playersListTextView;
+    private Button leaveRoomButton;
+    private boolean isWaitingScreen = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +56,22 @@ public class JoinRoomActivity extends AppCompatActivity {
         questionMarkAnimation1 = findViewById(R.id.questionMarkAnimation1);
         questionMarkAnimation2 = findViewById(R.id.questionMarkAnimation2);
         questionMarkAnimation3 = findViewById(R.id.questionMarkAnimation3);
+        selectedSubjectsTextView = findViewById(R.id.selectedSubjectsTextView);
+        selectedDifficultiesTextView = findViewById(R.id.selectedDifficultiesTextView);
+        playersListTextView = findViewById(R.id.playersListTextView);
+        leaveRoomButton = findViewById(R.id.leaveRoomButton);
+
+        OnBackPressedDispatcher dispatcher = getOnBackPressedDispatcher();
+        dispatcher.addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (isWaitingScreen) {
+                    leaveRoom();
+                } else {
+                    finish();
+                }
+            }
+        });
 
         roomsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         roomAdapter = new RoomAdapter(this, this::joinRoom);
@@ -86,6 +110,8 @@ public class JoinRoomActivity extends AppCompatActivity {
                 Log.e(TAG, "Joined room is null");
             }
         });
+
+        leaveRoomButton.setOnClickListener(v -> leaveRoom());
     }
 
     private void joinRoom(Room room) {
@@ -108,13 +134,21 @@ public class JoinRoomActivity extends AppCompatActivity {
         Toast.makeText(this, "Присъединихте се към стаята: " + room.getCreatorNickname(), Toast.LENGTH_SHORT).show();
     }
 
+    private void leaveRoom() {
+        Room room = viewModel.getJoinedRoom().getValue();
+        if (room != null) {
+            viewModel.leaveRoom(room);
+            Toast.makeText(this, "Left the room", Toast.LENGTH_SHORT).show();
+            switchToRoomList();
+        }
+    }
+
     private void switchToWaitingScreen(Room room) {
         roomListLayout.setVisibility(LinearLayout.GONE);
         waitingLayout.setVisibility(LinearLayout.VISIBLE);
-        joinAnimation.setVisibility(LinearLayout.GONE); // Скриване на join анимацията
+        joinAnimation.setVisibility(LinearLayout.GONE);
         roomTitleTextView.setText("Стая: " + room.getCreatorNickname());
 
-        // Показване и стартиране на waiting анимациите
         waitingAnimation1.setVisibility(LinearLayout.VISIBLE);
         waitingAnimation2.setVisibility(LinearLayout.VISIBLE);
         waitingAnimation3.setVisibility(LinearLayout.VISIBLE);
@@ -130,7 +164,6 @@ public class JoinRoomActivity extends AppCompatActivity {
         waitingAnimation3.playAnimation();
         waitingAnimation4.playAnimation();
 
-        // Показване и стартиране на questionMark анимациите
         questionMarkAnimation1.setVisibility(LinearLayout.VISIBLE);
         questionMarkAnimation2.setVisibility(LinearLayout.VISIBLE);
         questionMarkAnimation3.setVisibility(LinearLayout.VISIBLE);
@@ -143,16 +176,44 @@ public class JoinRoomActivity extends AppCompatActivity {
         questionMarkAnimation2.playAnimation();
         questionMarkAnimation3.playAnimation();
 
-        // Лека анимация за текстовете
         waitingLayout.setAlpha(0f);
         waitingLayout.animate()
                 .alpha(1f)
                 .setDuration(1000)
                 .start();
+
+        playersTextView.setVisibility(TextView.VISIBLE);
+        selectedSubjectsTextView.setVisibility(TextView.VISIBLE);
+        selectedDifficultiesTextView.setVisibility(TextView.VISIBLE);
+        playersListTextView.setVisibility(TextView.VISIBLE);
+        roomTitleTextView.setText("Room: " + room.getCreatorNickname());
+        leaveRoomButton.setVisibility(View.VISIBLE);
+        isWaitingScreen = true;
+    }
+
+    private void switchToRoomList() {
+        roomListLayout.setVisibility(LinearLayout.VISIBLE);
+        waitingLayout.setVisibility(LinearLayout.GONE);
+        playersTextView.setVisibility(TextView.GONE);
+        selectedSubjectsTextView.setVisibility(TextView.GONE);
+        selectedDifficultiesTextView.setVisibility(TextView.GONE);
+        playersListTextView.setVisibility(TextView.GONE);
+        leaveRoomButton.setVisibility(View.GONE);
+        isWaitingScreen = false;
     }
 
     private void updateWaitingScreen(Room room) {
         int playerCount = room.getUsers().size();
         playersTextView.setText("Играчи: " + playerCount + "/4");
+        selectedSubjectsTextView.setText("Subjects: " + room.getSubjects());
+        selectedDifficultiesTextView.setText("Difficulties: " + room.getDifficulties());
+        String playersList = "Players in room:\n";
+        for (int i = 0; i < room.getUsers().size(); i++) {
+            playersList += room.getUsers().get(i).getUsername();
+            if (i < room.getUsers().size() - 1) {
+                playersList += "\n";
+            }
+        }
+        playersListTextView.setText(playersList);
     }
 }

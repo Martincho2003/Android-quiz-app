@@ -2,6 +2,7 @@ package com.example.android_quiz_app.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -10,12 +11,16 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.android_quiz_app.R;
 import com.example.android_quiz_app.model.User;
 import com.example.android_quiz_app.viewModel.ProfileViewModel;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 
 public class ProfileActivity extends AppCompatActivity {
 
     private TextView usernameTextView, pointsTextView, lastDayPlayedTextView, playedGamesTodayTextView;
-    private Button logoutButton;
+    private Button logoutButton, changePasswordButton;
     private ProfileViewModel viewModel;
+    private GoogleSignInClient googleSignInClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +34,13 @@ public class ProfileActivity extends AppCompatActivity {
         lastDayPlayedTextView = findViewById(R.id.lastDayPlayedTextView);
         playedGamesTodayTextView = findViewById(R.id.playedGamesTodayTextView);
         logoutButton = findViewById(R.id.logoutButton);
+        changePasswordButton = findViewById(R.id.changePasswordButton);
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(String.valueOf(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+        googleSignInClient = GoogleSignIn.getClient(this, gso);
 
         viewModel.getProfileState().observe(this, state -> {
             if (state.isSuccess()) {
@@ -40,14 +52,24 @@ public class ProfileActivity extends AppCompatActivity {
                     finish();
                 }
             }
+            if(!state.isGoogleUser()) {
+                changePasswordButton.setVisibility(View.VISIBLE);
+            }
             Toast.makeText(ProfileActivity.this, state.getMessage(), Toast.LENGTH_LONG).show();
         });
 
         viewModel.getCurrentUserInfo();
 
         logoutButton.setOnClickListener(v -> {
-            viewModel.logout();
+
+            viewModel.logout(googleSignInClient);
         });
+
+        changePasswordButton.setOnClickListener(v -> {
+            Intent intent = new Intent(ProfileActivity.this, ChangePasswordActivity.class);
+            startActivity(intent);
+        });
+
     }
 
     private void updateProfileUI(User user) {

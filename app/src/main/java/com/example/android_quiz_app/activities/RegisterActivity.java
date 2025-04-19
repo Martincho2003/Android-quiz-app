@@ -62,13 +62,8 @@ public class RegisterActivity extends AppCompatActivity {
             String password = passwordEditText.getText().toString().trim();
             String confirmPassword = confirmPasswordEditText.getText().toString().trim();
 
-
-            if (password.equals(confirmPassword)) {
-                registerButton.setEnabled(false);
-                viewModel.register(username, email, password,password);
-            } else {
-                Toast.makeText(RegisterActivity.this, "Паролите не съвпадат", Toast.LENGTH_LONG).show();
-            }
+            registerButton.setEnabled(false);
+            viewModel.register(username, email, password, confirmPassword);
         });
 
 

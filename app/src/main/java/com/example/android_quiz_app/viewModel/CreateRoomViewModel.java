@@ -1,6 +1,8 @@
 package com.example.android_quiz_app.viewModel;
 
 import android.util.Log;
+
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -9,8 +11,8 @@ import com.example.android_quiz_app.model.MultiplayerUser;
 import com.example.android_quiz_app.model.Question;
 import com.example.android_quiz_app.model.Room;
 import com.example.android_quiz_app.model.Subject;
-import com.example.android_quiz_app.repository.GameService;
-import com.example.android_quiz_app.repository.MultiplayerService;
+import com.example.android_quiz_app.service.GameService;
+import com.example.android_quiz_app.service.MultiplayerService;
 import java.util.List;
 
 public class CreateRoomViewModel extends ViewModel {
@@ -41,23 +43,45 @@ public class CreateRoomViewModel extends ViewModel {
         multiplayerService.getRooms().observeForever(rooms -> {
             Room currentRoom = createdRoom.getValue();
             if (currentRoom != null) {
+                boolean found = false;
                 for (Room room : rooms) {
                     if (room.getCreatorNickname().equals(currentRoom.getCreatorNickname())) {
-                        createdRoom.setValue(room);
+                        Log.d(TAG, "Found updated room: " + room.getCreatorNickname() +
+                                ", players: " + room.getUsers().size());
+                        Room updatedRoom = new Room(room.getCreatorNickname(), room.getSubjects(), room.getDifficulties());
+                        updatedRoom.setUsers(room.getUsers());
+                        updatedRoom.setQuestions(room.getQuestions());
+                        updatedRoom.setIsGameStarted(room.isGameStarted());
+                        createdRoom.setValue(updatedRoom);
+                        found = true;
                         break;
                     }
                 }
+                if (!found) {
+                    Log.d(TAG, "Room no longer exists, resetting createdRoom");
+                    createdRoom.setValue(null);
+                }
+            } else {
+                Log.d(TAG, "Current room is null, skipping update");
             }
         });
     }
 
-    public void createRoom(List<Subject> subjects, List<Difficulty> difficulties) {
-        MultiplayerUser user = currentUser.getValue();
-        if (user == null) {
-            roomCreationFailed.setValue(true);
-            return;
+    public void createRoom(List<Subject> subjects, List<Difficulty> difficulties, LifecycleOwner owner) {
+        if (currentUser.getValue() == null) {
+            Log.d(TAG, "User not loaded yet, waiting...");
+            currentUser.observe(owner, user -> {
+                if (user != null) {
+                    createRoomInitial(subjects, difficulties, user);
+                }
+            });
+        } else {
+            MultiplayerUser user = currentUser.getValue();
+            createRoomInitial(subjects, difficulties, user);
         }
+    }
 
+    private void createRoomInitial(List<Subject> subjects, List<Difficulty> difficulties, MultiplayerUser user) {
         Room room = new Room(user.getUsername(), subjects, difficulties);
         room.addUser(user);
         multiplayerService.createRoom(room);
@@ -74,6 +98,14 @@ public class CreateRoomViewModel extends ViewModel {
                 roomCreationFailed.setValue(true);
             }
         });
+    }
+
+    public void deleteRoom(Room room) {
+        if (room != null) {
+            multiplayerService.deleteRoom(room);
+            createdRoom.setValue(null);
+            Log.d(TAG, "Room deleted: " + room.getCreatorNickname());
+        }
     }
 
     public void startGame() {
@@ -105,7 +137,8 @@ public class CreateRoomViewModel extends ViewModel {
         Room room = createdRoom.getValue();
         MultiplayerUser user = currentUser.getValue();
         if (room != null && user != null && !room.isGameStarted()) {
-            multiplayerService.leaveRoom(room, user);
+            multiplayerService.deleteRoom(room);
+            Log.d(TAG, "Room deleted on cleanup: " + room.getCreatorNickname());
         }
     }
 }

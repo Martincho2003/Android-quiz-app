@@ -11,7 +11,7 @@ import com.example.android_quiz_app.MainActivity;
 import com.example.android_quiz_app.R;
 import com.example.android_quiz_app.model.MultiplayerUser;
 import com.example.android_quiz_app.model.Room;
-import com.example.android_quiz_app.repository.MultiplayerService;
+import com.example.android_quiz_app.service.MultiplayerService;
 
 import java.util.List;
 

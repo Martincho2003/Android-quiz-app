@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "159984993447",
+    "firebase_url": "https://android-quiz-app-8e645-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "android-quiz-app-8e645",
     "storage_bucket": "android-quiz-app-8e645.firebasestorage.app"
   },
@@ -12,7 +13,20 @@
           "package_name": "com.example.android_quiz_app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "159984993447-6qhkj8at35n7sbandstomq5smd296tdd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.android_quiz_app",
+            "certificate_hash": "9cc0198dd99e240787a7dc8d4060290b2b64a9c7"
+          }
+        },
+        {
+          "client_id": "159984993447-beteb933bpg0e28fc2mo8lg0pve5r8iq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBpnViGumJ1Nx2EiH2pwXt7XTSs-dRJpYU"
@@ -20,7 +34,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "159984993447-beteb933bpg0e28fc2mo8lg0pve5r8iq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

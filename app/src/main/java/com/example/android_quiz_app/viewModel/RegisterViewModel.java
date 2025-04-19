@@ -5,8 +5,9 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import com.example.android_quiz_app.model.User;
-import com.example.android_quiz_app.repository.FirebaseManager;
+import com.example.android_quiz_app.service.FirebaseManager;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import java.io.IOException;
 
@@ -26,7 +27,6 @@ public class RegisterViewModel extends ViewModel {
     }
 
     public void register(String username, String email, String password, String confirmPassword) {
-        // Validate inputs
         if (TextUtils.isEmpty(username)) {
             registrationState.setValue(new RegistrationState(false, "Потребителското име е задължително"));
             return;
@@ -48,43 +48,53 @@ public class RegisterViewModel extends ViewModel {
             return;
         }
 
-        auth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        String userId = auth.getCurrentUser().getUid();
-                        User user = new User(username, 0, "1.1.1970", 0);
-                        databaseReference.child(userId).setValue(user)
-                                .addOnSuccessListener(aVoid -> {
-                                    registrationState.setValue(new RegistrationState(true, "Регистрацията е успешна"));
-                                })
-                                .addOnFailureListener(e -> {
-                                    auth.getCurrentUser().delete()
-                                            .addOnCompleteListener(deleteTask -> {
-                                                if (deleteTask.isSuccessful()) {
-                                                    registrationState.setValue(new RegistrationState(false, "Регистрацията неуспешна, моля, опитайте отново"));
-                                                } else {
-                                                    registrationState.setValue(new RegistrationState(false, "Регистрацията неуспешна, моля, излезте и опитайте отново"));
-                                                }
-                                            });
-                                });
-                    } else {
-                        String errorMessage = "Регистрацията неуспешна";
-                        if (task.getException() != null) {
-                            errorMessage += ": " + task.getException().getMessage();
-                            if (task.getException() instanceof java.io.IOException) {
-                                errorMessage = "Мрежова грешка (напр. reCAPTCHA неуспех). Моля, проверете интернет връзката си и опитайте отново.";
+        databaseReference.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DataSnapshot snapshot = task.getResult();
+                boolean usernameExists = false;
+                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+                    User existingUser = userSnapshot.getValue(User.class);
+                    if (existingUser != null && username.equals(existingUser.getUsername())) {
+                        usernameExists = true;
+                        break;
+                    }
+                }
+                if (usernameExists) {
+                    registrationState.setValue(new RegistrationState(false, "Потребител с такова име вече съществува, моля изберете друго"));
+                    return;
+                }
+                auth.createUserWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(task2 -> {
+                            if (task2.isSuccessful()) {
+                                String userId = auth.getCurrentUser().getUid();
+                                User user = new User(username, 0, "1.1.1970", 0);
+
+                                databaseReference.child(userId).setValue(user)
+                                        .addOnSuccessListener(aVoid -> {
+                                            registrationState.setValue(new RegistrationState(true, "Регистрацията е успешна"));
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            auth.getCurrentUser().delete()
+                                                    .addOnCompleteListener(deleteTask -> {
+                                                        if (deleteTask.isSuccessful()) {
+                                                            registrationState.setValue(new RegistrationState(false, "Регистрацията неуспешна, моля, опитайте отново"));
+                                                        } else {
+                                                            registrationState.setValue(new RegistrationState(false, "Регистрацията неуспешна, моля, излезте и опитайте отново"));
+                                                        }
+                                                    });
+                                        });
+                            } else {
+                                registrationState.setValue(new RegistrationState(false, "Регистрацията неуспешна: " + task2.getException().getMessage()));
                             }
-                        }
-                        registrationState.setValue(new RegistrationState(false, errorMessage));
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    String errorMessage = "Регистрацията неуспешна: " + e.getMessage();
-                    if (e instanceof java.io.IOException) {
-                        errorMessage = "Мрежова грешка (напр. reCAPTCHA неуспех). Моля, проверете интернет връзката си и опитайте отново.";
-                    }
-                    registrationState.setValue(new RegistrationState(false, errorMessage));
-                });
+                        })
+                        .addOnFailureListener(e -> {
+                            registrationState.setValue(new RegistrationState(false, "Регистрацията неуспешна: " + e.getMessage()));
+                        });
+
+            } else {
+                registrationState.setValue(new RegistrationState(false, "Грешка при проверката на потребителсо име: " + task.getException().getMessage()));
+            }
+        });
     }
 
     public static class RegistrationState {

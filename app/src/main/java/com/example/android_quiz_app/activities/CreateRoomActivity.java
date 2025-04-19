@@ -10,6 +10,9 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.activity.OnBackPressedCallback;
+import androidx.activity.OnBackPressedDispatcher;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.android_quiz_app.R;
@@ -25,10 +28,12 @@ public class CreateRoomActivity extends AppCompatActivity {
 
     private static final String TAG = "CreateRoomActivity";
     private LinearLayout subjectsContainer, difficultiesContainer;
-    private Button createRoomButton, startGameButton;
-    private TextView titleTextView, waitingTextView, playersTextView;
+    private Button createRoomButton, startGameButton, deleteRoomButton;
+    private TextView titleTextView, waitingTextView, playersTextView, subjectsLabel, difficultiesLabel;
+    private TextView selectedSubjectsTextView, selectedDifficultiesTextView, playersListTextView;
     private List<CheckBox> subjectCheckBoxes, difficultyCheckBoxes;
     private CreateRoomViewModel viewModel;
+    private boolean isWaitingScreen = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +47,23 @@ public class CreateRoomActivity extends AppCompatActivity {
         titleTextView = findViewById(R.id.titleTextView);
         waitingTextView = findViewById(R.id.waitingTextView);
         playersTextView = findViewById(R.id.playersTextView);
+        subjectsLabel = findViewById(R.id.subjectsLabel);
+        difficultiesLabel = findViewById(R.id.difficultiesLabel);
+        selectedSubjectsTextView = findViewById(R.id.selectedSubjectsTextView);
+        selectedDifficultiesTextView = findViewById(R.id.selectedDifficultiesTextView);
+        playersListTextView = findViewById(R.id.playersListTextView);
+        deleteRoomButton = findViewById(R.id.deleteRoomButton);
+        OnBackPressedDispatcher dispatcher = getOnBackPressedDispatcher();
+        dispatcher.addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (isWaitingScreen) {
+                    deleteRoom();
+                } else {
+                    finish();
+                }
+            }
+        });
 
         subjectCheckBoxes = new ArrayList<>();
         difficultyCheckBoxes = new ArrayList<>();
@@ -117,6 +139,7 @@ public class CreateRoomActivity extends AppCompatActivity {
 
         createRoomButton.setOnClickListener(v -> createRoom());
         startGameButton.setOnClickListener(v -> startGame());
+        deleteRoomButton.setOnClickListener(v -> deleteRoom());
 
         viewModel.getLoadedQuestions().observe(this, questions -> {
             if (questions != null) {
@@ -138,6 +161,7 @@ public class CreateRoomActivity extends AppCompatActivity {
             if (room != null) {
                 Log.d(TAG, "Room updated: " + room.getCreatorNickname() + ", players: " + room.getUsers().size());
                 updateWaitingScreen(room);
+                isWaitingScreen = true;
             } else {
                 Log.e(TAG, "Room is null in getCreatedRoom observer");
             }
@@ -168,23 +192,42 @@ public class CreateRoomActivity extends AppCompatActivity {
             selectedDifficulties.addAll(Arrays.asList(Difficulty.values()));
         }
 
-        viewModel.createRoom(selectedSubjects, selectedDifficulties);
+        viewModel.createRoom(selectedSubjects, selectedDifficulties, this);
+
     }
 
     private void switchToWaitingScreen() {
         titleTextView.setText("Стая: " + viewModel.getCurrentUser().getValue().getUsername());
+        subjectsLabel.setVisibility(View.GONE);
+        difficultiesLabel.setVisibility(View.GONE);
         subjectsContainer.setVisibility(View.GONE);
         difficultiesContainer.setVisibility(View.GONE);
         createRoomButton.setVisibility(View.GONE);
         waitingTextView.setVisibility(View.VISIBLE);
         playersTextView.setVisibility(View.VISIBLE);
         startGameButton.setVisibility(View.VISIBLE);
+        selectedSubjectsTextView.setVisibility(View.VISIBLE);
+        selectedDifficultiesTextView.setVisibility(View.VISIBLE);
+        playersListTextView.setVisibility(View.VISIBLE);
+        deleteRoomButton.setVisibility(View.VISIBLE);
+        Log.d(TAG, "Switched to waiting screen");
     }
 
     private void updateWaitingScreen(Room room) {
         int playerCount = room.getUsers().size();
         playersTextView.setText("Играчи: " + playerCount + "/4");
         startGameButton.setEnabled(playerCount >= 2 && !room.isGameStarted());
+        selectedSubjectsTextView.setText("Subjects: " + Arrays.toString(room.getSubjects().toArray()));
+        selectedDifficultiesTextView.setText("Difficulties: " + Arrays.toString(room.getDifficulties().toArray()));
+        String playersList = "Players in room:\n";
+        for (int i = 0; i < room.getUsers().size(); i++) {
+            playersList += room.getUsers().get(i).getUsername();
+            if (i < room.getUsers().size() - 1) {
+                playersList += "\n";
+            }
+        }
+        playersListTextView.setText(playersList);
+
         Log.d(TAG, "Updated waiting screen, players: " + playerCount + ", isGameStarted: " + room.isGameStarted());
 
         if (room.isGameStarted()) {
@@ -198,5 +241,17 @@ public class CreateRoomActivity extends AppCompatActivity {
 
     private void startGame() {
         viewModel.startGame();
+    }
+
+    private void deleteRoom() {
+        Room room = viewModel.getCreatedRoom().getValue();
+        if (room != null) {
+            viewModel.deleteRoom(room);
+            Toast.makeText(this, "Room deleted", Toast.LENGTH_SHORT).show();
+            finish();
+        } else {
+            Log.e(TAG, "Cannot delete room: room is null");
+            Toast.makeText(this, "Failed to delete room", Toast.LENGTH_SHORT).show();
+        }
     }
 }
