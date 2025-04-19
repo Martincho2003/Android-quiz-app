@@ -7,7 +7,6 @@
     android:focusable="true"
     android:importantForAccessibility="yes"
     android:padding="8dp">
-
     <TextView
         android:id="@+id/rankTextView"
         android:layout_width="0dp"
@@ -22,7 +21,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent="0.1" />
-
     <ImageView
         android:id="@+id/medalImageView"
         android:layout_width="0dp"
@@ -33,7 +31,6 @@
         app:layout_constraintStart_toEndOf="@id/rankTextView"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent="0.1" />
-
     <TextView
         android:id="@+id/usernameTextView"
         android:layout_width="0dp"
@@ -47,7 +44,6 @@
         app:layout_constraintStart_toEndOf="@id/medalImageView"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent="0.5" />
-
     <TextView
         android:id="@+id/pointsTextView"
         android:layout_width="0dp"

@@ -72,9 +72,6 @@ public class LeaderboardActivity extends AppCompatActivity {
             holder.rankTextView.setText(String.valueOf(rank));
             holder.usernameTextView.setText(user.getUsername());
             holder.pointsTextView.setText(user.getPoints() + " точки");
-
-
-            // Задаване на иконки за медали
             if (position == 0) {
                 holder.medalImageView.setImageResource(R.drawable.gold_medal);
                 holder.medalImageView.setVisibility(View.VISIBLE);

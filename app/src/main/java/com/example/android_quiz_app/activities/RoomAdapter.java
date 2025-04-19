@@ -1,8 +1,10 @@
 package com.example.android_quiz_app.activities;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,12 +21,14 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
 
     private List<Room> rooms = new ArrayList<>();
     private final OnRoomClickListener listener;
+    private final Context context;
 
     public interface OnRoomClickListener {
         void onRoomClick(Room room);
     }
 
-    public RoomAdapter(OnRoomClickListener listener) {
+    public RoomAdapter(Context context, OnRoomClickListener listener) {
+        this.context = context;
         this.listener = listener;
     }
 
@@ -45,15 +49,45 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
         Room room = rooms.get(position);
         holder.roomNameTextView.setText(room.getCreatorNickname());
 
+        // Превод на предметите
         String subjects = room.getSubjects().stream()
-                .map(Subject::getValue)
+                .map(subject -> {
+                    switch (subject.name()) {
+                        case "BIOLOGY":
+                            return context.getString(R.string.subject_biology);
+                        case "HISTORY":
+                            return context.getString(R.string.subject_history);
+                        case "GEOGRAPHY":
+                            return context.getString(R.string.subject_geography);
+                        default:
+                            return subject.getValue(); // Fallback
+                    }
+                })
                 .collect(Collectors.joining(", "));
-        String difficulties = room.getDifficulties().stream()
-                .map(Difficulty::getValue)
-                .collect(Collectors.joining(", "));
-        String players = "Players: " + room.getUsers().size() + "/4";
 
-        holder.roomDetailsTextView.setText("Subjects: " + subjects + " | Difficulties: " + difficulties + " | " + players);
+        // Превод на трудностите
+        String difficulties = room.getDifficulties().stream()
+                .map(difficulty -> {
+                    switch (difficulty.name()) {
+                        case "EASY":
+                            return context.getString(R.string.difficulty_easy);
+                        case "HARD":
+                            return context.getString(R.string.difficulty_hard);
+                        default:
+                            return difficulty.getValue(); // Fallback
+                    }
+                })
+                .collect(Collectors.joining(", "));
+
+        String players = context.getString(R.string.players, room.getUsers().size());
+
+        String details = context.getString(R.string.room_details, subjects, difficulties, players);
+        holder.roomDetailsTextView.setText(details);
+
+        // Задаване на contentDescription за целия ред
+        String contentDescription = context.getString(R.string.room_content_description,
+                room.getCreatorNickname(), subjects, difficulties, room.getUsers().size());
+        holder.itemView.setContentDescription(contentDescription);
 
         holder.itemView.setOnClickListener(v -> listener.onRoomClick(room));
     }
@@ -65,11 +99,13 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
 
     static class RoomViewHolder extends RecyclerView.ViewHolder {
         TextView roomNameTextView, roomDetailsTextView;
+        ImageView roomIconImageView;
 
         public RoomViewHolder(@NonNull View itemView) {
             super(itemView);
             roomNameTextView = itemView.findViewById(R.id.roomNameTextView);
             roomDetailsTextView = itemView.findViewById(R.id.roomDetailsTextView);
+            roomIconImageView = itemView.findViewById(R.id.roomIconImageView);
         }
     }
 }

@@ -7,4 +7,10 @@
     <string name="difficulty_easy">Лесно</string>
     <string name="difficulty_hard">Трудно</string>
     <string name="points">точки</string>
+
+    <string name="players">Играчи: %d/4</string>
+    <string name="room_details">Предмети: %1$s | Трудности: %2$s | %3$s</string>
+    <string name="room_content_description">Стая: %1$s, Предмети: %2$s, Трудности: %3$s, Играчи: %4$d от 4</string>
+    <string name="rooms_list">Списък със стаи за присъединяване</string>
+    <string name="empty_rooms_list">Няма налични стаи за присъединяване</string>
 </resources>
