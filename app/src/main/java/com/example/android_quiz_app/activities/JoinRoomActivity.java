@@ -25,6 +25,7 @@ public class JoinRoomActivity extends AppCompatActivity {
     private JoinRoomViewModel viewModel;
     private LinearLayout roomListLayout, waitingLayout;
     private TextView roomTitleTextView, playersTextView;
+    private TextView selectedSubjectsTextView, selectedDifficultiesTextView, playersListTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +37,9 @@ public class JoinRoomActivity extends AppCompatActivity {
         waitingLayout = findViewById(R.id.waitingLayout);
         roomTitleTextView = findViewById(R.id.roomTitleTextView);
         playersTextView = findViewById(R.id.playersTextView);
+        selectedSubjectsTextView = findViewById(R.id.selectedSubjectsTextView);
+        selectedDifficultiesTextView = findViewById(R.id.selectedDifficultiesTextView);
+        playersListTextView = findViewById(R.id.playersListTextView);
 
         roomsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         roomAdapter = new RoomAdapter(this::joinRoom);
@@ -96,11 +100,25 @@ public class JoinRoomActivity extends AppCompatActivity {
     private void switchToWaitingScreen(Room room) {
         roomListLayout.setVisibility(LinearLayout.GONE);
         waitingLayout.setVisibility(LinearLayout.VISIBLE);
+        playersTextView.setVisibility(TextView.VISIBLE);
+        selectedSubjectsTextView.setVisibility(TextView.VISIBLE);
+        selectedDifficultiesTextView.setVisibility(TextView.VISIBLE);
+        playersListTextView.setVisibility(TextView.VISIBLE);
         roomTitleTextView.setText("Room: " + room.getCreatorNickname());
     }
 
     private void updateWaitingScreen(Room room) {
         int playerCount = room.getUsers().size();
         playersTextView.setText("Players: " + playerCount + "/4");
+        selectedSubjectsTextView.setText("Subjects: " + room.getSubjects());
+        selectedDifficultiesTextView.setText("Difficulties: " + room.getDifficulties());
+        String playersList = "Players in room:\n";
+        for (int i = 0; i < room.getUsers().size(); i++) {
+            playersList += room.getUsers().get(i).getUsername();
+            if (i < room.getUsers().size() - 1) {
+                playersList += "\n";
+            }
+        }
+        playersListTextView.setText(playersList);
     }
 }

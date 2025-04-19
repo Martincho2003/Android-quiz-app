@@ -51,9 +51,21 @@ public class CreateRoomViewModel extends ViewModel {
         });
     }
 
-    public void createRoom(List<Subject> subjects, List<Difficulty> difficulties) {
+    public void createRoom(List<Subject> subjects, List<Difficulty> difficulties) throws InterruptedException {
         MultiplayerUser user = currentUser.getValue();
+        int counter = 0;
+        while (user == null) {
+            Log.d(TAG, "Waiting for current user to be loaded");
+            wait(500);
+            counter++;
+            user = currentUser.getValue();
+            if (counter > 10) {
+                Log.e(TAG, "Timed out waiting for current user to be loaded");
+                break;
+            }
+        }
         if (user == null) {
+            Log.e(TAG, "Current user is null");
             roomCreationFailed.setValue(true);
             return;
         }
@@ -63,6 +75,7 @@ public class CreateRoomViewModel extends ViewModel {
         multiplayerService.createRoom(room);
         createdRoom.setValue(room);
 
+        MultiplayerUser finalUser = user;
         gameService.getQuestionsFromPub(difficulties, subjects).observeForever(questions -> {
             if (questions != null && !questions.isEmpty()) {
                 room.setQuestions(questions);
@@ -70,7 +83,7 @@ public class CreateRoomViewModel extends ViewModel {
                 loadedQuestions.setValue(questions);
                 Log.d(TAG, "Questions loaded for room: " + questions.size());
             } else {
-                multiplayerService.leaveRoom(room, user);
+                multiplayerService.leaveRoom(room, finalUser);
                 roomCreationFailed.setValue(true);
             }
         });

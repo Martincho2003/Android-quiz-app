@@ -11,7 +11,6 @@ import com.example.android_quiz_app.R;
 import com.example.android_quiz_app.MainActivity;
 import com.example.android_quiz_app.model.User;
 import com.example.android_quiz_app.service.FirebaseManager;
-import com.example.android_quiz_app.viewModel.RegisterViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;

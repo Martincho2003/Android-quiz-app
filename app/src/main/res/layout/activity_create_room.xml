@@ -52,7 +52,6 @@
         android:layout_height="wrap_content"
         android:text="Create Room"/>
 
-    <!-- Екран за чакане -->
     <TextView
         android:id="@+id/waitingTextView"
         android:layout_width="wrap_content"
@@ -68,6 +67,36 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Players: 1/4"
+        android:textSize="16sp"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:layout_marginTop="8dp"/>
+
+    <TextView
+        android:id="@+id/selectedSubjectsTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Subjects: "
+        android:textSize="16sp"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:layout_marginTop="8dp"/>
+
+    <TextView
+        android:id="@+id/selectedDifficultiesTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Difficulties: "
+        android:textSize="16sp"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:layout_marginTop="8dp"/>
+
+    <TextView
+        android:id="@+id/playersListTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Players in room: "
         android:textSize="16sp"
         android:layout_gravity="center"
         android:visibility="gone"

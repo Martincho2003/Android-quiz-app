@@ -25,7 +25,8 @@ public class CreateRoomActivity extends AppCompatActivity {
     private static final String TAG = "CreateRoomActivity";
     private LinearLayout subjectsContainer, difficultiesContainer;
     private Button createRoomButton, startGameButton;
-    private TextView titleTextView, waitingTextView, playersTextView;
+    private TextView titleTextView, waitingTextView, playersTextView, subjectsLabel, difficultiesLabel;
+    private TextView selectedSubjectsTextView, selectedDifficultiesTextView, playersListTextView;
     private List<CheckBox> subjectCheckBoxes, difficultyCheckBoxes;
     private CreateRoomViewModel viewModel;
 
@@ -41,6 +42,11 @@ public class CreateRoomActivity extends AppCompatActivity {
         titleTextView = findViewById(R.id.titleTextView);
         waitingTextView = findViewById(R.id.waitingTextView);
         playersTextView = findViewById(R.id.playersTextView);
+        subjectsLabel = findViewById(R.id.subjectsLabel);
+        difficultiesLabel = findViewById(R.id.difficultiesLabel);
+        selectedSubjectsTextView = findViewById(R.id.selectedSubjectsTextView);
+        selectedDifficultiesTextView = findViewById(R.id.selectedDifficultiesTextView);
+        playersListTextView = findViewById(R.id.playersListTextView);
 
         subjectCheckBoxes = new ArrayList<>();
         difficultyCheckBoxes = new ArrayList<>();
@@ -116,23 +122,44 @@ public class CreateRoomActivity extends AppCompatActivity {
             selectedDifficulties.addAll(Arrays.asList(Difficulty.values()));
         }
 
-        viewModel.createRoom(selectedSubjects, selectedDifficulties);
+        try {
+            viewModel.createRoom(selectedSubjects, selectedDifficulties);
+        } catch (InterruptedException e) {
+            Log.e(TAG, "Error creating room", e);
+        }
     }
 
     private void switchToWaitingScreen() {
         titleTextView.setText("Room: " + viewModel.getCurrentUser().getValue().getUsername());
+        subjectsLabel.setVisibility(View.GONE);
+        difficultiesLabel.setVisibility(View.GONE);
         subjectsContainer.setVisibility(View.GONE);
         difficultiesContainer.setVisibility(View.GONE);
         createRoomButton.setVisibility(View.GONE);
         waitingTextView.setVisibility(View.VISIBLE);
         playersTextView.setVisibility(View.VISIBLE);
         startGameButton.setVisibility(View.VISIBLE);
+        selectedSubjectsTextView.setVisibility(View.VISIBLE);
+        selectedDifficultiesTextView.setVisibility(View.VISIBLE);
+        playersListTextView.setVisibility(View.VISIBLE);
+        Log.d(TAG, "Switched to waiting screen");
     }
 
     private void updateWaitingScreen(Room room) {
         int playerCount = room.getUsers().size();
         playersTextView.setText("Players: " + playerCount + "/4");
         startGameButton.setEnabled(playerCount >= 2 && !room.isGameStarted());
+        selectedSubjectsTextView.setText("Subjects: " + Arrays.toString(room.getSubjects().toArray()));
+        selectedDifficultiesTextView.setText("Difficulties: " + Arrays.toString(room.getDifficulties().toArray()));
+        String playersList = "Players in room:\n";
+        for (int i = 0; i < room.getUsers().size(); i++) {
+            playersList += room.getUsers().get(i).getUsername();
+            if (i < room.getUsers().size() - 1) {
+                playersList += "\n";
+            }
+        }
+        playersListTextView.setText(playersList);
+
         Log.d(TAG, "Updated waiting screen, players: " + playerCount + ", isGameStarted: " + room.isGameStarted());
 
         if (room.isGameStarted()) {
