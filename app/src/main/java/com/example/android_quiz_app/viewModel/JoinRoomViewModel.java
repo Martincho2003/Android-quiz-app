@@ -6,8 +6,8 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import com.example.android_quiz_app.model.MultiplayerUser;
 import com.example.android_quiz_app.model.Room;
-import com.example.android_quiz_app.repository.GameService;
-import com.example.android_quiz_app.repository.MultiplayerService;
+import com.example.android_quiz_app.service.GameService;
+import com.example.android_quiz_app.service.MultiplayerService;
 import java.util.List;
 
 public class JoinRoomViewModel extends ViewModel {
@@ -64,6 +64,15 @@ public class JoinRoomViewModel extends ViewModel {
             Log.d(TAG, "Joined room: " + room.getCreatorNickname());
         } else {
             Log.e(TAG, "Cannot join room: current user is null");
+        }
+    }
+
+    public void leaveRoom(Room room) {
+        MultiplayerUser user = currentUser.getValue();
+        if (user != null && room != null) {
+            multiplayerService.leaveRoom(room, user);
+            joinedRoom.setValue(null);
+            Log.d(TAG, "Left room: " + room.getCreatorNickname());
         }
     }
 

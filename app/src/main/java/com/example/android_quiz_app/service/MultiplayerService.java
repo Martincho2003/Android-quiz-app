@@ -1,4 +1,4 @@
-package com.example.android_quiz_app.repository;
+package com.example.android_quiz_app.service;
 
 import android.util.Log;
 
@@ -81,6 +81,10 @@ public class MultiplayerService {
         } else {
             updateRoom(room);
         }
+    }
+
+    public void deleteRoom(Room room) {
+        roomsRef.child(room.getCreatorNickname()).removeValue();
     }
 
     public void startGame(Room room) {

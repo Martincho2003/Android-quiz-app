@@ -10,7 +10,7 @@ import com.example.android_quiz_app.model.Difficulty;
 import com.example.android_quiz_app.model.Question;
 import com.example.android_quiz_app.model.Subject;
 import com.example.android_quiz_app.model.User;
-import com.example.android_quiz_app.repository.GameService;
+import com.example.android_quiz_app.service.GameService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -75,9 +75,7 @@ public class GameViewModel extends ViewModel {
     }
 
     private void loadUserDetails() {
-        gameService.getUserDetails().observeForever(details -> {
-            userDetails.setValue(details);
-        });
+        gameService.getUserDetails().observeForever(userDetails::setValue);
     }
 
     private void startTimer() {

@@ -44,12 +44,24 @@
             android:layout_marginBottom="16dp"/>
 
         <TextView
+            android:id="@+id/selectedSubjectsTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Waiting for game to start..."
-            android:textSize="18sp"
+            android:text="Subjects: "
+            android:textSize="16sp"
             android:layout_gravity="center"
-            android:layout_marginBottom="8dp"/>
+            android:visibility="gone"
+            android:layout_marginTop="8dp"/>
+
+        <TextView
+            android:id="@+id/selectedDifficultiesTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Difficulties: "
+            android:textSize="16sp"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:layout_marginTop="8dp"/>
 
         <TextView
             android:id="@+id/playersTextView"
@@ -58,5 +70,34 @@
             android:text="Players: 1/4"
             android:textSize="16sp"
             android:layout_gravity="center"/>
+
+        <TextView
+            android:id="@+id/playersListTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Players in room: "
+            android:textSize="16sp"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:layout_marginTop="8dp"/>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Waiting for game to start..."
+            android:textSize="18sp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="8dp"/>
+
+        <Button
+            android:id="@+id/leaveRoomButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Leave Room"
+            android:visibility="gone"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="#FF9800"
+            android:textColor="#FFFFFF"/>
     </LinearLayout>
 </LinearLayout>

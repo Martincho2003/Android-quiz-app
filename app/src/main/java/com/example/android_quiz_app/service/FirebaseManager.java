@@ -1,4 +1,4 @@
-package com.example.android_quiz_app.repository;
+package com.example.android_quiz_app.service;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
