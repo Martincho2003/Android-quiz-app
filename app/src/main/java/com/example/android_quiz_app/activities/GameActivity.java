@@ -22,8 +22,14 @@ import com.example.android_quiz_app.model.Difficulty;
 import com.example.android_quiz_app.model.Question;
 import com.example.android_quiz_app.model.Subject;
 import com.example.android_quiz_app.viewModel.GameViewModel;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class GameActivity extends AppCompatActivity {
 
@@ -32,6 +38,8 @@ public class GameActivity extends AppCompatActivity {
     private Button answerButton1, answerButton2, answerButton3, answerButton4, addTimeButton, excludeButton;
     private GameViewModel viewModel;
     private List<Question> currentQuestions;
+    private boolean isSameDay = true;
+    private int gamesPlayedToday = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +111,7 @@ public class GameActivity extends AppCompatActivity {
         viewModel.getGameEnded().observe(this, finalPoints -> {
             if (finalPoints != null) {
                 Log.d(TAG, "Game ended, showing dialog with points: " + finalPoints);
-                showGameOverDialog(finalPoints);
+                showGameOverDialog(finalPoints, isSameDay, gamesPlayedToday);
             }
         });
 
@@ -124,6 +132,13 @@ public class GameActivity extends AppCompatActivity {
                 return;
             }
             Log.d(TAG, "User details loaded: " + user.getUsername() + ", points: " + user.getPoints());
+            gamesPlayedToday = user.getPlayedGamesToday();
+            try {
+                Date lastGameDate = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).parse(user.getLastDayPlayed());
+                isSameDay = lastGameDate != null && Calendar.getInstance().getTime().getTime() - lastGameDate.getTime() < 24 * 60 * 60 * 1000;
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
             updateButtonsState();
         });
 
@@ -148,7 +163,7 @@ public class GameActivity extends AppCompatActivity {
         excludeButton.setOnClickListener(v -> viewModel.excludeAnswers());
     }
 
-    private void showGameOverDialog(int finalPoints) {
+    private void showGameOverDialog(int finalPoints, boolean isSameDay, int gamesPlayedToday) {
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_game_over, null);
 
@@ -156,7 +171,9 @@ public class GameActivity extends AppCompatActivity {
         Button okButton = dialogView.findViewById(R.id.dialog_ok_button);
         LottieAnimationView lottieAnimationView = dialogView.findViewById(R.id.lottie_game_over);
 
+        if(isSameDay && gamesPlayedToday == 4){
 
+        }
         if (finalPoints == 0) {
             messageTextView.setText("Е, не спечели нищо, но поне и не загуби точки!");
             lottieAnimationView.setAnimation(R.raw.neutral_gameover);

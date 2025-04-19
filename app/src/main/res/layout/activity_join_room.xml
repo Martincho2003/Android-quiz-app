@@ -100,7 +100,6 @@
 
     </LinearLayout>
 
-    <!-- Анимация за екрана за присъединяване -->
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/joinAnimation"
         android:layout_width="216dp"
