@@ -88,6 +88,25 @@ public class LoginViewModel extends ViewModel {
                 });
     }
 
+    public void resetPassword(String email) {
+        if (TextUtils.isEmpty(email)) {
+            loginState.setValue(new LoginState(false, "Нужно е първо да въведете имейл"));
+            return;
+        }
+
+        auth.sendPasswordResetEmail(email)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        loginState.setValue(new LoginState(true, "Имейл за смяна на паролата е изпратен. Моля проверете и в СПАМ папката!"));
+                    } else {
+                        loginState.setValue(new LoginState(false, "Грешка при изпращане не имейл: " + task.getException().getMessage()));
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    loginState.setValue(new LoginState(false, "Грешка при изпращане не имейл: " + e.getMessage()));
+                });
+    }
+
     public static class LoginState {
         private final boolean isSuccess;
         private final String message;

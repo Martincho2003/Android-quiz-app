@@ -9,11 +9,11 @@
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
       <SelectionState runConfigName="MainActivity (3)">
-        <option name="selectionMode" value="DIALOG" />
-        <DropdownSelection timestamp="2025-04-19T13:36:48.541438600Z">
+        <option name="selectionMode" value="DROPDOWN" />
+        <DropdownSelection timestamp="2025-04-19T17:50:50.725229600Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\marti\.android\avd\Pixel_9_Pro.avd" />
+              <DeviceId pluginId="PhysicalDevice" identifier="serial=e66pkjivcitwnrge" />
             </handle>
           </Target>
         </DropdownSelection>
