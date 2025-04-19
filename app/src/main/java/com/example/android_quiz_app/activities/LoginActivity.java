@@ -9,9 +9,11 @@ import android.view.MotionEvent;
 import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.android_quiz_app.R;
@@ -26,6 +28,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText emailEditText, passwordEditText;
     private Button loginButton, goToRegisterButton, googleLoginButton;
+    private TextView forgotPasswordTextView;
     private LoginViewModel viewModel;
     private boolean isPasswordVisible = false;
     private GoogleSignInClient googleSignInClient;
@@ -44,6 +47,7 @@ public class LoginActivity extends AppCompatActivity {
         loginButton = findViewById(R.id.loginButton);
         goToRegisterButton = findViewById(R.id.goToRegisterButton);
         googleLoginButton = findViewById(R.id.googleLoginButton);
+        forgotPasswordTextView = findViewById(R.id.forgotPasswordTextView);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -119,6 +123,28 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         });
+
+        forgotPasswordTextView.setOnClickListener(v -> { showResetPasswordDialog();});
+    }
+
+    private void showResetPasswordDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Нулиране на парола");
+
+        final EditText emailInput = new EditText(this);
+        emailInput.setHint("Въведете имейл");
+        emailInput.setInputType(android.text.InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        emailInput.setPadding(40, 40, 40, 40);
+        builder.setView(emailInput);
+
+        builder.setPositiveButton("Изпрати", (dialog, which) -> {
+            String email = emailInput.getText().toString().trim();
+            viewModel.resetPassword(email);
+        });
+        builder.setNegativeButton("Отмени", (dialog, which) -> dialog.dismiss());
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     private void togglePasswordVisibility() {

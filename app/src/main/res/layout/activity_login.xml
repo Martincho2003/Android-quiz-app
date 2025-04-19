@@ -44,6 +44,18 @@
         android:inputType="textPassword"
         android:padding="12dp" />
 
+    <TextView
+        android:id="@+id/forgotPasswordTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:text="Забравена парола?"
+        android:textColor="#0000FF"
+        android:textSize="14sp" />
+
     <Button
         android:id="@+id/loginButton"
         android:layout_width="match_parent"
