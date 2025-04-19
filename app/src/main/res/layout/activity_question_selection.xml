@@ -1,54 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@drawable/download">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-
+        android:padding="16dp">
         <TextView
+            android:id="@+id/titleTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Select Questions"
-            android:textSize="24sp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/gradient_login_button"
             android:gravity="center"
-            android:padding="16dp" />
+            android:padding="16dp"
+            android:shadowColor="#40000000"
+            android:shadowDx="2"
+            android:shadowDy="2"
+            android:shadowRadius="4"
+            android:text="Избери въпроси"
+            android:textColor="@color/white"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:id="@+id/subjectsLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Subjects"
-            android:textSize="18sp"
-            android:padding="8dp" />
+            android:layout_marginTop="16dp"
+            android:padding="12dp"
+            android:text="Избери предмет:"
+            android:textColor="#021368"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/titleTextView" />
 
         <LinearLayout
             android:id="@+id/subjectsContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" />
+            android:layout_marginTop="16dp"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/subjectsLabel" />
 
         <TextView
+            android:id="@+id/difficultiesLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Difficulties"
-            android:textSize="18sp"
-            android:padding="8dp" />
+            android:layout_marginTop="16dp"
+            android:padding="12dp"
+            android:text="Избери трудност:"
+            android:textColor="#021368"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/subjectsContainer" />
 
         <LinearLayout
             android:id="@+id/difficultiesContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" />
+            android:layout_marginTop="16dp"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/difficultiesLabel" />
+
+        <TextView
+            android:id="@+id/warningText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="64dp"
+            android:background="#FFEBEE"
+            android:padding="12dp"
+            android:text="Ако не изберете нищо, въпросите ще бъдат заредени автоматично от всички предмети и трудности."
+            android:textColor="#D32F2F"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/difficultiesContainer" />
 
         <Button
             android:id="@+id/startGameButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Start Game"
-            android:layout_marginTop="16dp" />
+            android:layout_marginTop="56dp"
+            android:background="@drawable/gradient_button"
+            android:elevation="4dp"
+            android:padding="14dp"
+            android:text="Започни игра"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/warningText" />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

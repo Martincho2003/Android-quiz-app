@@ -77,8 +77,8 @@ public class ProfileActivity extends AppCompatActivity {
             usernameTextView.setText("Потребителско име: " + user.getUsername());
             pointsTextView.setText("Точки: " + user.getPoints());
             lastDayPlayedTextView.setText("Последна игра: " + (user.getLastDayPlayed() != null &&
-                    !user.getLastDayPlayed().equals("1.1.1970") ? user.getLastDayPlayed() : "Не е изиграна игра"));
-            playedGamesTodayTextView.setText("Игри днес: " + user.getPlayedGamesToday());
+                    !user.getLastDayPlayed().equals("1.1.1970") ? user.getLastDayPlayed() : "\nНе е играл/а никога"));
+            playedGamesTodayTextView.setText("Брой игри за дадения ден: " + user.getPlayedGamesToday());
         }
     }
 }

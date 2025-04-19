@@ -3,6 +3,8 @@ package com.example.android_quiz_app.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -11,6 +13,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.android_quiz_app.MainActivity;
 import com.example.android_quiz_app.R;
 import com.example.android_quiz_app.factory.GameViewModelFactory;
@@ -19,16 +22,24 @@ import com.example.android_quiz_app.model.Difficulty;
 import com.example.android_quiz_app.model.Question;
 import com.example.android_quiz_app.model.Subject;
 import com.example.android_quiz_app.viewModel.GameViewModel;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class GameActivity extends AppCompatActivity {
 
     private static final String TAG = "GameActivity";
-    private TextView questionTextView, timerTextView, pointsTextView;
+    private TextView questionTextView, timerTextView, pointsTextView,questionCountTextView;
     private Button answerButton1, answerButton2, answerButton3, answerButton4, addTimeButton, excludeButton;
     private GameViewModel viewModel;
     private List<Question> currentQuestions;
+    private boolean isSameDay = true;
+    private int gamesPlayedToday = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +49,7 @@ public class GameActivity extends AppCompatActivity {
         questionTextView = findViewById(R.id.questionTextView);
         timerTextView = findViewById(R.id.timerTextView);
         pointsTextView = findViewById(R.id.pointsTextView);
+        questionCountTextView = findViewById(R.id.questionCountTextView);
         answerButton1 = findViewById(R.id.answerButton1);
         answerButton2 = findViewById(R.id.answerButton2);
         answerButton3 = findViewById(R.id.answerButton3);
@@ -55,7 +67,7 @@ public class GameActivity extends AppCompatActivity {
         GameViewModelFactory factory = new GameViewModelFactory(subjects, difficulties);
         viewModel = new ViewModelProvider(this, factory).get(GameViewModel.class);
 
-        questionTextView.setText("Loading questions...");
+        questionTextView.setText("Зареждане на въпросите...");
         answerButton1.setVisibility(Button.GONE);
         answerButton2.setVisibility(Button.GONE);
         answerButton3.setVisibility(Button.GONE);
@@ -99,16 +111,16 @@ public class GameActivity extends AppCompatActivity {
         viewModel.getGameEnded().observe(this, finalPoints -> {
             if (finalPoints != null) {
                 Log.d(TAG, "Game ended, showing dialog with points: " + finalPoints);
-                showGameOverDialog(finalPoints);
+                showGameOverDialog(finalPoints, isSameDay, gamesPlayedToday);
             }
         });
 
         viewModel.getCurrentQuestionTime().observe(this, time -> {
-            timerTextView.setText("Time: " + time + "s");
+            timerTextView.setText("Време: " + time + "s");
         });
 
         viewModel.getPoints().observe(this, points -> {
-            pointsTextView.setText("Points: " + points);
+            pointsTextView.setText("Точки: " + points);
             if (currentQuestions != null && !currentQuestions.isEmpty()) {
                 updateButtonsState();
             }
@@ -120,6 +132,13 @@ public class GameActivity extends AppCompatActivity {
                 return;
             }
             Log.d(TAG, "User details loaded: " + user.getUsername() + ", points: " + user.getPoints());
+            gamesPlayedToday = user.getPlayedGamesToday();
+            try {
+                Date lastGameDate = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).parse(user.getLastDayPlayed());
+                isSameDay = lastGameDate != null && Calendar.getInstance().getTime().getTime() - lastGameDate.getTime() < 24 * 60 * 60 * 1000;
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
             updateButtonsState();
         });
 
@@ -144,18 +163,45 @@ public class GameActivity extends AppCompatActivity {
         excludeButton.setOnClickListener(v -> viewModel.excludeAnswers());
     }
 
-    private void showGameOverDialog(int finalPoints) {
-        new AlertDialog.Builder(this)
-                .setTitle("Game Over")
-                .setMessage("Ти спечели " + finalPoints + " точки!")
-                .setPositiveButton("OK", (dialog, which) -> {
-                    Intent mainIntent = new Intent(GameActivity.this, MainActivity.class);
-                    mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(mainIntent);
-                    finish();
-                })
+    private void showGameOverDialog(int finalPoints, boolean isSameDay, int gamesPlayedToday) {
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_game_over, null);
+
+        TextView messageTextView = dialogView.findViewById(R.id.dialog_message);
+        Button okButton = dialogView.findViewById(R.id.dialog_ok_button);
+        LottieAnimationView lottieAnimationView = dialogView.findViewById(R.id.lottie_game_over);
+
+        if(isSameDay && gamesPlayedToday == 4){
+
+        }
+        if (finalPoints == 0) {
+            messageTextView.setText("Е, не спечели нищо, но поне и не загуби точки!");
+            lottieAnimationView.setAnimation(R.raw.neutral_gameover);
+        }
+        else if(finalPoints < 0){
+            messageTextView.setText("За съжаление изгуби " + Math.abs(finalPoints) + " точки!");
+            lottieAnimationView.setAnimation(R.raw.sad_gameover);
+        }
+        else {
+            messageTextView.setText("Честито! Ти спечели " + finalPoints + " точки!");
+            lottieAnimationView.setAnimation(R.raw.gameover);
+        }
+
+        lottieAnimationView.playAnimation();
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
                 .setCancelable(false)
-                .show();
+                .create();
+
+        okButton.setOnClickListener(v -> {
+            Intent mainIntent = new Intent(GameActivity.this, MainActivity.class);
+            mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(mainIntent);
+            finish();
+            dialog.dismiss();
+        });
+
+        dialog.show();
     }
 
     private void updateQuestionUI() {
@@ -164,11 +210,14 @@ public class GameActivity extends AppCompatActivity {
             Question question = currentQuestions.get(currentIndex);
             questionTextView.setText(question.getQuestion());
 
+            questionCountTextView.setText(String.format("Въпрос: %d от %d", currentIndex + 1, currentQuestions.size()));
+
             List<Answer> answers = question.getAnswers();
-            answerButton1.setText(answers.size() > 0 ? answers.get(0).getAnswer() : "");
-            answerButton2.setText(answers.size() > 1 ? answers.get(1).getAnswer() : "");
-            answerButton3.setText(answers.size() > 2 ? answers.get(2).getAnswer() : "");
-            answerButton4.setText(answers.size() > 3 ? answers.get(3).getAnswer() : "");
+            answerButton1.setText(answers.size() > 0 ? "А) " + answers.get(0).getAnswer() : "");
+            answerButton2.setText(answers.size() > 1 ? "Б) " + answers.get(1).getAnswer() : "");
+            answerButton3.setText(answers.size() > 2 ? "В) " + answers.get(2).getAnswer() : "");
+            answerButton4.setText(answers.size() > 3 ? "Г) " + answers.get(3).getAnswer() : "");
+
 
             answerButton1.setVisibility(answers.size() > 0 ? Button.VISIBLE : Button.GONE);
             answerButton2.setVisibility(answers.size() > 1 ? Button.VISIBLE : Button.GONE);

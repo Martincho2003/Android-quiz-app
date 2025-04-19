@@ -15,6 +15,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.android_quiz_app.R;
 import com.example.android_quiz_app.model.Room;
 import com.example.android_quiz_app.viewModel.JoinRoomViewModel;
@@ -30,6 +32,8 @@ public class JoinRoomActivity extends AppCompatActivity {
     private JoinRoomViewModel viewModel;
     private LinearLayout roomListLayout, waitingLayout;
     private TextView roomTitleTextView, playersTextView;
+    private LottieAnimationView joinAnimation, waitingAnimation1, waitingAnimation2, waitingAnimation3, waitingAnimation4;
+    private LottieAnimationView questionMarkAnimation1, questionMarkAnimation2, questionMarkAnimation3;
     private TextView selectedSubjectsTextView, selectedDifficultiesTextView, playersListTextView;
     private Button leaveRoomButton;
     private boolean isWaitingScreen = false;
@@ -44,6 +48,14 @@ public class JoinRoomActivity extends AppCompatActivity {
         waitingLayout = findViewById(R.id.waitingLayout);
         roomTitleTextView = findViewById(R.id.roomTitleTextView);
         playersTextView = findViewById(R.id.playersTextView);
+        joinAnimation = findViewById(R.id.joinAnimation);
+        waitingAnimation1 = findViewById(R.id.waitingAnimation1);
+        waitingAnimation2 = findViewById(R.id.waitingAnimation2);
+        waitingAnimation3 = findViewById(R.id.waitingAnimation3);
+        waitingAnimation4 = findViewById(R.id.waitingAnimation4);
+        questionMarkAnimation1 = findViewById(R.id.questionMarkAnimation1);
+        questionMarkAnimation2 = findViewById(R.id.questionMarkAnimation2);
+        questionMarkAnimation3 = findViewById(R.id.questionMarkAnimation3);
         selectedSubjectsTextView = findViewById(R.id.selectedSubjectsTextView);
         selectedDifficultiesTextView = findViewById(R.id.selectedDifficultiesTextView);
         playersListTextView = findViewById(R.id.playersListTextView);
@@ -62,7 +74,7 @@ public class JoinRoomActivity extends AppCompatActivity {
         });
 
         roomsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        roomAdapter = new RoomAdapter(this::joinRoom);
+        roomAdapter = new RoomAdapter(this, this::joinRoom);
         roomsRecyclerView.setAdapter(roomAdapter);
 
         viewModel = new ViewModelProvider(this).get(JoinRoomViewModel.class);
@@ -76,6 +88,9 @@ public class JoinRoomActivity extends AppCompatActivity {
                 }
             }
             roomAdapter.setRooms(filteredRooms);
+            roomsRecyclerView.setContentDescription(filteredRooms.isEmpty() ?
+                    getString(R.string.empty_rooms_list) :
+                    getString(R.string.rooms_list));
         });
 
         viewModel.getJoinedRoom().observe(this, room -> {
@@ -101,22 +116,22 @@ public class JoinRoomActivity extends AppCompatActivity {
 
     private void joinRoom(Room room) {
         if (viewModel.getCurrentUser().getValue() == null) {
-            Toast.makeText(this, "User not loaded yet. Please wait.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Потребителят не е зареден. Моля, изчакайте.", Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (room.getUsers().size() >= 4) {
-            Toast.makeText(this, "Room is full.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Стаята е пълна", Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (room.isGameStarted()) {
-            Toast.makeText(this, "Game has already started.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Играта вече е започнала.", Toast.LENGTH_SHORT).show();
             return;
         }
 
         viewModel.joinRoom(room);
-        Toast.makeText(this, "Joined room: " + room.getCreatorNickname(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Присъединихте се към стаята: " + room.getCreatorNickname(), Toast.LENGTH_SHORT).show();
     }
 
     private void leaveRoom() {
@@ -131,6 +146,42 @@ public class JoinRoomActivity extends AppCompatActivity {
     private void switchToWaitingScreen(Room room) {
         roomListLayout.setVisibility(LinearLayout.GONE);
         waitingLayout.setVisibility(LinearLayout.VISIBLE);
+        joinAnimation.setVisibility(LinearLayout.GONE);
+        roomTitleTextView.setText("Стая: " + room.getCreatorNickname());
+
+        waitingAnimation1.setVisibility(LinearLayout.VISIBLE);
+        waitingAnimation2.setVisibility(LinearLayout.VISIBLE);
+        waitingAnimation3.setVisibility(LinearLayout.VISIBLE);
+        waitingAnimation4.setVisibility(LinearLayout.VISIBLE);
+
+        waitingAnimation1.setAnimation(R.raw.waiting);
+        waitingAnimation2.setAnimation(R.raw.waiting);
+        waitingAnimation3.setAnimation(R.raw.waiting);
+        waitingAnimation4.setAnimation(R.raw.waiting);
+
+        waitingAnimation1.playAnimation();
+        waitingAnimation2.playAnimation();
+        waitingAnimation3.playAnimation();
+        waitingAnimation4.playAnimation();
+
+        questionMarkAnimation1.setVisibility(LinearLayout.VISIBLE);
+        questionMarkAnimation2.setVisibility(LinearLayout.VISIBLE);
+        questionMarkAnimation3.setVisibility(LinearLayout.VISIBLE);
+
+        questionMarkAnimation1.setAnimation(R.raw.question_marks);
+        questionMarkAnimation2.setAnimation(R.raw.question_marks);
+        questionMarkAnimation3.setAnimation(R.raw.question_marks);
+
+        questionMarkAnimation1.playAnimation();
+        questionMarkAnimation2.playAnimation();
+        questionMarkAnimation3.playAnimation();
+
+        waitingLayout.setAlpha(0f);
+        waitingLayout.animate()
+                .alpha(1f)
+                .setDuration(1000)
+                .start();
+
         playersTextView.setVisibility(TextView.VISIBLE);
         selectedSubjectsTextView.setVisibility(TextView.VISIBLE);
         selectedDifficultiesTextView.setVisibility(TextView.VISIBLE);
@@ -153,7 +204,7 @@ public class JoinRoomActivity extends AppCompatActivity {
 
     private void updateWaitingScreen(Room room) {
         int playerCount = room.getUsers().size();
-        playersTextView.setText("Players: " + playerCount + "/4");
+        playersTextView.setText("Играчи: " + playerCount + "/4");
         selectedSubjectsTextView.setText("Subjects: " + room.getSubjects());
         selectedDifficultiesTextView.setText("Difficulties: " + room.getDifficulties());
         String playersList = "Players in room:\n";

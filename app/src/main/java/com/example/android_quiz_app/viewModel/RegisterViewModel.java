@@ -9,6 +9,7 @@ import com.example.android_quiz_app.service.FirebaseManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
+import java.io.IOException;
 
 public class RegisterViewModel extends ViewModel {
     private FirebaseAuth auth;
@@ -27,27 +28,25 @@ public class RegisterViewModel extends ViewModel {
 
     public void register(String username, String email, String password, String confirmPassword) {
         if (TextUtils.isEmpty(username)) {
-            registrationState.setValue(new RegistrationState(false, "Username is required"));
+            registrationState.setValue(new RegistrationState(false, "Потребителското име е задължително"));
             return;
         }
         if (TextUtils.isEmpty(email)) {
-            registrationState.setValue(new RegistrationState(false, "Email is required"));
+            registrationState.setValue(new RegistrationState(false, "Имейлът е задължителен"));
             return;
         }
         if (TextUtils.isEmpty(password)) {
-            registrationState.setValue(new RegistrationState(false, "Password is required"));
+            registrationState.setValue(new RegistrationState(false, "Паролата е задължителна"));
             return;
         }
         if (password.length() < 8) {
-            registrationState.setValue(new RegistrationState(false, "Password must be at least 8 characters"));
+            registrationState.setValue(new RegistrationState(false, "Паролата трябва да е поне 8 символа"));
             return;
         }
         if (!password.equals(confirmPassword)) {
-            registrationState.setValue(new RegistrationState(false, "Passwords do not match"));
+            registrationState.setValue(new RegistrationState(false, "Паролите не съвпадат"));
             return;
         }
-
-
 
         databaseReference.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -61,7 +60,7 @@ public class RegisterViewModel extends ViewModel {
                     }
                 }
                 if (usernameExists) {
-                    registrationState.setValue(new RegistrationState(false, "Username already exists, please choose another one"));
+                    registrationState.setValue(new RegistrationState(false, "Потребител с такова име вече съществува, моля изберете друго"));
                     return;
                 }
                 auth.createUserWithEmailAndPassword(email, password)
@@ -72,28 +71,28 @@ public class RegisterViewModel extends ViewModel {
 
                                 databaseReference.child(userId).setValue(user)
                                         .addOnSuccessListener(aVoid -> {
-                                            registrationState.setValue(new RegistrationState(true, "Registration successful"));
+                                            registrationState.setValue(new RegistrationState(true, "Регистрацията е успешна"));
                                         })
                                         .addOnFailureListener(e -> {
                                             auth.getCurrentUser().delete()
                                                     .addOnCompleteListener(deleteTask -> {
                                                         if (deleteTask.isSuccessful()) {
-                                                            registrationState.setValue(new RegistrationState(false, "Registration failed, please try again"));
+                                                            registrationState.setValue(new RegistrationState(false, "Регистрацията неуспешна, моля, опитайте отново"));
                                                         } else {
-                                                            registrationState.setValue(new RegistrationState(false, "Registration failed, please log out and try again"));
+                                                            registrationState.setValue(new RegistrationState(false, "Регистрацията неуспешна, моля, излезте и опитайте отново"));
                                                         }
                                                     });
                                         });
                             } else {
-                                registrationState.setValue(new RegistrationState(false, "Registration failed: " + task2.getException().getMessage()));
+                                registrationState.setValue(new RegistrationState(false, "Регистрацията неуспешна: " + task2.getException().getMessage()));
                             }
                         })
                         .addOnFailureListener(e -> {
-                            registrationState.setValue(new RegistrationState(false, "Registration failed: " + e.getMessage()));
+                            registrationState.setValue(new RegistrationState(false, "Регистрацията неуспешна: " + e.getMessage()));
                         });
 
             } else {
-                registrationState.setValue(new RegistrationState(false, "Failed to check username availability: " + task.getException().getMessage()));
+                registrationState.setValue(new RegistrationState(false, "Грешка при проверката на потребителсо име: " + task.getException().getMessage()));
             }
         });
     }

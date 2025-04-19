@@ -18,20 +18,21 @@
         android:shadowDy="2"
         android:shadowRadius="4"
         android:text="Режим на играта"
-        android:textColor="#021368"
+        android:background="@drawable/gradient_login_button"
+        android:textColor="#FFFF"
         android:textSize="32sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-  
+
     <Button
         android:id="@+id/singlePlayerButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="104dp"
+        android:layout_marginTop="256dp"
         android:layout_marginEnd="16dp"
         android:animationCache="true"
         android:background="@drawable/gradient_button"
@@ -54,7 +55,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="36dp"
         android:layout_marginEnd="16dp"
         android:animationCache="true"
         android:background="@drawable/gradient_button"
@@ -74,8 +75,8 @@
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/backgroundAnimation"
-        android:layout_width="320dp"
-        android:layout_height="268dp"
+        android:layout_width="300dp"
+        android:layout_height="245dp"
         android:alpha="1.0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -83,7 +84,7 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.953"
+        app:layout_constraintVertical_bias="1.0"
         app:layout_constraintWidth_percent="0.8"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"

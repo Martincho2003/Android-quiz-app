@@ -16,6 +16,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
+        vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -74,5 +75,6 @@ dependencies {
     implementation ("androidx.cardview:cardview:1.0.0")
     implementation ("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation ("com.google.android.material:material:1.12.0")
+    implementation ("com.google.android.gms:play-services-safetynet:18.0.1")
     implementation ("com.google.android.gms:play-services-auth:21.0.0")
 }

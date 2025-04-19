@@ -5,7 +5,9 @@ import android.animation.AnimatorInflater;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -20,8 +22,9 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText usernameEditText, emailEditText, passwordEditText, confirmPasswordEditText;
     private Button registerButton, goToLoginButton;
     private RegisterViewModel viewModel;
+    private boolean isPasswordVisible = false;
+    private boolean isConfirmPasswordVisible = false;
 
-    @SuppressLint({"MissingInflatedId", "ClickableViewAccessibility"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +40,10 @@ public class RegisterActivity extends AppCompatActivity {
         goToLoginButton = findViewById(R.id.goToLoginButton);
 
 
+        setupPasswordToggle(passwordEditText);
+        setupPasswordToggle(confirmPasswordEditText);
+
+
         viewModel.getRegistrationState().observe(this, state -> {
             registerButton.setEnabled(true);
             Toast.makeText(RegisterActivity.this, state.getMessage(), Toast.LENGTH_LONG).show();
@@ -48,6 +55,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
+
         registerButton.setOnClickListener(v -> {
             String username = usernameEditText.getText().toString().trim();
             String email = emailEditText.getText().toString().trim();
@@ -58,10 +66,47 @@ public class RegisterActivity extends AppCompatActivity {
             viewModel.register(username, email, password, confirmPassword);
         });
 
+
         goToLoginButton.setOnClickListener(v -> {
             Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
             startActivity(intent);
             finish();
+        });
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private void setupPasswordToggle(final EditText editText) {
+        editText.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    if (editText.getCompoundDrawables()[2] != null &&
+                            event.getRawX() >= (editText.getRight() - editText.getCompoundDrawables()[2].getBounds().width())) {
+                        boolean isPasswordField = editText.getId() == R.id.registerPasswordEditText;
+                        boolean isVisible = isPasswordField ? isPasswordVisible : isConfirmPasswordVisible;
+
+                        if (isVisible) {
+                            editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                            editText.setCompoundDrawablesWithIntrinsicBounds(
+                                    R.drawable.password_lock, 0, R.drawable.eye, 0
+                            );
+                        } else {
+                            editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                            editText.setCompoundDrawablesWithIntrinsicBounds(
+                                    R.drawable.password_lock, 0, R.drawable.no_eye, 0
+                            );
+                        }
+                        if (isPasswordField) {
+                            isPasswordVisible = !isPasswordVisible;
+                        } else {
+                            isConfirmPasswordVisible = !isConfirmPasswordVisible;
+                        }
+                        editText.setSelection(editText.getText().length());
+                        return true;
+                    }
+                }
+                return false;
+            }
         });
     }
 }
