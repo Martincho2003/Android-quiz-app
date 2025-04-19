@@ -8,16 +8,16 @@
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/backgroundAnimation"
-        android:layout_width="291dp"
-        android:layout_height="319dp"
+        android:layout_width="318dp"
+        android:layout_height="334dp"
         android:alpha="1.0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.8"
-        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.43"
+        app:layout_constraintVertical_bias="0.461"
         app:layout_constraintWidth_percent="0.8"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
@@ -28,34 +28,17 @@
         android:id="@+id/profileButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginEnd="304dp"
         android:background="?android:attr/selectableItemBackground"
         android:drawableTop="@drawable/avatar"
         android:drawablePadding="4dp"
         android:padding="8dp"
         android:text="Профил"
         android:textColor="#021368"
-        android:textSize="14sp"
+        android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/settingsButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:background="?android:attr/selectableItemBackground"
-        android:drawableTop="@drawable/settings"
-        android:drawablePadding="4dp"
-        android:padding="8dp"
-        android:text="Настройки"
-        android:textColor="#021368"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
@@ -72,9 +55,9 @@
         <ImageView
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:src="@drawable/logo"
+            android:layout_marginEnd="8dp"
             android:contentDescription="Logo"
-            android:layout_marginEnd="8dp" />
+            android:src="@drawable/logo" />
 
         <TextView
             android:id="@+id/quizMasterText"
@@ -101,6 +84,7 @@
         android:id="@+id/linearLayout"
         android:layout_width="407dp"
         android:layout_height="224dp"
+        android:layout_marginBottom="76dp"
         android:gravity="center"
         android:orientation="vertical"
         android:padding="24dp"
