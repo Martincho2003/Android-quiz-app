@@ -1,5 +1,6 @@
 package com.example.android_quiz_app.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,7 +25,7 @@ import java.util.List;
 public class MultiplayerGameActivity extends AppCompatActivity {
 
     private static final String TAG = "MultiplayerGameActivity";
-    private TextView questionTextView, timerTextView, pointsTextView;
+    private TextView questionTextView, timerTextView, pointsTextView,questionCountTextView;
     private Button answerButton1, answerButton2, answerButton3, answerButton4;
     private MultiplayerGameViewModel viewModel;
     private List<Question> currentQuestions;
@@ -42,6 +43,7 @@ public class MultiplayerGameActivity extends AppCompatActivity {
         questionTextView = findViewById(R.id.questionTextView);
         timerTextView = findViewById(R.id.timerTextView);
         pointsTextView = findViewById(R.id.pointsTextView);
+        questionCountTextView = findViewById(R.id.questionCountTextView);
         answerButton1 = findViewById(R.id.answerButton1);
         answerButton2 = findViewById(R.id.answerButton2);
         answerButton3 = findViewById(R.id.answerButton3);
@@ -118,14 +120,14 @@ public class MultiplayerGameActivity extends AppCompatActivity {
 
         timerObserver = time -> {
             if (time != null) {
-                timerTextView.setText("Time: " + time + "s");
+                timerTextView.setText("Време: " + time + "s");
             }
         };
         viewModel.getCurrentQuestionTime().observe(this, timerObserver);
 
         pointsObserver = points -> {
             if (points != null) {
-                pointsTextView.setText("Points: " + points);
+                pointsTextView.setText("Точки: " + points);
             }
         };
         viewModel.getPoints().observe(this, pointsObserver);
@@ -142,11 +144,14 @@ public class MultiplayerGameActivity extends AppCompatActivity {
             Question question = currentQuestions.get(currentIndex);
             questionTextView.setText(question.getQuestion());
 
+            questionCountTextView.setText(String.format("Въпрос: %d от %d", currentIndex + 1, currentQuestions.size()));
+
             List<Answer> answers = question.getAnswers();
-            answerButton1.setText(answers.size() > 0 ? answers.get(0).getAnswer() : "");
-            answerButton2.setText(answers.size() > 1 ? answers.get(1).getAnswer() : "");
-            answerButton3.setText(answers.size() > 2 ? answers.get(2).getAnswer() : "");
-            answerButton4.setText(answers.size() > 3 ? answers.get(3).getAnswer() : "");
+            answerButton1.setText(answers.size() > 0 ? "А) " + answers.get(0).getAnswer() : "");
+            answerButton2.setText(answers.size() > 1 ? "Б) " + answers.get(1).getAnswer() : "");
+            answerButton3.setText(answers.size() > 2 ? "В) " + answers.get(2).getAnswer() : "");
+            answerButton4.setText(answers.size() > 3 ? "Г) " + answers.get(3).getAnswer() : "");
+
 
             answerButton1.setVisibility(answers.size() > 0 ? View.VISIBLE : View.GONE);
             answerButton2.setVisibility(answers.size() > 1 ? View.VISIBLE : View.GONE);
