@@ -135,6 +135,7 @@
             android:layout_marginTop="16dp"
             android:backgroundTint="#FF9800"
             android:textColor="#FFFFFF"/>
+        </LinearLayout>
     </LinearLayout>
 
     <com.airbnb.lottie.LottieAnimationView

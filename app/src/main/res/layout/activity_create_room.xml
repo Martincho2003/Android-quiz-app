@@ -7,109 +7,9 @@
     android:background="@drawable/download">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        <TextView
-            android:id="@+id/titleTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Create Room"
-            android:textSize="24sp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="16dp"/>
-
-        <!-- Избор на предмети -->
-        <TextView
-            android:id="@+id/subjectsLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Select Subjects:"
-            android:textSize="18sp"
-            android:layout_marginBottom="8dp"/>
-
-        <LinearLayout
-            android:id="@+id/subjectsContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginBottom="16dp"/>
-
-        <!-- Избор на трудности -->
-        <TextView
-            android:id="@+id/difficultiesLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Select Difficulties:"
-            android:textSize="18sp"
-            android:layout_marginBottom="8dp"/>
-
-        <LinearLayout
-            android:id="@+id/difficultiesContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginBottom="16dp"/>
-
-        <Button
-            android:id="@+id/createRoomButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Create Room"/>
-
-        <TextView
-            android:id="@+id/waitingTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Waiting for players..."
-            android:textSize="18sp"
-            android:layout_gravity="center"
-            android:visibility="gone"
-            android:layout_marginTop="16dp"/>
-
-        <TextView
-            android:id="@+id/playersTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Players: 1/4"
-            android:textSize="16sp"
-            android:layout_gravity="center"
-            android:visibility="gone"
-            android:layout_marginTop="8dp"/>
-
-        <TextView
-            android:id="@+id/selectedSubjectsTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Subjects: "
-            android:textSize="16sp"
-            android:layout_gravity="center"
-            android:visibility="gone"
-            android:layout_marginTop="8dp"/>
-
-        <TextView
-            android:id="@+id/selectedDifficultiesTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Difficulties: "
-            android:textSize="16sp"
-            android:layout_gravity="center"
-            android:visibility="gone"
-            android:layout_marginTop="8dp"/>
-
-        <TextView
-            android:id="@+id/playersListTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Players in room: "
-            android:textSize="16sp"
-            android:layout_gravity="center"
-            android:visibility="gone"
-            android:layout_marginTop="8dp"/>
-
-        <Button
-            android:id="@+id/startGameButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="16dp">
-          
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
         <TextView
             android:id="@+id/titleTextView"
             android:layout_width="match_parent"
@@ -128,7 +28,6 @@
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-          
         <TextView
             android:id="@+id/subjectsLabel"
             android:layout_width="match_parent"
@@ -141,7 +40,6 @@
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/titleTextView" />
-          
         <LinearLayout
             android:id="@+id/subjectsContainer"
             android:layout_width="match_parent"
@@ -150,7 +48,6 @@
             android:orientation="vertical"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/subjectsLabel"/>
-          
         <TextView
             android:id="@+id/difficultiesLabel"
             android:layout_width="match_parent"
@@ -163,7 +60,6 @@
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/subjectsContainer" />
-          
         <LinearLayout
             android:id="@+id/difficultiesContainer"
             android:layout_width="match_parent"
@@ -172,7 +68,6 @@
             android:orientation="vertical"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/difficultiesLabel" />
-          
         <TextView
             android:id="@+id/warningText"
             android:layout_width="match_parent"
@@ -186,7 +81,6 @@
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/difficultiesContainer" />
-          
         <Button
             android:id="@+id/createRoomButton"
             android:layout_width="match_parent"
@@ -200,7 +94,6 @@
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/warningText" />
-          
         <TextView
             android:id="@+id/waitingTextView"
             android:layout_width="wrap_content"
@@ -214,7 +107,6 @@
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/createRoomButton" />
-          
         <TextView
             android:id="@+id/playersTextView"
             android:layout_width="wrap_content"
@@ -227,7 +119,43 @@
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/waitingTextView" />
-          
+
+        <TextView
+            android:id="@+id/selectedSubjectsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Subjects: "
+            android:textSize="16sp"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/waitingTextView" />
+
+        <TextView
+            android:id="@+id/selectedDifficultiesTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Difficulties: "
+            android:textSize="16sp"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/waitingTextView" />
+
+        <TextView
+            android:id="@+id/playersListTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Players in room: "
+            android:textSize="16sp"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/waitingTextView" />
+
         <Button
             android:id="@+id/startGameButton"
             android:layout_width="match_parent"
@@ -243,7 +171,7 @@
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/playersTextView" />
-    
+
         <Button
             android:id="@+id/deleteRoomButton"
             android:layout_width="match_parent"
@@ -252,7 +180,9 @@
             android:visibility="gone"
             android:layout_marginTop="16dp"
             android:backgroundTint="#FF0000"
-            android:textColor="#FFFFFF"/>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            android:textColor="#FFFFFF"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/playersTextView" />
 
- </ScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
