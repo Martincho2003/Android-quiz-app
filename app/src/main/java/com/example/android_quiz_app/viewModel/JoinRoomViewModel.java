@@ -67,6 +67,15 @@ public class JoinRoomViewModel extends ViewModel {
         }
     }
 
+    public void leaveRoom(Room room) {
+        MultiplayerUser user = currentUser.getValue();
+        if (user != null && room != null) {
+            multiplayerService.leaveRoom(room, user);
+            joinedRoom.setValue(null);
+            Log.d(TAG, "Left room: " + room.getCreatorNickname());
+        }
+    }
+
     public LiveData<MultiplayerUser> getCurrentUser() {
         return currentUser;
     }

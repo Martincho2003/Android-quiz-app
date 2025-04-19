@@ -1,6 +1,8 @@
 package com.example.android_quiz_app.viewModel;
 
 import android.util.Log;
+
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -41,41 +43,50 @@ public class CreateRoomViewModel extends ViewModel {
         multiplayerService.getRooms().observeForever(rooms -> {
             Room currentRoom = createdRoom.getValue();
             if (currentRoom != null) {
+                boolean found = false;
                 for (Room room : rooms) {
                     if (room.getCreatorNickname().equals(currentRoom.getCreatorNickname())) {
-                        createdRoom.setValue(room);
+                        Log.d(TAG, "Found updated room: " + room.getCreatorNickname() +
+                                ", players: " + room.getUsers().size());
+                        Room updatedRoom = new Room(room.getCreatorNickname(), room.getSubjects(), room.getDifficulties());
+                        updatedRoom.setUsers(room.getUsers());
+                        updatedRoom.setQuestions(room.getQuestions());
+                        updatedRoom.setIsGameStarted(room.isGameStarted());
+                        createdRoom.setValue(updatedRoom);
+                        found = true;
                         break;
                     }
                 }
+                if (!found) {
+                    Log.d(TAG, "Room no longer exists, resetting createdRoom");
+                    createdRoom.setValue(null);
+                }
+            } else {
+                Log.d(TAG, "Current room is null, skipping update");
             }
         });
     }
 
-    public void createRoom(List<Subject> subjects, List<Difficulty> difficulties) throws InterruptedException {
-        MultiplayerUser user = currentUser.getValue();
-        int counter = 0;
-        while (user == null) {
-            Log.d(TAG, "Waiting for current user to be loaded");
-            wait(500);
-            counter++;
-            user = currentUser.getValue();
-            if (counter > 10) {
-                Log.e(TAG, "Timed out waiting for current user to be loaded");
-                break;
-            }
+    public void createRoom(List<Subject> subjects, List<Difficulty> difficulties, LifecycleOwner owner) {
+        if (currentUser.getValue() == null) {
+            Log.d(TAG, "User not loaded yet, waiting...");
+            currentUser.observe(owner, user -> {
+                if (user != null) {
+                    createRoomInitial(subjects, difficulties, user);
+                }
+            });
+        } else {
+            MultiplayerUser user = currentUser.getValue();
+            createRoomInitial(subjects, difficulties, user);
         }
-        if (user == null) {
-            Log.e(TAG, "Current user is null");
-            roomCreationFailed.setValue(true);
-            return;
-        }
+    }
 
+    private void createRoomInitial(List<Subject> subjects, List<Difficulty> difficulties, MultiplayerUser user) {
         Room room = new Room(user.getUsername(), subjects, difficulties);
         room.addUser(user);
         multiplayerService.createRoom(room);
         createdRoom.setValue(room);
 
-        MultiplayerUser finalUser = user;
         gameService.getQuestionsFromPub(difficulties, subjects).observeForever(questions -> {
             if (questions != null && !questions.isEmpty()) {
                 room.setQuestions(questions);
@@ -83,10 +94,18 @@ public class CreateRoomViewModel extends ViewModel {
                 loadedQuestions.setValue(questions);
                 Log.d(TAG, "Questions loaded for room: " + questions.size());
             } else {
-                multiplayerService.leaveRoom(room, finalUser);
+                multiplayerService.leaveRoom(room, user);
                 roomCreationFailed.setValue(true);
             }
         });
+    }
+
+    public void deleteRoom(Room room) {
+        if (room != null) {
+            multiplayerService.deleteRoom(room);
+            createdRoom.setValue(null);
+            Log.d(TAG, "Room deleted: " + room.getCreatorNickname());
+        }
     }
 
     public void startGame() {
@@ -118,7 +137,8 @@ public class CreateRoomViewModel extends ViewModel {
         Room room = createdRoom.getValue();
         MultiplayerUser user = currentUser.getValue();
         if (room != null && user != null && !room.isGameStarted()) {
-            multiplayerService.leaveRoom(room, user);
+            multiplayerService.deleteRoom(room);
+            Log.d(TAG, "Room deleted on cleanup: " + room.getCreatorNickname());
         }
     }
 }

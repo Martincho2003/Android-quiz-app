@@ -3,9 +3,14 @@ package com.example.android_quiz_app.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.activity.OnBackPressedCallback;
+import androidx.activity.OnBackPressedDispatcher;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -26,6 +31,8 @@ public class JoinRoomActivity extends AppCompatActivity {
     private LinearLayout roomListLayout, waitingLayout;
     private TextView roomTitleTextView, playersTextView;
     private TextView selectedSubjectsTextView, selectedDifficultiesTextView, playersListTextView;
+    private Button leaveRoomButton;
+    private boolean isWaitingScreen = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +47,19 @@ public class JoinRoomActivity extends AppCompatActivity {
         selectedSubjectsTextView = findViewById(R.id.selectedSubjectsTextView);
         selectedDifficultiesTextView = findViewById(R.id.selectedDifficultiesTextView);
         playersListTextView = findViewById(R.id.playersListTextView);
+        leaveRoomButton = findViewById(R.id.leaveRoomButton);
+
+        OnBackPressedDispatcher dispatcher = getOnBackPressedDispatcher();
+        dispatcher.addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (isWaitingScreen) {
+                    leaveRoom();
+                } else {
+                    finish();
+                }
+            }
+        });
 
         roomsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         roomAdapter = new RoomAdapter(this::joinRoom);
@@ -75,6 +95,8 @@ public class JoinRoomActivity extends AppCompatActivity {
                 Log.e(TAG, "Joined room is null");
             }
         });
+
+        leaveRoomButton.setOnClickListener(v -> leaveRoom());
     }
 
     private void joinRoom(Room room) {
@@ -97,6 +119,15 @@ public class JoinRoomActivity extends AppCompatActivity {
         Toast.makeText(this, "Joined room: " + room.getCreatorNickname(), Toast.LENGTH_SHORT).show();
     }
 
+    private void leaveRoom() {
+        Room room = viewModel.getJoinedRoom().getValue();
+        if (room != null) {
+            viewModel.leaveRoom(room);
+            Toast.makeText(this, "Left the room", Toast.LENGTH_SHORT).show();
+            switchToRoomList();
+        }
+    }
+
     private void switchToWaitingScreen(Room room) {
         roomListLayout.setVisibility(LinearLayout.GONE);
         waitingLayout.setVisibility(LinearLayout.VISIBLE);
@@ -105,6 +136,19 @@ public class JoinRoomActivity extends AppCompatActivity {
         selectedDifficultiesTextView.setVisibility(TextView.VISIBLE);
         playersListTextView.setVisibility(TextView.VISIBLE);
         roomTitleTextView.setText("Room: " + room.getCreatorNickname());
+        leaveRoomButton.setVisibility(View.VISIBLE);
+        isWaitingScreen = true;
+    }
+
+    private void switchToRoomList() {
+        roomListLayout.setVisibility(LinearLayout.VISIBLE);
+        waitingLayout.setVisibility(LinearLayout.GONE);
+        playersTextView.setVisibility(TextView.GONE);
+        selectedSubjectsTextView.setVisibility(TextView.GONE);
+        selectedDifficultiesTextView.setVisibility(TextView.GONE);
+        playersListTextView.setVisibility(TextView.GONE);
+        leaveRoomButton.setVisibility(View.GONE);
+        isWaitingScreen = false;
     }
 
     private void updateWaitingScreen(Room room) {

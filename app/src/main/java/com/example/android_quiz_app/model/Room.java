@@ -72,7 +72,12 @@ public class Room implements Serializable {
 
     public void removeUser(MultiplayerUser user) {
         if (users != null) {
-            users.remove(user);
+            for (int i = 0; i < users.size(); i++) {
+                if (users.get(i).getUsername().equals(user.getUsername())) {
+                    users.remove(i);
+                    break;
+                }
+            }
         }
     }
     @PropertyName("isGameStarted")

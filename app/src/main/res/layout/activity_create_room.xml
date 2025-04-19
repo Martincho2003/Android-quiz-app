@@ -111,4 +111,14 @@
         android:visibility="gone"
         android:layout_marginTop="16dp"/>
 
+    <Button
+        android:id="@+id/deleteRoomButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Delete Room"
+        android:visibility="gone"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="#FF0000"
+        android:textColor="#FFFFFF"/>
+
 </LinearLayout>

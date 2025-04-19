@@ -9,6 +9,9 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.activity.OnBackPressedCallback;
+import androidx.activity.OnBackPressedDispatcher;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.android_quiz_app.R;
@@ -24,11 +27,12 @@ public class CreateRoomActivity extends AppCompatActivity {
 
     private static final String TAG = "CreateRoomActivity";
     private LinearLayout subjectsContainer, difficultiesContainer;
-    private Button createRoomButton, startGameButton;
+    private Button createRoomButton, startGameButton, deleteRoomButton;
     private TextView titleTextView, waitingTextView, playersTextView, subjectsLabel, difficultiesLabel;
     private TextView selectedSubjectsTextView, selectedDifficultiesTextView, playersListTextView;
     private List<CheckBox> subjectCheckBoxes, difficultyCheckBoxes;
     private CreateRoomViewModel viewModel;
+    private boolean isWaitingScreen = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +51,18 @@ public class CreateRoomActivity extends AppCompatActivity {
         selectedSubjectsTextView = findViewById(R.id.selectedSubjectsTextView);
         selectedDifficultiesTextView = findViewById(R.id.selectedDifficultiesTextView);
         playersListTextView = findViewById(R.id.playersListTextView);
+        deleteRoomButton = findViewById(R.id.deleteRoomButton);
+        OnBackPressedDispatcher dispatcher = getOnBackPressedDispatcher();
+        dispatcher.addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (isWaitingScreen) {
+                    deleteRoom();
+                } else {
+                    finish();
+                }
+            }
+        });
 
         subjectCheckBoxes = new ArrayList<>();
         difficultyCheckBoxes = new ArrayList<>();
@@ -71,6 +87,7 @@ public class CreateRoomActivity extends AppCompatActivity {
 
         createRoomButton.setOnClickListener(v -> createRoom());
         startGameButton.setOnClickListener(v -> startGame());
+        deleteRoomButton.setOnClickListener(v -> deleteRoom());
 
         viewModel.getLoadedQuestions().observe(this, questions -> {
             if (questions != null) {
@@ -92,6 +109,7 @@ public class CreateRoomActivity extends AppCompatActivity {
             if (room != null) {
                 Log.d(TAG, "Room updated: " + room.getCreatorNickname() + ", players: " + room.getUsers().size());
                 updateWaitingScreen(room);
+                isWaitingScreen = true;
             } else {
                 Log.e(TAG, "Room is null in getCreatedRoom observer");
             }
@@ -122,11 +140,8 @@ public class CreateRoomActivity extends AppCompatActivity {
             selectedDifficulties.addAll(Arrays.asList(Difficulty.values()));
         }
 
-        try {
-            viewModel.createRoom(selectedSubjects, selectedDifficulties);
-        } catch (InterruptedException e) {
-            Log.e(TAG, "Error creating room", e);
-        }
+        viewModel.createRoom(selectedSubjects, selectedDifficulties, this);
+
     }
 
     private void switchToWaitingScreen() {
@@ -142,6 +157,7 @@ public class CreateRoomActivity extends AppCompatActivity {
         selectedSubjectsTextView.setVisibility(View.VISIBLE);
         selectedDifficultiesTextView.setVisibility(View.VISIBLE);
         playersListTextView.setVisibility(View.VISIBLE);
+        deleteRoomButton.setVisibility(View.VISIBLE);
         Log.d(TAG, "Switched to waiting screen");
     }
 
@@ -173,5 +189,17 @@ public class CreateRoomActivity extends AppCompatActivity {
 
     private void startGame() {
         viewModel.startGame();
+    }
+
+    private void deleteRoom() {
+        Room room = viewModel.getCreatedRoom().getValue();
+        if (room != null) {
+            viewModel.deleteRoom(room);
+            Toast.makeText(this, "Room deleted", Toast.LENGTH_SHORT).show();
+            finish();
+        } else {
+            Log.e(TAG, "Cannot delete room: room is null");
+            Toast.makeText(this, "Failed to delete room", Toast.LENGTH_SHORT).show();
+        }
     }
 }

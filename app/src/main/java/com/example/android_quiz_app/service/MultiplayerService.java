@@ -83,6 +83,10 @@ public class MultiplayerService {
         }
     }
 
+    public void deleteRoom(Room room) {
+        roomsRef.child(room.getCreatorNickname()).removeValue();
+    }
+
     public void startGame(Room room) {
         room.setIsGameStarted(true);
         updateRoom(room);
