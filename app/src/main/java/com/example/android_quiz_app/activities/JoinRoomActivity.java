@@ -85,6 +85,7 @@ public class JoinRoomActivity extends AppCompatActivity {
         viewModel.getRooms().observe(this, rooms -> {
             Log.d(TAG, "Rooms updated: " + (rooms != null ? rooms.size() : 0));
             List<Room> filteredRooms = new ArrayList<>();
+
             for (Room room : rooms) {
                 if (!room.isGameStarted() && room.getUsers().size() < 4) {
                     filteredRooms.add(room);

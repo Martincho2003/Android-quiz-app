@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="106dp"
             android:background="@drawable/gradient_login_button"
             android:contentDescription="Присъедини се към стая"
             android:padding="16dp"
@@ -35,17 +35,29 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
-            app:queryHint="Търси стая по име на създател"
+            android:background="@drawable/rounded_edit_text"
+            android:backgroundTint="@color/purple_200"
+            android:textColor="@color/black"
+            android:textColorHint="@color/black"
             app:iconifiedByDefault="false"
-            android:background="@drawable/edit_text_background" />
+            app:queryHint="Търси стая по име на създател"
+            app:searchIcon="@drawable/search" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/roomsRecyclerView"
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:contentDescription="Списък със стаи за присъединяване"
-            android:importantForAccessibility="yes" />
+            android:layout_marginTop="50dp">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/roomsRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:contentDescription="Списък със стаи за присъединяване"
+                android:importantForAccessibility="yes"
+                android:nestedScrollingEnabled="false" />
+        </androidx.core.widget.NestedScrollView>
+
     </LinearLayout>
 
     <LinearLayout

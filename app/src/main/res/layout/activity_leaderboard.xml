@@ -11,7 +11,7 @@
         android:id="@+id/titleTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="96dp"
         android:background="@drawable/title_background"
         android:gravity="center"
         android:padding="16dp"
@@ -26,8 +26,9 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/leaderboardRecyclerView"
-        android:layout_width="373dp"
-        android:layout_height="688dp"
+        android:layout_width="362dp"
+        android:layout_height="637dp"
+        android:layout_marginTop="66dp"
         android:contentDescription="Класация на най-добрите играчи"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

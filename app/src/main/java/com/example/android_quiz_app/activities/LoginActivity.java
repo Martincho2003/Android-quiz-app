@@ -2,11 +2,14 @@ package com.example.android_quiz_app.activities;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.method.PasswordTransformationMethod;
 import android.text.method.SingleLineTransformationMethod;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -128,22 +131,22 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void showResetPasswordDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Нулиране на парола");
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_reset_password, null);
 
-        final EditText emailInput = new EditText(this);
-        emailInput.setHint("Въведете имейл");
-        emailInput.setInputType(android.text.InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-        emailInput.setPadding(40, 40, 40, 40);
-        builder.setView(emailInput);
-
-        builder.setPositiveButton("Изпрати", (dialog, which) -> {
-            String email = emailInput.getText().toString().trim();
-            viewModel.resetPassword(email);
-        });
-        builder.setNegativeButton("Отмени", (dialog, which) -> dialog.dismiss());
+        EditText emailInput = dialogView.findViewById(R.id.emailInput);
+        Button sendButton = dialogView.findViewById(R.id.sendButton);
+        Button cancelButton = dialogView.findViewById(R.id.cancelButton);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.CustomDialogTheme);
+        builder.setView(dialogView);
 
         AlertDialog dialog = builder.create();
+        sendButton.setOnClickListener(v -> {
+            String email = emailInput.getText().toString().trim();
+            viewModel.resetPassword(email);
+            dialog.dismiss();
+        });
+        cancelButton.setOnClickListener(v -> dialog.dismiss());
         dialog.show();
     }
 
