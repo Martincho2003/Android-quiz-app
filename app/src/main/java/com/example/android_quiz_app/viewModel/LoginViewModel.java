@@ -76,7 +76,7 @@ public class LoginViewModel extends ViewModel {
                                         return;
                                     }
                                 }
-                                loginState.setValue(new LoginState(true, "Успешен вход с Google"));
+                                loginState.setValue(new LoginState(true, "Успешно регистриране с Google"));
                             }
                         });
                     } else {

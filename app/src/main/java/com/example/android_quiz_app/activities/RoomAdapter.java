@@ -22,6 +22,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
     private List<Room> rooms = new ArrayList<>();
     private final OnRoomClickListener listener;
     private final Context context;
+    private List<Room> filteredRooms = new ArrayList<>();
 
     public interface OnRoomClickListener {
         void onRoomClick(Room room);
@@ -34,6 +35,22 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
 
     public void setRooms(List<Room> rooms) {
         this.rooms = rooms != null ? rooms : new ArrayList<>();
+        this.filteredRooms = new ArrayList<>(this.rooms);
+        notifyDataSetChanged();
+    }
+
+    public void filterRooms(String query) {
+        filteredRooms.clear();
+        if (query.isEmpty()) {
+            filteredRooms.addAll(rooms); // Ако търсенето е празно, показваме всички стаи
+        } else {
+            String lowerCaseQuery = query.toLowerCase();
+            for (Room room : rooms) {
+                if (room.getCreatorNickname().toLowerCase().contains(lowerCaseQuery)) {
+                    filteredRooms.add(room);
+                }
+            }
+        }
         notifyDataSetChanged();
     }
 
@@ -46,10 +63,9 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull RoomViewHolder holder, int position) {
-        Room room = rooms.get(position);
+        Room room = filteredRooms.get(position);
         holder.roomNameTextView.setText(room.getCreatorNickname());
 
-        // Превод на предметите
         String subjects = room.getSubjects().stream()
                 .map(subject -> {
                     switch (subject.name()) {
@@ -60,12 +76,11 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
                         case "GEOGRAPHY":
                             return context.getString(R.string.subject_geography);
                         default:
-                            return subject.getValue(); // Fallback
+                            return subject.getValue();
                     }
                 })
                 .collect(Collectors.joining(", "));
 
-        // Превод на трудностите
         String difficulties = room.getDifficulties().stream()
                 .map(difficulty -> {
                     switch (difficulty.name()) {
@@ -74,7 +89,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
                         case "HARD":
                             return context.getString(R.string.difficulty_hard);
                         default:
-                            return difficulty.getValue(); // Fallback
+                            return difficulty.getValue();
                     }
                 })
                 .collect(Collectors.joining(", "));
@@ -84,7 +99,6 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
         String details = context.getString(R.string.room_details, subjects, difficulties, players);
         holder.roomDetailsTextView.setText(details);
 
-        // Задаване на contentDescription за целия ред
         String contentDescription = context.getString(R.string.room_content_description,
                 room.getCreatorNickname(), subjects, difficulties, room.getUsers().size());
         holder.itemView.setContentDescription(contentDescription);
@@ -94,7 +108,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
 
     @Override
     public int getItemCount() {
-        return rooms.size();
+        return filteredRooms.size();
     }
 
     static class RoomViewHolder extends RecyclerView.ViewHolder {

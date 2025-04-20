@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="64dp"
+            android:layout_marginTop="32dp"
             android:background="@drawable/gradient_login_button"
             android:contentDescription="Присъедини се към стая"
             android:padding="16dp"
@@ -29,10 +29,21 @@
             android:textSize="22sp"
             android:textStyle="bold" />
 
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/roomSearchView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            app:queryHint="Търси стая по име на създател"
+            app:iconifiedByDefault="false"
+            android:background="@drawable/edit_text_background" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/roomsRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:contentDescription="Списък със стаи за присъединяване"
             android:importantForAccessibility="yes" />
     </LinearLayout>
@@ -56,40 +67,40 @@
             android:background="@drawable/gradient_login_button"
             android:elevation="8dp">
 
-        <TextView
-            android:id="@+id/roomTitleTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:padding="8dp"
-            android:text="Стая: Име на стая"
-            android:textSize="28sp"
-            android:textColor="@android:color/white"
-            android:textStyle="bold"
-            android:contentDescription="Име на стаята" />
-       
-        <TextView
-            android:id="@+id/selectedSubjectsTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Subjects: "
-            android:textSize="16sp"
-            android:layout_gravity="center"
-            android:visibility="gone"
-            android:layout_marginTop="8dp"/>
+            <TextView
+                android:id="@+id/roomTitleTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:padding="8dp"
+                android:text="Стая: Име на стая"
+                android:textSize="28sp"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:contentDescription="Име на стаята" />
 
-        <TextView
-            android:id="@+id/selectedDifficultiesTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Difficulties: "
-            android:textSize="16sp"
-            android:layout_gravity="center"
-            android:visibility="gone"
-            android:layout_marginTop="8dp"/>
+            <TextView
+                android:id="@+id/selectedSubjectsTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Subjects: "
+                android:textSize="16sp"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                android:layout_marginTop="8dp"/>
 
-        <TextView
-            android:id="@+id/playersTextView"
+            <TextView
+                android:id="@+id/selectedDifficultiesTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Difficulties: "
+                android:textSize="16sp"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                android:layout_marginTop="8dp"/>
+
+            <TextView
+                android:id="@+id/playersTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -99,34 +110,33 @@
                 android:textColor="@android:color/white"
                 android:textStyle="bold"/>
 
-        <TextView
-            android:id="@+id/playersListTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Players in room: "
-            android:textSize="16sp"
-            android:layout_gravity="center"
-            android:visibility="gone"
-            android:layout_marginTop="8dp"/>
+            <TextView
+                android:id="@+id/playersListTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Players in room: "
+                android:textSize="16sp"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                android:layout_marginTop="8dp"/>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Изчакване на играчи..."
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:layout_marginBottom="8dp"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Изчакване на играчи..."
-            android:textSize="20sp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="8dp"/>
-
-        <Button
-            android:id="@+id/leaveRoomButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Leave Room"
-            android:visibility="gone"
-            android:layout_marginTop="16dp"
-            android:backgroundTint="#FF9800"
-            android:textColor="#FFFFFF"/>
+            <Button
+                android:id="@+id/leaveRoomButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Leave Room"
+                android:visibility="gone"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="#FF9800"
+                android:textColor="#FFFFFF"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -239,8 +249,8 @@
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:contentDescription="Анимация с въпросителна 3"
-        app:lottie_rawRes = "@raw/question_marks"
         android:visibility="gone"
+        app:lottie_rawRes="@raw/question_marks"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
         app:layout_constraintStart_toStartOf="parent"

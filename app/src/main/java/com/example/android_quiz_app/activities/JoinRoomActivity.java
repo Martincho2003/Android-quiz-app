@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
 import androidx.activity.OnBackPressedDispatcher;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -36,6 +37,7 @@ public class JoinRoomActivity extends AppCompatActivity {
     private LottieAnimationView questionMarkAnimation1, questionMarkAnimation2, questionMarkAnimation3;
     private TextView selectedSubjectsTextView, selectedDifficultiesTextView, playersListTextView;
     private Button leaveRoomButton;
+    private SearchView roomSearchView;
     private boolean isWaitingScreen = false;
 
     @Override
@@ -60,6 +62,7 @@ public class JoinRoomActivity extends AppCompatActivity {
         selectedDifficultiesTextView = findViewById(R.id.selectedDifficultiesTextView);
         playersListTextView = findViewById(R.id.playersListTextView);
         leaveRoomButton = findViewById(R.id.leaveRoomButton);
+        roomSearchView = findViewById(R.id.roomSearchView);
 
         OnBackPressedDispatcher dispatcher = getOnBackPressedDispatcher();
         dispatcher.addCallback(this, new OnBackPressedCallback(true) {
@@ -111,7 +114,24 @@ public class JoinRoomActivity extends AppCompatActivity {
             }
         });
 
+        setupSearchView();
+
         leaveRoomButton.setOnClickListener(v -> leaveRoom());
+    }
+
+    private void setupSearchView() {
+        roomSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                roomAdapter.filterRooms(newText);
+                return true;
+            }
+        });
     }
 
     private void joinRoom(Room room) {
