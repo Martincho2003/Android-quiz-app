@@ -5,9 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/download"
-    android:padding="16dp">
+    android:padding="24dp">
 
-    <!-- Екран за списък със стаи -->
     <LinearLayout
         android:id="@+id/roomListLayout"
         android:layout_width="match_parent"
@@ -16,23 +15,18 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:importantForAccessibility="no" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginBottom="16dp"
+            android:layout_marginTop="64dp"
             android:background="@drawable/gradient_login_button"
-            android:contentDescription="Заглавие: Присъедини се към стая"
-            android:padding="8dp"
+            android:contentDescription="Присъедини се към стая"
+            android:padding="16dp"
             android:text="Присъедини се към стая"
             android:textAllCaps="true"
             android:textColor="#FFFFFF"
-            android:textSize="25sp"
+            android:textSize="22sp"
             android:textStyle="bold" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -43,7 +37,6 @@
             android:importantForAccessibility="yes" />
     </LinearLayout>
 
-    <!-- Екран за изчакване -->
     <LinearLayout
         android:id="@+id/waitingLayout"
         android:layout_width="match_parent"
@@ -54,7 +47,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <!-- Центриран контейнер за текстовете -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -152,7 +144,6 @@
         app:lottie_loop="true"
         app:lottie_rawRes="@raw/join" />
 
-    <!-- Анимации за екрана за изчакване -->
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/waitingAnimation1"
         android:layout_width="100dp"

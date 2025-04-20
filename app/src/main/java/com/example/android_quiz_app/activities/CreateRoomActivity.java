@@ -15,6 +15,8 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.activity.OnBackPressedDispatcher;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
+
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.android_quiz_app.R;
 import com.example.android_quiz_app.model.Difficulty;
 import com.example.android_quiz_app.model.Room;
@@ -27,10 +29,13 @@ import java.util.List;
 public class CreateRoomActivity extends AppCompatActivity {
 
     private static final String TAG = "CreateRoomActivity";
-    private LinearLayout subjectsContainer, difficultiesContainer;
+    private LinearLayout subjectsContainer, difficultiesContainer, waitingInfoContainer;
     private Button createRoomButton, startGameButton, deleteRoomButton;
+
+    private LottieAnimationView waitingAnimationView;
     private TextView titleTextView, waitingTextView, playersTextView, subjectsLabel, difficultiesLabel;
     private TextView selectedSubjectsTextView, selectedDifficultiesTextView, playersListTextView;
+    private TextView warningText;
     private List<CheckBox> subjectCheckBoxes, difficultyCheckBoxes;
     private CreateRoomViewModel viewModel;
     private boolean isWaitingScreen = false;
@@ -42,6 +47,7 @@ public class CreateRoomActivity extends AppCompatActivity {
 
         subjectsContainer = findViewById(R.id.subjectsContainer);
         difficultiesContainer = findViewById(R.id.difficultiesContainer);
+        waitingInfoContainer = findViewById(R.id.waitingInfoContainer);
         createRoomButton = findViewById(R.id.createRoomButton);
         startGameButton = findViewById(R.id.startGameButton);
         titleTextView = findViewById(R.id.titleTextView);
@@ -53,6 +59,9 @@ public class CreateRoomActivity extends AppCompatActivity {
         selectedDifficultiesTextView = findViewById(R.id.selectedDifficultiesTextView);
         playersListTextView = findViewById(R.id.playersListTextView);
         deleteRoomButton = findViewById(R.id.deleteRoomButton);
+        warningText = findViewById(R.id.warningText);
+        waitingAnimationView = findViewById(R.id.waitingAnimationView);
+
         OnBackPressedDispatcher dispatcher = getOnBackPressedDispatcher();
         dispatcher.addCallback(this, new OnBackPressedCallback(true) {
             @Override
@@ -72,11 +81,11 @@ public class CreateRoomActivity extends AppCompatActivity {
             CheckBox checkBox = new CheckBox(this);
             checkBox.setText(subject.getValue());
             checkBox.setPadding(8, 8, 8, 8);
-            checkBox.setTextSize(25);
+            checkBox.setTextSize(20);
             checkBox.setTextColor(getResources().getColor(R.color.black));
             checkBox.setTypeface(null, Typeface.BOLD);
             checkBox.setButtonDrawable(R.drawable.custom_checkbox);
-            checkBox.setCompoundDrawablePadding(36);
+            checkBox.setCompoundDrawablePadding(24);
 
             switch (subject) {
                 case BIOLOGY:
@@ -84,7 +93,7 @@ public class CreateRoomActivity extends AppCompatActivity {
                     checkBox.setCompoundDrawablesWithIntrinsicBounds(R.drawable.biology, 0, 0, 0);
                     break;
                 case HISTORY:
-                    checkBox.setText(R.string.subject_history);checkBox.setButtonDrawable(R.drawable.custom_checkbox);
+                    checkBox.setText(R.string.subject_history);
                     checkBox.setCompoundDrawablesWithIntrinsicBounds(R.drawable.history, 0, 0, 0);
                     break;
                 case GEOGRAPHY:
@@ -97,7 +106,7 @@ public class CreateRoomActivity extends AppCompatActivity {
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
             );
-            params.bottomMargin = (int) (16 * getResources().getDisplayMetrics().density); // 16dp margin
+            params.bottomMargin = (int) (8 * getResources().getDisplayMetrics().density);
             checkBox.setLayoutParams(params);
 
             subjectsContainer.addView(checkBox);
@@ -108,11 +117,11 @@ public class CreateRoomActivity extends AppCompatActivity {
             CheckBox checkBox = new CheckBox(this);
             checkBox.setText(difficulty.getValue());
             checkBox.setPadding(8, 8, 8, 8);
-            checkBox.setTextSize(25);
+            checkBox.setTextSize(20);
             checkBox.setTextColor(getResources().getColor(R.color.black));
             checkBox.setTypeface(null, Typeface.BOLD);
             checkBox.setButtonDrawable(R.drawable.custom_checkbox);
-            checkBox.setCompoundDrawablePadding(36);
+            checkBox.setCompoundDrawablePadding(24);
 
             switch (difficulty) {
                 case EASY:
@@ -128,7 +137,7 @@ public class CreateRoomActivity extends AppCompatActivity {
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
             );
-            params.bottomMargin = (int) (16 * getResources().getDisplayMetrics().density); // 16dp margin
+            params.bottomMargin = (int) (8 * getResources().getDisplayMetrics().density);
             checkBox.setLayoutParams(params);
 
             difficultiesContainer.addView(checkBox);
@@ -153,7 +162,7 @@ public class CreateRoomActivity extends AppCompatActivity {
         viewModel.getRoomCreationFailed().observe(this, failed -> {
             if (failed != null && failed) {
                 Log.e(TAG, "Room creation failed");
-                Toast.makeText(this, "Failed to create room. Please try again.", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Неуспешно създаване на стая. Моля опитайте отново.", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -193,7 +202,6 @@ public class CreateRoomActivity extends AppCompatActivity {
         }
 
         viewModel.createRoom(selectedSubjects, selectedDifficulties, this);
-
     }
 
     private void switchToWaitingScreen() {
@@ -203,23 +211,66 @@ public class CreateRoomActivity extends AppCompatActivity {
         subjectsContainer.setVisibility(View.GONE);
         difficultiesContainer.setVisibility(View.GONE);
         createRoomButton.setVisibility(View.GONE);
-        waitingTextView.setVisibility(View.VISIBLE);
-        playersTextView.setVisibility(View.VISIBLE);
+        warningText.setVisibility(View.GONE);
+        waitingInfoContainer.setVisibility(View.VISIBLE);
         startGameButton.setVisibility(View.VISIBLE);
-        selectedSubjectsTextView.setVisibility(View.VISIBLE);
-        selectedDifficultiesTextView.setVisibility(View.VISIBLE);
-        playersListTextView.setVisibility(View.VISIBLE);
         deleteRoomButton.setVisibility(View.VISIBLE);
+        waitingAnimationView.setVisibility(View.VISIBLE);
         Log.d(TAG, "Switched to waiting screen");
     }
 
     private void updateWaitingScreen(Room room) {
         int playerCount = room.getUsers().size();
         playersTextView.setText("Играчи: " + playerCount + "/4");
+        waitingTextView.setText(playerCount < 4 ? "Очакване на играчи..." : "Готови за игра!");
         startGameButton.setEnabled(playerCount >= 2 && !room.isGameStarted());
-        selectedSubjectsTextView.setText("Subjects: " + Arrays.toString(room.getSubjects().toArray()));
-        selectedDifficultiesTextView.setText("Difficulties: " + Arrays.toString(room.getDifficulties().toArray()));
-        String playersList = "Players in room:\n";
+        StringBuilder subjectsText = new StringBuilder("Предмети: ");
+        List<Subject> subjects = room.getSubjects();
+        for (int i = 0; i < subjects.size(); i++) {
+            Subject subject = subjects.get(i);
+            String subjectName;
+            switch (subject) {
+                case BIOLOGY:
+                    subjectName = getString(R.string.subject_biology);
+                    break;
+                case HISTORY:
+                    subjectName = getString(R.string.subject_history);
+                    break;
+                case GEOGRAPHY:
+                    subjectName = getString(R.string.subject_geography);
+                    break;
+                default:
+                    subjectName = subject.getValue();
+            }
+            subjectsText.append(subjectName);
+            if (i < subjects.size() - 1) {
+                subjectsText.append(", ");
+            }
+        }
+        selectedSubjectsTextView.setText(subjectsText.toString());
+        StringBuilder difficultiesText = new StringBuilder("Трудности: ");
+        List<Difficulty> difficulties = room.getDifficulties();
+        for (int i = 0; i < difficulties.size(); i++) {
+            Difficulty difficulty = difficulties.get(i);
+            String difficultyName;
+            switch (difficulty) {
+                case EASY:
+                    difficultyName = getString(R.string.difficulty_easy);
+                    break;
+                case HARD:
+                    difficultyName = getString(R.string.difficulty_hard);
+                    break;
+                default:
+                    difficultyName = difficulty.getValue();
+            }
+            difficultiesText.append(difficultyName);
+            if (i < difficulties.size() - 1) {
+                difficultiesText.append(", ");
+            }
+        }
+
+        selectedDifficultiesTextView.setText(difficultiesText.toString());
+        String playersList = "Играчи в стаята:\n";
         for (int i = 0; i < room.getUsers().size(); i++) {
             playersList += room.getUsers().get(i).getUsername();
             if (i < room.getUsers().size() - 1) {
@@ -247,11 +298,27 @@ public class CreateRoomActivity extends AppCompatActivity {
         Room room = viewModel.getCreatedRoom().getValue();
         if (room != null) {
             viewModel.deleteRoom(room);
-            Toast.makeText(this, "Room deleted", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Стаята е изтрита", Toast.LENGTH_SHORT).show();
             finish();
         } else {
-            Log.e(TAG, "Cannot delete room: room is null");
-            Toast.makeText(this, "Failed to delete room", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "Не може да се изтрие стая: стаята е null");
+            Toast.makeText(this, "Неуспешно изтриване на стая", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (waitingAnimationView != null) {
+            waitingAnimationView.pauseAnimation();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (waitingAnimationView != null && isWaitingScreen) {
+            waitingAnimationView.playAnimation();
         }
     }
 }

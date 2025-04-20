@@ -31,28 +31,28 @@ public class LoginViewModel extends ViewModel {
 
     public void login(String email, String password) {
         if (TextUtils.isEmpty(email)) {
-            loginState.setValue(new LoginState(false, "Email is required"));
+            loginState.setValue(new LoginState(false, "Имейлът е задължителен"));
             return;
         }
         if (TextUtils.isEmpty(password)) {
-            loginState.setValue(new LoginState(false, "Password is required"));
+            loginState.setValue(new LoginState(false, "Паролата е задължителна"));
             return;
         }
         if (password.length() < 8) {
-            loginState.setValue(new LoginState(false, "Password must be at least 8 characters"));
+            loginState.setValue(new LoginState(false, "Паролата трябва да е поне 8 символа"));
             return;
         }
 
         auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        loginState.setValue(new LoginState(true, "Login successful"));
+                        loginState.setValue(new LoginState(true, "Успешно влязохте в приложението"));
                     } else {
-                        loginState.setValue(new LoginState(false, "Login failed: " + task.getException().getMessage()));
+                        loginState.setValue(new LoginState(false, "Неуспешен вход: " + task.getException().getMessage()));
                     }
                 })
                 .addOnFailureListener(e -> {
-                    loginState.setValue(new LoginState(false, "Login failed: " + e.getMessage()));
+                    loginState.setValue(new LoginState(false, "Неуспешен вход: " + e.getMessage()));
                 });
     }
 
@@ -72,19 +72,19 @@ public class LoginViewModel extends ViewModel {
                                 HashMap<String, Object> users = (HashMap<String, Object>) userTask.getResult().getValue();
                                 for (String uid : users.keySet()) {
                                     if (currentUid.equals(uid)) {
-                                        loginState.setValue(new LoginState(true, "Google Sign-In successful"));
+                                        loginState.setValue(new LoginState(true, "Успешен вход с Google"));
                                         return;
                                     }
                                 }
-                                loginState.setValue(new LoginState(true, "Google Sign-Up successful"));
+                                loginState.setValue(new LoginState(true, "Успешен вход с Google"));
                             }
                         });
                     } else {
-                        loginState.setValue(new LoginState(false, "Google Sign-In failed: " + task.getException().getMessage()));
+                        loginState.setValue(new LoginState(false, "Неуспешен вход с Google: " + task.getException().getMessage()));
                     }
                 })
                 .addOnFailureListener(e -> {
-                    loginState.setValue(new LoginState(false, "Google Sign-In failed: " + e.getMessage()));
+                    loginState.setValue(new LoginState(false, "Неуспешен вход с Google: " + e.getMessage()));
                 });
     }
 
@@ -99,11 +99,11 @@ public class LoginViewModel extends ViewModel {
                     if (task.isSuccessful()) {
                         loginState.setValue(new LoginState(true, "Имейл за смяна на паролата е изпратен. Моля проверете и в СПАМ папката!"));
                     } else {
-                        loginState.setValue(new LoginState(false, "Грешка при изпращане не имейл: " + task.getException().getMessage()));
+                        loginState.setValue(new LoginState(false, "Грешка при изпращане на имейл: " + task.getException().getMessage()));
                     }
                 })
                 .addOnFailureListener(e -> {
-                    loginState.setValue(new LoginState(false, "Грешка при изпращане не имейл: " + e.getMessage()));
+                    loginState.setValue(new LoginState(false, "Грешка при изпращане на имейл: " + e.getMessage()));
                 });
     }
 

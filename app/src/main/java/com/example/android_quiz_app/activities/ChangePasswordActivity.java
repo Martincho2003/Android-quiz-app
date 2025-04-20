@@ -31,7 +31,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
 
         if (auth.getCurrentUser() == null) {
-            Toast.makeText(this, "You need to be logged in to change your password", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Трябва да сте в приложението, за да промените паролата си.", Toast.LENGTH_LONG).show();
             finish();
             return;
         }
@@ -47,22 +47,22 @@ public class ChangePasswordActivity extends AppCompatActivity {
         String confirmNewPassword = confirmNewPasswordEditText.getText().toString().trim();
 
         if (TextUtils.isEmpty(oldPassword)) {
-            oldPasswordEditText.setError("Enter your old password");
+            oldPasswordEditText.setError("Въведете старата си парола");
             return;
         }
 
         if (TextUtils.isEmpty(newPassword)) {
-            newPasswordEditText.setError("Enter a new password");
+            newPasswordEditText.setError("Въведете новата си парола");
             return;
         }
 
         if (newPassword.length() < 8) {
-            newPasswordEditText.setError("Password must be at least 8 characters long");
+            newPasswordEditText.setError("Паролата трябва да е поне 8 символа");
             return;
         }
 
         if (!newPassword.equals(confirmNewPassword)) {
-            confirmNewPasswordEditText.setError("Passwords do not match");
+            confirmNewPasswordEditText.setError("Паролите не съвпадат");
             return;
         }
 
@@ -73,15 +73,15 @@ public class ChangePasswordActivity extends AppCompatActivity {
                 .addOnSuccessListener(aVoid -> {
                     user.updatePassword(newPassword)
                             .addOnSuccessListener(aVoid1 -> {
-                                Toast.makeText(ChangePasswordActivity.this, "Password changed successfully", Toast.LENGTH_LONG).show();
+                                Toast.makeText(ChangePasswordActivity.this, "Паролата е променана успешно", Toast.LENGTH_LONG).show();
                                 finish();
                             })
                             .addOnFailureListener(e -> {
-                                Toast.makeText(ChangePasswordActivity.this, "Failed to change password: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                Toast.makeText(ChangePasswordActivity.this, "Неуспешна промяна на паролата: " + e.getMessage(), Toast.LENGTH_LONG).show();
                             });
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(ChangePasswordActivity.this, "Incorrect old password", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ChangePasswordActivity.this, "Грешна стара парола", Toast.LENGTH_LONG).show();
                 });
     }
 }

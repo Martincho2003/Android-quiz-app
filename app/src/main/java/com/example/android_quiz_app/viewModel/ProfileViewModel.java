@@ -33,18 +33,18 @@ public class ProfileViewModel extends ViewModel {
                 usersReference.child(auth.getCurrentUser().getUid()).get().addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         User user = task.getResult().getValue(User.class);
-                        profileState.setValue(new ProfileState(true, "User info loaded", user, true));
+                        profileState.setValue(new ProfileState(true, "Информацията за потребителя е заредена", user, true));
                     } else {
-                        profileState.setValue(new ProfileState(false, "Failed to load user info: " + task.getException().getMessage(), null, true));
+                        profileState.setValue(new ProfileState(false, "Неуспешно зареждане на информацията за потребителя: " + task.getException().getMessage(), null, true));
                     }
                 });
             } else {
                 usersReference.child(auth.getCurrentUser().getUid()).get().addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         User user = task.getResult().getValue(User.class);
-                        profileState.setValue(new ProfileState(true, "User info loaded", user, false));
+                        profileState.setValue(new ProfileState(true, "Информацията за потребителя е заредена", user, false));
                     } else {
-                        profileState.setValue(new ProfileState(false, "Failed to load user info: " + task.getException().getMessage(), null, false));
+                        profileState.setValue(new ProfileState(false, "Неуспешно зареждане на информацията за потребителя: " + task.getException().getMessage(), null, false));
                     }
                 });
             }

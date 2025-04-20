@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,6 +23,8 @@ public class ProfileActivity extends AppCompatActivity {
     private ProfileViewModel viewModel;
     private GoogleSignInClient googleSignInClient;
 
+    private ImageView addProfileImageButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +38,7 @@ public class ProfileActivity extends AppCompatActivity {
         playedGamesTodayTextView = findViewById(R.id.playedGamesTodayTextView);
         logoutButton = findViewById(R.id.logoutButton);
         changePasswordButton = findViewById(R.id.changePasswordButton);
+        addProfileImageButton = findViewById(R.id.addProfileImageButton);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(String.valueOf(R.string.default_web_client_id))
@@ -68,6 +72,11 @@ public class ProfileActivity extends AppCompatActivity {
         changePasswordButton.setOnClickListener(v -> {
             Intent intent = new Intent(ProfileActivity.this, ChangePasswordActivity.class);
             startActivity(intent);
+        });
+
+        addProfileImageButton.setOnClickListener(v -> {
+            Toast.makeText(this, "Добави профилна снимка", Toast.LENGTH_SHORT).show();
+            // TODO: Логика за избор на профилна снимка
         });
 
     }

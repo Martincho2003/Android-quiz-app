@@ -64,13 +64,13 @@ public class LoginActivity extends AppCompatActivity {
                         String idToken = account.getIdToken();
                         viewModel.loginWithGoogle(idToken);
                     } else {
-                        Toast.makeText(this, "Google Sign-In failed: No account selected", Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, "Неуспешен вход с Google: Не е избран акаунт", Toast.LENGTH_LONG).show();
                     }
                 } catch (ApiException e) {
-                    Toast.makeText(this, "Google Sign-In failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Неуспешен вход с Google: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 }
             } else {
-                Toast.makeText(this, "Google Sign-In cancelled", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Входът с Google е прекъснат", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -80,7 +80,7 @@ public class LoginActivity extends AppCompatActivity {
             googleLoginButton.setEnabled(true);
             Toast.makeText(LoginActivity.this, state.getMessage(), Toast.LENGTH_LONG).show();
             if (state.isSuccess()) {
-                if (state.getMessage().equals("Google Sign-Up successful")) {
+                if (state.getMessage().equals("Успешен вход с Google")) {
                     Intent intent = new Intent(LoginActivity.this, UsernameSelectActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
