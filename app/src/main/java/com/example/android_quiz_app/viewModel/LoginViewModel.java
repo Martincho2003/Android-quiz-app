@@ -72,7 +72,7 @@ public class LoginViewModel extends ViewModel {
                                 HashMap<String, Object> users = (HashMap<String, Object>) userTask.getResult().getValue();
                                 for (String uid : users.keySet()) {
                                     if (currentUid.equals(uid)) {
-                                        loginState.setValue(new LoginState(true, "Успешен вход с Google"));
+                                        loginState.setValue(new LoginState(true, "Успешно регистриране с Google"));
                                         return;
                                     }
                                 }

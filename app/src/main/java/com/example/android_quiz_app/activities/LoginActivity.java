@@ -80,7 +80,7 @@ public class LoginActivity extends AppCompatActivity {
             googleLoginButton.setEnabled(true);
             Toast.makeText(LoginActivity.this, state.getMessage(), Toast.LENGTH_LONG).show();
             if (state.isSuccess()) {
-                if (state.getMessage().equals("Успешен вход с Google")) {
+                if (state.getMessage().equals("Успешно регистриране с Google")) {
                     Intent intent = new Intent(LoginActivity.this, UsernameSelectActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
