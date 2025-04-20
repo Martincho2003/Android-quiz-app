@@ -73,6 +73,7 @@ public class LeaderboardActivity extends AppCompatActivity {
             holder.usernameTextView.setText(user.getUsername());
             holder.pointsTextView.setText(user.getPoints() + " точки");
             if (position == 0) {
+                holder.itemView.setBackgroundResource(R.drawable.rounded_top_corners);
                 holder.medalImageView.setImageResource(R.drawable.gold_medal);
                 holder.medalImageView.setVisibility(View.VISIBLE);
                 holder.itemView.setBackgroundResource(R.color.gold);
@@ -85,6 +86,11 @@ public class LeaderboardActivity extends AppCompatActivity {
                 holder.medalImageView.setVisibility(View.VISIBLE);
                 holder.itemView.setBackgroundResource(R.color.bronze);
             } else {
+                if (position == topUsers.size() - 1){
+                    holder.itemView.setBackgroundResource(R.drawable.rounded_bottom_corners);
+                }else {
+                    holder.itemView.setBackgroundResource(R.color.white);
+                }
                 holder.medalImageView.setImageResource(R.drawable.medal);
                 holder.medalImageView.setVisibility(View.VISIBLE);
             }

@@ -12,13 +12,16 @@ import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
 import androidx.activity.OnBackPressedDispatcher;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.example.android_quiz_app.R;
+import com.example.android_quiz_app.model.Difficulty;
 import com.example.android_quiz_app.model.Room;
+import com.example.android_quiz_app.model.Subject;
 import com.example.android_quiz_app.viewModel.JoinRoomViewModel;
 
 import java.util.ArrayList;
@@ -33,9 +36,9 @@ public class JoinRoomActivity extends AppCompatActivity {
     private LinearLayout roomListLayout, waitingLayout;
     private TextView roomTitleTextView, playersTextView;
     private LottieAnimationView joinAnimation, waitingAnimation1, waitingAnimation2, waitingAnimation3, waitingAnimation4;
-    private LottieAnimationView questionMarkAnimation1, questionMarkAnimation2, questionMarkAnimation3;
     private TextView selectedSubjectsTextView, selectedDifficultiesTextView, playersListTextView;
     private Button leaveRoomButton;
+    private SearchView roomSearchView;
     private boolean isWaitingScreen = false;
 
     @Override
@@ -53,13 +56,11 @@ public class JoinRoomActivity extends AppCompatActivity {
         waitingAnimation2 = findViewById(R.id.waitingAnimation2);
         waitingAnimation3 = findViewById(R.id.waitingAnimation3);
         waitingAnimation4 = findViewById(R.id.waitingAnimation4);
-        questionMarkAnimation1 = findViewById(R.id.questionMarkAnimation1);
-        questionMarkAnimation2 = findViewById(R.id.questionMarkAnimation2);
-        questionMarkAnimation3 = findViewById(R.id.questionMarkAnimation3);
         selectedSubjectsTextView = findViewById(R.id.selectedSubjectsTextView);
         selectedDifficultiesTextView = findViewById(R.id.selectedDifficultiesTextView);
         playersListTextView = findViewById(R.id.playersListTextView);
         leaveRoomButton = findViewById(R.id.leaveRoomButton);
+        roomSearchView = findViewById(R.id.roomSearchView);
 
         OnBackPressedDispatcher dispatcher = getOnBackPressedDispatcher();
         dispatcher.addCallback(this, new OnBackPressedCallback(true) {
@@ -82,6 +83,7 @@ public class JoinRoomActivity extends AppCompatActivity {
         viewModel.getRooms().observe(this, rooms -> {
             Log.d(TAG, "Rooms updated: " + (rooms != null ? rooms.size() : 0));
             List<Room> filteredRooms = new ArrayList<>();
+
             for (Room room : rooms) {
                 if (!room.isGameStarted() && room.getUsers().size() < 4) {
                     filteredRooms.add(room);
@@ -111,7 +113,24 @@ public class JoinRoomActivity extends AppCompatActivity {
             }
         });
 
+        setupSearchView();
+
         leaveRoomButton.setOnClickListener(v -> leaveRoom());
+    }
+
+    private void setupSearchView() {
+        roomSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                roomAdapter.filterRooms(newText);
+                return true;
+            }
+        });
     }
 
     private void joinRoom(Room room) {
@@ -130,15 +149,20 @@ public class JoinRoomActivity extends AppCompatActivity {
             return;
         }
 
-        viewModel.joinRoom(room);
-        Toast.makeText(this, "Присъединихте се към стаята: " + room.getCreatorNickname(), Toast.LENGTH_SHORT).show();
+        int check = viewModel.joinRoom(room);
+
+        if(check == 0){
+            Toast.makeText(this, "Присъединихте се към стаята!", Toast.LENGTH_SHORT).show();
+        }else if(check == -1){
+            Toast.makeText(this, "Не може да се присъедините към своята стая!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void leaveRoom() {
         Room room = viewModel.getJoinedRoom().getValue();
         if (room != null) {
             viewModel.leaveRoom(room);
-            Toast.makeText(this, "Left the room", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Напуснахте стаята", Toast.LENGTH_SHORT).show();
             switchToRoomList();
         }
     }
@@ -147,7 +171,6 @@ public class JoinRoomActivity extends AppCompatActivity {
         roomListLayout.setVisibility(LinearLayout.GONE);
         waitingLayout.setVisibility(LinearLayout.VISIBLE);
         joinAnimation.setVisibility(LinearLayout.GONE);
-        roomTitleTextView.setText("Стая: " + room.getCreatorNickname());
 
         waitingAnimation1.setVisibility(LinearLayout.VISIBLE);
         waitingAnimation2.setVisibility(LinearLayout.VISIBLE);
@@ -164,18 +187,6 @@ public class JoinRoomActivity extends AppCompatActivity {
         waitingAnimation3.playAnimation();
         waitingAnimation4.playAnimation();
 
-        questionMarkAnimation1.setVisibility(LinearLayout.VISIBLE);
-        questionMarkAnimation2.setVisibility(LinearLayout.VISIBLE);
-        questionMarkAnimation3.setVisibility(LinearLayout.VISIBLE);
-
-        questionMarkAnimation1.setAnimation(R.raw.question_marks);
-        questionMarkAnimation2.setAnimation(R.raw.question_marks);
-        questionMarkAnimation3.setAnimation(R.raw.question_marks);
-
-        questionMarkAnimation1.playAnimation();
-        questionMarkAnimation2.playAnimation();
-        questionMarkAnimation3.playAnimation();
-
         waitingLayout.setAlpha(0f);
         waitingLayout.animate()
                 .alpha(1f)
@@ -186,12 +197,23 @@ public class JoinRoomActivity extends AppCompatActivity {
         selectedSubjectsTextView.setVisibility(TextView.VISIBLE);
         selectedDifficultiesTextView.setVisibility(TextView.VISIBLE);
         playersListTextView.setVisibility(TextView.VISIBLE);
-        roomTitleTextView.setText("Room: " + room.getCreatorNickname());
+        roomTitleTextView.setText("Стая: " + room.getCreatorNickname());
         leaveRoomButton.setVisibility(View.VISIBLE);
         isWaitingScreen = true;
     }
 
     private void switchToRoomList() {
+
+        waitingAnimation1.cancelAnimation();
+        waitingAnimation2.cancelAnimation();
+        waitingAnimation3.cancelAnimation();
+        waitingAnimation4.cancelAnimation();
+
+        waitingAnimation1.setVisibility(View.GONE);
+        waitingAnimation2.setVisibility(View.GONE);
+        waitingAnimation3.setVisibility(View.GONE);
+        waitingAnimation4.setVisibility(View.GONE);
+
         roomListLayout.setVisibility(LinearLayout.VISIBLE);
         waitingLayout.setVisibility(LinearLayout.GONE);
         playersTextView.setVisibility(TextView.GONE);
@@ -200,14 +222,61 @@ public class JoinRoomActivity extends AppCompatActivity {
         playersListTextView.setVisibility(TextView.GONE);
         leaveRoomButton.setVisibility(View.GONE);
         isWaitingScreen = false;
+
+        joinAnimation.setVisibility(View.VISIBLE);
+        joinAnimation.playAnimation();
     }
 
     private void updateWaitingScreen(Room room) {
         int playerCount = room.getUsers().size();
         playersTextView.setText("Играчи: " + playerCount + "/4");
-        selectedSubjectsTextView.setText("Subjects: " + room.getSubjects());
-        selectedDifficultiesTextView.setText("Difficulties: " + room.getDifficulties());
-        String playersList = "Players in room:\n";
+        StringBuilder subjectsText = new StringBuilder("Предмети: ");
+        List<Subject> subjects = room.getSubjects();
+        for (int i = 0; i < subjects.size(); i++) {
+            Subject subject = subjects.get(i);
+            String subjectName;
+            switch (subject) {
+                case BIOLOGY:
+                    subjectName = getString(R.string.subject_biology);
+                    break;
+                case HISTORY:
+                    subjectName = getString(R.string.subject_history);
+                    break;
+                case GEOGRAPHY:
+                    subjectName = getString(R.string.subject_geography);
+                    break;
+                default:
+                    subjectName = subject.getValue();
+            }
+            subjectsText.append(subjectName);
+            if (i < subjects.size() - 1) {
+                subjectsText.append(", ");
+            }
+        }
+        selectedSubjectsTextView.setText(subjectsText.toString());
+        StringBuilder difficultiesText = new StringBuilder("Трудности: ");
+        List<Difficulty> difficulties = room.getDifficulties();
+        for (int i = 0; i < difficulties.size(); i++) {
+            Difficulty difficulty = difficulties.get(i);
+            String difficultyName;
+            switch (difficulty) {
+                case EASY:
+                    difficultyName = getString(R.string.difficulty_easy);
+                    break;
+                case HARD:
+                    difficultyName = getString(R.string.difficulty_hard);
+                    break;
+                default:
+                    difficultyName = difficulty.getValue();
+            }
+            difficultiesText.append(difficultyName);
+            if (i < difficulties.size() - 1) {
+                difficultiesText.append(", ");
+            }
+        }
+
+        selectedDifficultiesTextView.setText(difficultiesText.toString());
+        String playersList = "Играчи в стаята:\n";
         for (int i = 0; i < room.getUsers().size(); i++) {
             playersList += room.getUsers().get(i).getUsername();
             if (i < room.getUsers().size() - 1) {
@@ -215,5 +284,15 @@ public class JoinRoomActivity extends AppCompatActivity {
             }
         }
         playersListTextView.setText(playersList);
+
+        Log.d(TAG, "Updated waiting screen, players: " + playerCount + ", isGameStarted: " + room.isGameStarted());
+
+        if (room.isGameStarted()) {
+            Log.d(TAG, "Game started, launching MultiplayerGameActivity");
+            Intent intent = new Intent(JoinRoomActivity.this, MultiplayerGameActivity.class);
+            intent.putExtra("room", room);
+            startActivity(intent);
+            finish();
+        }
     }
 }

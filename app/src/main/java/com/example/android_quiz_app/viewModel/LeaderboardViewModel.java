@@ -40,12 +40,12 @@ public class LeaderboardViewModel extends ViewModel {
                 }
                 Collections.reverse(topUsers);
 
-                leaderboardState.setValue(new LeaderboardState(true, "Leaderboard loaded", topUsers));
+                leaderboardState.setValue(new LeaderboardState(true, "Класацията е успешно заредена.", topUsers));
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                leaderboardState.setValue(new LeaderboardState(false, "Failed to load leaderboard: " + databaseError.getMessage(), null));
+                leaderboardState.setValue(new LeaderboardState(false, "Неуспешно зареждане на класацията: " + databaseError.getMessage(), null));
             }
         });
     }

@@ -33,18 +33,18 @@ public class ProfileViewModel extends ViewModel {
                 usersReference.child(auth.getCurrentUser().getUid()).get().addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         User user = task.getResult().getValue(User.class);
-                        profileState.setValue(new ProfileState(true, "User info loaded", user, true));
+                        profileState.setValue(new ProfileState(true, "Информацията за потребителя е заредена", user, true));
                     } else {
-                        profileState.setValue(new ProfileState(false, "Failed to load user info: " + task.getException().getMessage(), null, true));
+                        profileState.setValue(new ProfileState(false, "Неуспешно зареждане на информацията за потребителя: " + task.getException().getMessage(), null, true));
                     }
                 });
             } else {
                 usersReference.child(auth.getCurrentUser().getUid()).get().addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         User user = task.getResult().getValue(User.class);
-                        profileState.setValue(new ProfileState(true, "User info loaded", user, false));
+                        profileState.setValue(new ProfileState(true, "Информацията за потребителя е заредена", user, false));
                     } else {
-                        profileState.setValue(new ProfileState(false, "Failed to load user info: " + task.getException().getMessage(), null, false));
+                        profileState.setValue(new ProfileState(false, "Неуспешно зареждане на информацията за потребителя: " + task.getException().getMessage(), null, false));
                     }
                 });
             }
@@ -54,14 +54,14 @@ public class ProfileViewModel extends ViewModel {
     public void logout(GoogleSignInClient googleSignInClient) {
         if (auth.getCurrentUser() != null) {
             auth.signOut();
-            profileState.setValue(new ProfileState(true, "Logged out successfully", null, false));
+            profileState.setValue(new ProfileState(true, "Успешно излизане от профила", null, false));
         } else {
-            profileState.setValue(new ProfileState(false, "No user to log out", null, false));
+            profileState.setValue(new ProfileState(false, "Няма потребител, който да излезе от профила", null, false));
         }
         if (googleSignInClient != null) {
             googleSignInClient.signOut();
         } else {
-            profileState.setValue(new ProfileState(false, "Google sign in client is null", null, true));
+            profileState.setValue(new ProfileState(false, "Не съществува потребител с Google акаунт", null, true));
         }
     }
 

@@ -1,30 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
-    android:background="@drawable/download">
+    android:background="@drawable/download"
+    android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp">
+
         <TextView
             android:id="@+id/titleTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="36dp"
             android:background="@drawable/gradient_login_button"
             android:gravity="center"
-            android:padding="16dp"
+            android:padding="12dp"
             android:shadowColor="#40000000"
             android:shadowDx="2"
             android:shadowDy="2"
             android:shadowRadius="4"
             android:text="Избери въпроси"
             android:textColor="@color/white"
-            android:textSize="28sp"
+            android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -33,73 +34,90 @@
             android:id="@+id/subjectsLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:padding="12dp"
+            android:layout_marginTop="8dp"
+            android:padding="8dp"
             android:text="Избери предмет:"
             android:textColor="#021368"
-            android:textSize="28sp"
+            android:textSize="22sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/titleTextView" />
 
-        <LinearLayout
-            android:id="@+id/subjectsContainer"
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/subjectsScrollView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:orientation="vertical"
+            android:layout_marginTop="8dp"
+            android:maxHeight="150dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/subjectsLabel" />
+            app:layout_constraintTop_toBottomOf="@id/subjectsLabel">
+
+            <LinearLayout
+                android:id="@+id/subjectsContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+        </androidx.core.widget.NestedScrollView>
 
         <TextView
             android:id="@+id/difficultiesLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:padding="12dp"
+            android:layout_marginTop="8dp"
+            android:padding="8dp"
             android:text="Избери трудност:"
             android:textColor="#021368"
-            android:textSize="28sp"
+            android:textSize="22sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/subjectsContainer" />
+            app:layout_constraintTop_toBottomOf="@id/subjectsScrollView" />
 
-        <LinearLayout
-            android:id="@+id/difficultiesContainer"
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/difficultiesScrollView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:orientation="vertical"
+            android:layout_marginTop="8dp"
+            android:maxHeight="100dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/difficultiesLabel" />
+            app:layout_constraintTop_toBottomOf="@id/difficultiesLabel">
+
+            <LinearLayout
+                android:id="@+id/difficultiesContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+        </androidx.core.widget.NestedScrollView>
 
         <TextView
             android:id="@+id/warningText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="64dp"
+            android:layout_marginTop="104dp"
             android:background="#FFEBEE"
-            android:padding="12dp"
+            android:padding="8dp"
             android:text="Ако не изберете нищо, въпросите ще бъдат заредени автоматично от всички предмети и трудности."
             android:textColor="#D32F2F"
-            android:textSize="16sp"
+            android:textSize="14sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/difficultiesContainer" />
+            app:layout_constraintTop_toBottomOf="@id/difficultiesScrollView" />
 
         <Button
             android:id="@+id/startGameButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="56dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
             android:background="@drawable/gradient_button"
             android:elevation="4dp"
-            android:padding="14dp"
+            android:padding="12dp"
             android:text="Започни игра"
             android:textColor="#FFFFFF"
-            android:textSize="18sp"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/warningText" />
+            app:layout_constraintTop_toBottomOf="@id/warningText"
+            app:layout_constraintVertical_bias="0.238" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+</androidx.core.widget.NestedScrollView>

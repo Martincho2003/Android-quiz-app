@@ -1,188 +1,241 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
-    android:background="@drawable/download">
+    android:background="@drawable/download"
+    android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp">
+
         <TextView
             android:id="@+id/titleTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="40dp"
             android:background="@drawable/gradient_login_button"
             android:gravity="center"
-            android:padding="16dp"
+            android:padding="12dp"
             android:shadowColor="#40000000"
             android:shadowDx="2"
             android:shadowDy="2"
             android:shadowRadius="4"
             android:text="Създаване на стая"
             android:textColor="@color/white"
-            android:textSize="28sp"
+            android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/subjectsLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:padding="12dp"
+            android:layout_marginTop="8dp"
+            android:padding="8dp"
             android:text="Избери предмет:"
             android:textColor="#021368"
-            android:textSize="28sp"
+            android:textSize="22sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/titleTextView" />
-        <LinearLayout
-            android:id="@+id/subjectsContainer"
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/subjectsScrollView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:orientation="vertical"
+            android:layout_marginTop="8dp"
+            android:maxHeight="150dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/subjectsLabel"/>
+            app:layout_constraintTop_toBottomOf="@id/subjectsLabel">
+
+            <LinearLayout
+                android:id="@+id/subjectsContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+        </androidx.core.widget.NestedScrollView>
+
         <TextView
             android:id="@+id/difficultiesLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:padding="12dp"
+            android:layout_marginTop="8dp"
+            android:padding="8dp"
             android:text="Избери трудност:"
             android:textColor="#021368"
-            android:textSize="28sp"
+            android:textSize="22sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/subjectsContainer" />
-        <LinearLayout
-            android:id="@+id/difficultiesContainer"
+            app:layout_constraintTop_toBottomOf="@id/subjectsScrollView" />
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/difficultiesScrollView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:orientation="vertical"
+            android:layout_marginTop="8dp"
+            android:maxHeight="100dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/difficultiesLabel" />
+            app:layout_constraintTop_toBottomOf="@id/difficultiesLabel">
+
+            <LinearLayout
+                android:id="@+id/difficultiesContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+        </androidx.core.widget.NestedScrollView>
+
         <TextView
             android:id="@+id/warningText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="64dp"
+            android:layout_marginTop="128dp"
             android:background="#FFEBEE"
-            android:padding="12dp"
+            android:padding="8dp"
             android:text="Ако не изберете нищо, въпросите ще бъдат заредени автоматично от всички предмети и трудности."
             android:textColor="#D32F2F"
-            android:textSize="16sp"
+            android:textSize="14sp"
             android:textStyle="bold"
+            android:visibility="visible"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/difficultiesContainer" />
+            app:layout_constraintTop_toBottomOf="@id/difficultiesScrollView" />
+
         <Button
             android:id="@+id/createRoomButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="56dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
             android:background="@drawable/gradient_button"
             android:elevation="4dp"
-            android:padding="14dp"
+            android:padding="12dp"
             android:text="Създай стая"
             android:textColor="#FFFFFF"
-            android:textSize="18sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/warningText" />
-        <TextView
-            android:id="@+id/waitingTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:gravity="center"
-            android:text="Очакване на играчи..."
-            android:textColor="#021368"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/createRoomButton" />
-        <TextView
-            android:id="@+id/playersTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:gravity="center"
-            android:text="Играчи: 1/4"
-            android:textColor="#000000"
             android:textSize="16sp"
-            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/waitingTextView" />
+            app:layout_constraintTop_toBottomOf="@id/warningText"
+            app:layout_constraintVertical_bias="0.058" />
 
-        <TextView
-            android:id="@+id/selectedSubjectsTextView"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/waitingInfoContainer"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Subjects: "
-            android:textSize="16sp"
-            android:layout_gravity="center"
+            android:layout_marginTop="106dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/gradient_login_button"
+            android:orientation="vertical"
+            android:padding="16dp"
             android:visibility="gone"
-            android:layout_marginTop="8dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/waitingTextView" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/titleTextView"
+            app:layout_constraintBottom_toTopOf="@id/startGameButton"
+            app:layout_constraintVertical_bias="0.8">
 
-        <TextView
-            android:id="@+id/selectedDifficultiesTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Difficulties: "
-            android:textSize="16sp"
-            android:layout_gravity="center"
-            android:visibility="gone"
-            android:layout_marginTop="8dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/waitingTextView" />
+            <TextView
+                android:id="@+id/waitingTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Очакване на играчи..."
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/playersListTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Players in room: "
-            android:textSize="16sp"
-            android:layout_gravity="center"
-            android:visibility="gone"
-            android:layout_marginTop="8dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/waitingTextView" />
+            <TextView
+                android:id="@+id/playersTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:text="Играчи: 1/4"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/selectedSubjectsTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Предмети: "
+                android:textColor="#FFFFFF"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/selectedDifficultiesTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Трудности: "
+                android:textColor="#FFFFFF"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/playersListTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Играчи в стаята: "
+                android:textColor="#FFFFFF"
+                android:textSize="16sp" />
+
+        </LinearLayout>
 
         <Button
             android:id="@+id/startGameButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="106dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:background="@drawable/gradient_button"
             android:elevation="4dp"
             android:enabled="false"
-            android:padding="14dp"
+            android:padding="12dp"
             android:text="Започни игра"
             android:textColor="#FFFFFF"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/playersTextView" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/waitingInfoContainer" />
+
 
         <Button
             android:id="@+id/deleteRoomButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Delete Room"
-            android:visibility="gone"
-            android:layout_marginTop="16dp"
-            android:backgroundTint="#FF0000"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/red_rounded_button"
+            android:text="Изтрий стая"
             android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/playersTextView" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/startGameButton" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/waitingAnimationView"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone"
+            app:lottie_autoPlay="true"
+            app:lottie_rawRes="@raw/room_waiting"
+            app:lottie_loop="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+</androidx.core.widget.NestedScrollView>

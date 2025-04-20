@@ -4,46 +4,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/download"
-    android:padding="16dp">
+    android:padding="12dp">
 
-    <LinearLayout
-        android:id="@+id/titleLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:padding="16dp">
-
-        <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/logo"
-            android:contentDescription="Left Logo" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="QUIZ MASTER"
-            android:textColor="#021368"
-            android:textSize="36sp"
-            android:textStyle="bold"
-            android:layout_marginHorizontal="8dp" />
-
-        <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/logo"
-            android:contentDescription="Right Logo" />
-    </LinearLayout>
-
-    <!-- Нов LinearLayout за точки, време и брой въпроси -->
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottieAnimation"
+        android:layout_width="195dp"
+        android:layout_height="172dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:translationZ="0dp"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/questions" />
 
     <LinearLayout
         android:id="@+id/infoLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/titleLayout"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="56dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:padding="8dp"
@@ -53,11 +33,11 @@
             android:id="@+id/pointsTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="6dp"
             android:layout_weight="1"
             android:drawableStart="@drawable/rating"
             android:drawablePadding="8dp"
-            android:text="Точки: 0"
+            android:text="Точки:\n0"
             android:textColor="#000"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -66,11 +46,11 @@
             android:id="@+id/timerTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="6dp"
             android:layout_weight="1"
             android:drawableStart="@drawable/time"
             android:drawablePadding="8dp"
-            android:text="Време: 0s"
+            android:text="Време:\n0s"
             android:textColor="#000"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -79,11 +59,11 @@
             android:id="@+id/questionCountTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="0dp"
             android:layout_weight="1"
             android:drawableStart="@drawable/question"
             android:drawablePadding="8dp"
-            android:text="Въпрос: 0/0"
+            android:text="Въпрос:\n0/0"
             android:textColor="#000"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -98,17 +78,30 @@
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:padding="8dp">
-        <TextView
-            android:id="@+id/questionTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:orientation="horizontal"
             android:layout_marginStart="8dp"
-            android:drawableStart="@drawable/question"
-            android:drawablePadding="8dp"
-            android:text="Въпрос:"
-            android:textColor="#000"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:gravity="top|start">
+
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/question"
+                android:layout_gravity="top"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:id="@+id/questionTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Въпрос:"
+                android:textColor="#000"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
     </LinearLayout>
 
     <Button
@@ -119,7 +112,7 @@
         android:layout_marginTop="43dp"
         android:backgroundTint="#F47A76"
         android:text="Answer 1"
-        android:textSize = "18sp"
+        android:textSize="16sp"
         android:textColor="@color/black" />
 
     <Button
@@ -130,7 +123,7 @@
         android:layout_marginTop="8dp"
         android:backgroundTint="#F89169"
         android:text="Answer 2"
-        android:textSize = "18sp"
+        android:textSize="16sp"
         android:textColor="@color/black" />
 
     <Button
@@ -141,7 +134,7 @@
         android:layout_marginTop="8dp"
         android:backgroundTint="#93EFF0"
         android:text="Answer 3"
-        android:textSize = "18sp"
+        android:textSize="16sp"
         android:textColor="@color/black" />
 
     <Button
@@ -152,7 +145,7 @@
         android:layout_marginTop="8dp"
         android:backgroundTint="#A889E9"
         android:text="Answer 4"
-        android:textSize = "18sp"
+        android:textSize="16sp"
         android:textColor="@color/black" />
 
     <Button
@@ -164,7 +157,7 @@
         android:background="@drawable/gradient_login_button"
         android:drawableStart="@drawable/add_time"
         android:text="Добави време (+20 сек.)"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:textStyle="bold" />
 
     <Button
@@ -172,21 +165,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/addTimeButton"
-        android:layout_marginTop="46dp"
+        android:layout_marginTop="40dp"
         android:background="@drawable/button_design"
         android:drawableStart="@drawable/exclude"
         android:text="Изключи два отговора"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:textStyle="bold" />
-
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/lottieAnimation"
-        android:layout_width="195dp"
-        android:layout_height="172dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        app:lottie_autoPlay="true"
-        app:lottie_loop="true"
-        app:lottie_rawRes="@raw/questions" />
 
 </RelativeLayout>

@@ -13,4 +13,5 @@
     <string name="room_content_description">Стая: %1$s, Предмети: %2$s, Трудности: %3$s, Играчи: %4$d от 4</string>
     <string name="rooms_list">Списък със стаи за присъединяване</string>
     <string name="empty_rooms_list">Няма налични стаи за присъединяване</string>
+    <string name="points_format">%d точки</string>
 </resources>

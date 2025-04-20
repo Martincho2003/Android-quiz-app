@@ -36,11 +36,11 @@ public class QuestionSelectionActivity extends AppCompatActivity {
             CheckBox checkBox = new CheckBox(this);
             checkBox.setText(subject.getValue());
             checkBox.setPadding(8, 8, 8, 8);
-            checkBox.setTextSize(25);
+            checkBox.setTextSize(20);
             checkBox.setTextColor(getResources().getColor(R.color.black));
             checkBox.setTypeface(null, Typeface.BOLD);
             checkBox.setButtonDrawable(R.drawable.custom_checkbox);
-            checkBox.setCompoundDrawablePadding(36);
+            checkBox.setCompoundDrawablePadding(24);
 
             switch (subject) {
                 case BIOLOGY:
@@ -61,22 +61,23 @@ public class QuestionSelectionActivity extends AppCompatActivity {
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
             );
-            params.bottomMargin = (int) (16 * getResources().getDisplayMetrics().density); // 16dp margin
+            params.bottomMargin = (int) (8 * getResources().getDisplayMetrics().density);
             checkBox.setLayoutParams(params);
 
             subjectsContainer.addView(checkBox);
             subjectCheckBoxes.add(checkBox);
+
         }
 
         for (Difficulty difficulty : Difficulty.values()) {
             CheckBox checkBox = new CheckBox(this);
             checkBox.setText(difficulty.getValue());
             checkBox.setPadding(8, 8, 8, 8);
-            checkBox.setTextSize(25);
+            checkBox.setTextSize(20);
             checkBox.setTextColor(getResources().getColor(R.color.black));
             checkBox.setTypeface(null, Typeface.BOLD);
             checkBox.setButtonDrawable(R.drawable.custom_checkbox);
-            checkBox.setCompoundDrawablePadding(36);
+            checkBox.setCompoundDrawablePadding(24);
 
             switch (difficulty) {
                 case EASY:
@@ -93,7 +94,7 @@ public class QuestionSelectionActivity extends AppCompatActivity {
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
             );
-            params.bottomMargin = (int) (16 * getResources().getDisplayMetrics().density); // 16dp margin
+            params.bottomMargin = (int) (8 * getResources().getDisplayMetrics().density);
             checkBox.setLayoutParams(params);
 
             difficultiesContainer.addView(checkBox);
