@@ -56,15 +56,22 @@ public class JoinRoomViewModel extends ViewModel {
         });
     }
 
-    public void joinRoom(Room room) {
+
+    public int joinRoom(Room room) {
         MultiplayerUser user = currentUser.getValue();
         if (user != null) {
+            if (user.getUsername().equals(room.getCreatorNickname())){
+                Log.e(TAG, "Cannot join your own room");
+                return -1;
+            }
             multiplayerService.joinRoom(room, user);
             joinedRoom.setValue(room);
             Log.d(TAG, "Joined room: " + room.getCreatorNickname());
+            return 0;
         } else {
             Log.e(TAG, "Cannot join room: current user is null");
         }
+        return -2;
     }
 
     public void leaveRoom(Room room) {

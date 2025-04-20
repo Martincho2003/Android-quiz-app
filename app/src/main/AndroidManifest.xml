@@ -86,6 +86,7 @@
             android:name=".activities.JoinRoomActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity"
+            android:windowSoftInputMode="adjustPan"
             android:exported="false" />
         <activity
             android:name=".activities.CreateRoomActivity"
