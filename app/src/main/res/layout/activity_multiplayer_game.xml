@@ -148,28 +148,5 @@
         android:textSize="16sp"
         android:textColor="@color/black" />
 
-    <Button
-        android:id="@+id/addTimeButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/answerButton4"
-        android:layout_marginTop="36dp"
-        android:background="@drawable/gradient_login_button"
-        android:drawableStart="@drawable/add_time"
-        android:text="Добави време (+20 сек.)"
-        android:textSize="16sp"
-        android:textStyle="bold" />
-
-    <Button
-        android:id="@+id/excludeButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/addTimeButton"
-        android:layout_marginTop="40dp"
-        android:background="@drawable/button_design"
-        android:drawableStart="@drawable/exclude"
-        android:text="Изключи два отговора"
-        android:textSize="16sp"
-        android:textStyle="bold" />
 
 </RelativeLayout>
