@@ -51,12 +51,10 @@ public class MultiplayerGameEndActivity extends AppCompatActivity {
 
         multiplayerService = MultiplayerService.getInstance();
 
-        // Setup RecyclerView
         leaderboardRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         leaderboardAdapter = new LeaderboardAdapter();
         leaderboardRecyclerView.setAdapter(leaderboardAdapter);
 
-        // Observe room updates
         multiplayerService.getRooms().observe(this, rooms -> {
             for (Room updatedRoom : rooms) {
                 if (updatedRoom.getCreatorNickname().equals(room.getCreatorNickname())) {

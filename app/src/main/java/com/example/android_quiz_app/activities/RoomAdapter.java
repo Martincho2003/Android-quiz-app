@@ -42,7 +42,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
     public void filterRooms(String query) {
         filteredRooms.clear();
         if (query.isEmpty()) {
-            filteredRooms.addAll(rooms); // Ако търсенето е празно, показваме всички стаи
+            filteredRooms.addAll(rooms);
         } else {
             String lowerCaseQuery = query.toLowerCase();
             for (Room room : rooms) {

@@ -133,7 +133,6 @@ public class MultiplayerGameViewModel extends ViewModel {
         if (timer != null) {
             timer.cancel();
         }
-        // Синхронизиране на точките с Firebase само при приключване на играта
         multiplayerService.updateUserPoints(room, currentUser);
         updateLeaderboard();
         gameFinished.setValue(true);
@@ -146,7 +145,7 @@ public class MultiplayerGameViewModel extends ViewModel {
             Collections.sort(users, new Comparator<MultiplayerUser>() {
                 @Override
                 public int compare(MultiplayerUser u1, MultiplayerUser u2) {
-                    return Integer.compare(u2.getGamePoints(), u1.getGamePoints()); // Сортиране в намаляващ ред
+                    return Integer.compare(u2.getGamePoints(), u1.getGamePoints());
                 }
             });
             leaderboard.setValue(users);

@@ -163,7 +163,7 @@ public class GameViewModel extends ViewModel {
         while (answers.size() > 2) {
             List<Answer> incorrectAnswers = new ArrayList<>();
             for (Answer answer : answers) {
-                if (!"true".equalsIgnoreCase(answer.getIs_correct())) {
+                if (!"1".equalsIgnoreCase(answer.getIs_correct())) {
                     incorrectAnswers.add(answer);
                 }
             }
